@@ -196,6 +196,32 @@
   .ov-divider{border:none; border-top:1px solid var(--line); margin:0;}
 
   .overlay{display:none;}
+
+  /* AUTH GATE */
+  #appShell{display:none;}
+  .auth-gate{position:fixed; inset:0; z-index:1000; background:linear-gradient(180deg,var(--ford-blue) 0%,var(--ford-navy-deep) 100%); display:flex; align-items:center; justify-content:center; padding:24px;}
+  .auth-gate.hidden{display:none;}
+  .auth-card{background:var(--paper); border-radius:16px; padding:40px 36px; width:100%; max-width:380px; box-shadow:0 24px 60px rgba(0,10,30,.35);}
+  .auth-eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ford-accent); font-weight:500; text-align:center;}
+  .auth-title{font-size:26px; color:var(--ford-blue); margin:10px 0 6px; text-align:center;}
+  .auth-sub{font-family:'Inter',sans-serif; text-transform:none; letter-spacing:normal; font-size:13.5px; color:var(--ink-soft); text-align:center; margin:0 0 26px;}
+  .auth-form{display:flex; flex-direction:column;}
+  .auth-label{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); margin:12px 0 6px;}
+  .auth-input{font-family:'Inter',sans-serif; font-size:14.5px; padding:11px 14px; border:1.5px solid var(--line); border-radius:9px; outline:none; color:var(--ink); background:var(--canvas);}
+  .auth-input:focus{border-color:var(--ford-blue); background:var(--paper);}
+  .auth-error{display:none; font-size:12.5px; color:#b42318; background:#fff1f0; border:1px solid #ffd4d0; border-radius:8px; padding:9px 12px; margin-top:14px;}
+  .auth-error.show{display:block;}
+  .auth-submit{margin-top:20px; font-family:'Inter',sans-serif; font-size:14.5px; font-weight:600; padding:12px; border-radius:9px; border:none; background:var(--ford-blue); color:#fff; cursor:pointer; transition:background .15s;}
+  .auth-submit:hover{background:var(--ford-navy-deep);}
+  .auth-submit:disabled{opacity:.6; cursor:not-allowed;}
+  .auth-hint{margin-top:18px; font-size:11.5px; color:var(--ink-soft); text-align:center;}
+
+  .user-badge{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); white-space:nowrap;}
+  .user-badge b{color:var(--ford-blue);}
+  .logout-btn{font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:9px 14px; border-radius:8px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:all .15s;}
+  .logout-btn:hover{border-color:#b42318; color:#b42318;}
+  body:not(.role-editor) .edit-toggle{display:none;}
+
   @media (max-width:900px){
     .search-box{display:none;}
     .menu-btn{display:flex;}
@@ -220,6 +246,23 @@
 </head>
 <body>
 
+  <div class="auth-gate" id="authGate">
+    <div class="auth-card">
+      <div class="auth-eyebrow">Rede Ford Caminho</div>
+      <h1 class="auth-title">Manual de Garantia</h1>
+      <p class="auth-sub">Acesso restrito à equipe. Entre com seu usuário e senha.</p>
+      <form class="auth-form" id="loginForm">
+        <label class="auth-label" for="loginUsername">Usuário</label>
+        <input type="text" id="loginUsername" class="auth-input" autocomplete="username" required>
+        <label class="auth-label" for="loginPassword">Senha</label>
+        <input type="password" id="loginPassword" class="auth-input" autocomplete="current-password" required>
+        <div class="auth-error" id="authError"></div>
+        <button type="submit" class="auth-submit" id="authSubmit">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="appShell">
   <header class="topbar">
     <div class="topbar-left">
       <button class="menu-btn" id="menuBtn" aria-label="Abrir menu">
@@ -245,6 +288,8 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
         <span id="editToggleLabel">Editar mídia</span>
       </button>
+      <span class="user-badge" id="userBadge"></span>
+      <button class="logout-btn" id="logoutBtn">Sair</button>
     </div>
   </header>
 
@@ -307,6 +352,12 @@
     <main class="content">
       <div class="content-inner">
 
+        <div class="edit-banner">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Modo de edição ativo: clique no texto pra editar, ou numa miniatura de mídia pra trocar o print/vídeo.
+          <button id="saveContentBtn" onclick="saveAllContent()">Salvar alterações</button>
+        </div>
+
         <div class="crumb" id="crumb"></div>
 
         <div class="steps-strip">
@@ -343,60 +394,60 @@
             <div class="section-tag">i</div>
             <h1 class="page-title">Visão Geral</h1>
           </div>
-          <p class="page-sub">Este manual segue o processo de garantia Ford do início ao fim, na ordem em que ele acontece de verdade na Concessionária. Use a barra lateral pra pular direto pra etapa que você precisa.</p>
+          <p class="page-sub" data-cid="guide-sub">Este manual segue o processo de garantia Ford do início ao fim, na ordem em que ele acontece de verdade na Concessionária. Use a barra lateral pra pular direto pra etapa que você precisa.</p>
           <div class="card">
-            <h3>O que você vai encontrar em cada etapa</h3>
+            <h3 data-cid="guide-card1-h3">O que você vai encontrar em cada etapa</h3>
             <ul>
-              <li>Explicação da etapa com base no Manual de Garantia Ford (regras oficiais)</li>
-              <li>Prints das telas dos sistemas envolvidos</li>
-              <li>Vídeo narrado mostrando o passo a passo na prática</li>
+              <li data-cid="guide-card1-li1">Explicação da etapa com base no Manual de Garantia Ford (regras oficiais)</li>
+              <li data-cid="guide-card1-li2">Prints das telas dos sistemas envolvidos</li>
+              <li data-cid="guide-card1-li3">Vídeo narrado mostrando o passo a passo na prática</li>
             </ul>
-            <p>As ferramentas Ford (Dealer, OWS, PTS, Agenda, Catálogo, Holmes) ganharão módulos próprios em breve.</p>
+            <p data-cid="guide-card1-p1">As ferramentas Ford (Dealer, OWS, PTS, Agenda, Catálogo, Holmes) ganharão módulos próprios em breve.</p>
           </div>
         </section>
 
         <!-- PAGE OVERVIEW -->
         <section class="page" id="page-ov">
           <div class="section-head"><div class="section-tag">→</div><h1 class="page-title">O Caminho da Garantia</h1></div>
-          <p class="page-sub">As 7 etapas do processo de garantia, na ordem em que elas acontecem na Concessionária. Clique em qualquer uma pra abrir o conteúdo completo.</p>
+          <p class="page-sub" data-cid="ov-sub">As 7 etapas do processo de garantia, na ordem em que elas acontecem na Concessionária. Clique em qualquer uma pra abrir o conteúdo completo.</p>
           <div class="card" style="padding:10px; display:flex; flex-direction:column; gap:2px;" id="ov-list"></div>
         </section>
 
         <!-- PAGE 1 -->
         <section class="page" id="page-1">
           <div class="section-head"><div class="section-tag">01</div><h1 class="page-title">Recepção do Veículo</h1></div>
-          <p class="page-sub">Etapa que cobre desde a chegada do veículo novo na Concessionária até a entrega ao cliente — é aqui que muitos problemas de cobertura começam (ou são evitados).</p>
+          <p class="page-sub" data-cid="step1-sub">Etapa que cobre desde a chegada do veículo novo na Concessionária até a entrega ao cliente — é aqui que muitos problemas de cobertura começam (ou são evitados).</p>
           <div class="badge-row"><span class="badge role">Responsável: Recepcionista e Consultor(a) Técnico(a)</span><span class="badge tool">Referência: Manual do Proprietário</span><span class="badge tool">PTS</span><span class="badge warn">Inspeção obrigatória</span></div>
 
           <div class="card">
-            <h3>Cadastro do cliente e do veículo</h3>
-            <p>Antes de tudo, confirme se o cliente já tem cadastro no Dealer Net e no Agenda Ford — se não tiver, cria na hora. O mesmo vale pro veículo: confirme os dados cadastrados no Dealer Net (data de venda, placa, cor, chassi).</p>
-            <p><b>De onde tirar cada dado:</b> data de venda, chassi e tipo de motor vêm do <b>PTS</b>; cor e acabamento vêm do <b>Catálogo Ford</b> (consulta por VIN — o Catálogo é onde se busca tudo sobre o chassi: motor, transmissão, peças).</p>
+            <h3 data-cid="step1-cadastro-h3">Cadastro do cliente e do veículo</h3>
+            <p data-cid="step1-cadastro-p1">Antes de tudo, confirme se o cliente já tem cadastro no Dealer Net e no Agenda Ford — se não tiver, cria na hora. O mesmo vale pro veículo: confirme os dados cadastrados no Dealer Net (data de venda, placa, cor, chassi).</p>
+            <p data-cid="step1-cadastro-p2"><b>De onde tirar cada dado:</b> data de venda, chassi e tipo de motor vêm do <b>PTS</b>; cor e acabamento vêm do <b>Catálogo Ford</b> (consulta por VIN — o Catálogo é onde se busca tudo sobre o chassi: motor, transmissão, peças).</p>
           </div>
 
           <div class="card">
-            <h3>Recebimento de veículo novo</h3>
-            <p>Ao receber um veículo novo, a Concessionária é obrigada a fazer uma inspeção visual completa pra verificar avarias de transporte. Se não houver registro formal de avaria no ato da recepção, a responsabilidade por qualquer problema encontrado depois passa a ser da própria Concessionária.</p>
-            <p>Veículos com avarias no fluxo logístico normalmente já são reparados no PDI Ford, sem ação da Concessionária. Em casos excepcionais, o veículo chega com um "Protocolo de Avaria" — nesse caso, o reembolso é solicitado no OWS usando o tipo de Solicitação 51, subcódigo TD2.</p>
+            <h3 data-cid="step1-recebimento-h3">Recebimento de veículo novo</h3>
+            <p data-cid="step1-recebimento-p1">Ao receber um veículo novo, a Concessionária é obrigada a fazer uma inspeção visual completa pra verificar avarias de transporte. Se não houver registro formal de avaria no ato da recepção, a responsabilidade por qualquer problema encontrado depois passa a ser da própria Concessionária.</p>
+            <p data-cid="step1-recebimento-p2">Veículos com avarias no fluxo logístico normalmente já são reparados no PDI Ford, sem ação da Concessionária. Em casos excepcionais, o veículo chega com um "Protocolo de Avaria" — nesse caso, o reembolso é solicitado no OWS usando o tipo de Solicitação 51, subcódigo TD2.</p>
           </div>
 
           <div class="card">
-            <h3>Falha de fabricação (peça faltante ou divergência de catálogo)</h3>
+            <h3 data-cid="step1-falha-h3">Falha de fabricação (peça faltante ou divergência de catálogo)</h3>
             <ul>
-              <li>Peça de fácil visualização (retrovisor, calota): reparo até a preparação de entrega</li>
-              <li>Peça de difícil visualização (sensor, chicote): reparo até a primeira revisão</li>
-              <li>Solicitação no OWS: tipo 14, subcódigo MVC — código 39 pra peça faltante, código 38 pra divergência de catálogo</li>
+              <li data-cid="step1-falha-li1">Peça de fácil visualização (retrovisor, calota): reparo até a preparação de entrega</li>
+              <li data-cid="step1-falha-li2">Peça de difícil visualização (sensor, chicote): reparo até a primeira revisão</li>
+              <li data-cid="step1-falha-li3">Solicitação no OWS: tipo 14, subcódigo MVC — código 39 pra peça faltante, código 38 pra divergência de catálogo</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Entrega ao cliente (veículo 0km)</h3>
-            <p>Para casos de entrega de veículo novo (0km): antes da entrega, a bateria precisa ser testada no equipamento próprio — se reprovar, é trocada por uma nova. O comprovante dessa verificação deve ser guardado, porque a Ford pode exigi-lo se a bateria apresentar defeito depois.</p>
+            <h3 data-cid="step1-0km-h3">Entrega ao cliente (veículo 0km)</h3>
+            <p data-cid="step1-0km-p1">Para casos de entrega de veículo novo (0km): antes da entrega, a bateria precisa ser testada no equipamento próprio — se reprovar, é trocada por uma nova. O comprovante dessa verificação deve ser guardado, porque a Ford pode exigi-lo se a bateria apresentar defeito depois.</p>
           </div>
 
           <div class="card">
-            <h3>Entrega ao cliente pós-reparo</h3>
-            <p>Para casos de entrega após reparo em garantia, recall ou campanha: o que importa aqui é coletar a assinatura do cliente na OS de garantia (1ª via) — veja o detalhe completo na etapa 03.</p>
+            <h3 data-cid="step1-posreparo-h3">Entrega ao cliente pós-reparo</h3>
+            <p data-cid="step1-posreparo-p1">Para casos de entrega após reparo em garantia, recall ou campanha: o que importa aqui é coletar a assinatura do cliente na OS de garantia (1ª via) — veja o detalhe completo na etapa 03.</p>
           </div>
 
           <div class="media-block">
@@ -412,33 +463,33 @@
         <!-- PAGE 2 -->
         <section class="page" id="page-2">
           <div class="section-head"><div class="section-tag">02</div><h1 class="page-title">Identificação de Elegibilidade</h1></div>
-          <p class="page-sub">Antes de qualquer reparo, é preciso confirmar se o veículo (ou a peça) ainda está dentro do prazo de garantia — e se o problema relatado é realmente coberto.</p>
+          <p class="page-sub" data-cid="step2-sub">Antes de qualquer reparo, é preciso confirmar se o veículo (ou a peça) ainda está dentro do prazo de garantia — e se o problema relatado é realmente coberto.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) Técnico(a)</span><span class="badge tool">PTS</span><span class="badge tool">Agenda</span></div>
 
           <div class="card">
-            <h3>Consultando a data de início da garantia</h3>
-            <p>A data de início da garantia contratual é a data de entrega do veículo novo ao primeiro proprietário. Essa consulta é feita no Sistema PTS, por chassi (VIN).</p>
-            <p><b>Atenção:</b> se houver divergência entre a data mostrada no PTS e a data do Sistema Agenda, vale a data do Agenda.</p>
+            <h3 data-cid="step2-data-h3">Consultando a data de início da garantia</h3>
+            <p data-cid="step2-data-p1">A data de início da garantia contratual é a data de entrega do veículo novo ao primeiro proprietário. Essa consulta é feita no Sistema PTS, por chassi (VIN).</p>
+            <p data-cid="step2-data-p2"><b>Atenção:</b> se houver divergência entre a data mostrada no PTS e a data do Sistema Agenda, vale a data do Agenda.</p>
           </div>
 
           <div class="card">
-            <h3>Não esqueça de checar recall, campanha e programas de satisfação</h3>
-            <p>Além do prazo de garantia, verifique se o chassi está na listagem de recall, campanha ou programa de satisfação (consulta no PTS). Se estiver na listagem, o atendimento segue direto como garantia — sem precisar reavaliar cobertura.</p>
+            <h3 data-cid="step2-recall-h3">Não esqueça de checar recall, campanha e programas de satisfação</h3>
+            <p data-cid="step2-recall-p1">Além do prazo de garantia, verifique se o chassi está na listagem de recall, campanha ou programa de satisfação (consulta no PTS). Se estiver na listagem, o atendimento segue direto como garantia — sem precisar reavaliar cobertura.</p>
           </div>
 
           <div class="card">
-            <h3>O que a garantia contratual não cobre</h3>
+            <h3 data-cid="step2-naocobre-h3">O que a garantia contratual não cobre</h3>
             <ul>
-              <li>Mau uso do veículo</li>
-              <li>Danos por colisão ou acidente</li>
-              <li>Desgaste natural (peças de desgaste)</li>
-              <li>Problemas decorrentes de modificação feita pelo cliente (ex: blindagem, conversão pra gás) — perde a garantia só dos itens afetados pela modificação</li>
+              <li data-cid="step2-naocobre-li1">Mau uso do veículo</li>
+              <li data-cid="step2-naocobre-li2">Danos por colisão ou acidente</li>
+              <li data-cid="step2-naocobre-li3">Desgaste natural (peças de desgaste)</li>
+              <li data-cid="step2-naocobre-li4">Problemas decorrentes de modificação feita pelo cliente (ex: blindagem, conversão pra gás) — perde a garantia só dos itens afetados pela modificação</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Veículo perto do fim da garantia</h3>
-            <p>Se o defeito aparecer perto do vencimento e a peça não estiver disponível, mantenha a OS aberta e solicite a peça à Ford em até 5 dias corridos — isso garante que o reparo seja tratado como garantia mesmo que a instalação aconteça depois do vencimento.</p>
+            <h3 data-cid="step2-fim-h3">Veículo perto do fim da garantia</h3>
+            <p data-cid="step2-fim-p1">Se o defeito aparecer perto do vencimento e a peça não estiver disponível, mantenha a OS aberta e solicite a peça à Ford em até 5 dias corridos — isso garante que o reparo seja tratado como garantia mesmo que a instalação aconteça depois do vencimento.</p>
           </div>
 
           <div class="media-block">
@@ -450,62 +501,62 @@
         <!-- PAGE 3 -->
         <section class="page" id="page-3">
           <div class="section-head"><div class="section-tag">03</div><h1 class="page-title">Abertura da Ordem de Serviço</h1></div>
-          <p class="page-sub">Depois de confirmada a elegibilidade da garantia, esta é a etapa em que a Concessionária formaliza o atendimento e dá início ao controle interno do reparo.</p>
+          <p class="page-sub" data-cid="step3-sub">Depois de confirmada a elegibilidade da garantia, esta é a etapa em que a Concessionária formaliza o atendimento e dá início ao controle interno do reparo.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) Técnico(a) / Consultor(a) de Garantia</span><span class="badge tool">Dealer</span><span class="badge tool">PTS</span><span class="badge warn">Exige atenção ao prazo</span></div>
 
           <div class="card">
-            <h3>O que acontece nesta etapa</h3>
-            <p>A OS é o documento que formaliza o atendimento e serve de base pra toda a solicitação de garantia depois. Nenhum reparo pode ser executado sem uma OS aberta.</p>
+            <h3 data-cid="step3-oque-h3">O que acontece nesta etapa</h3>
+            <p data-cid="step3-oque-p1">A OS é o documento que formaliza o atendimento e serve de base pra toda a solicitação de garantia depois. Nenhum reparo pode ser executado sem uma OS aberta.</p>
             <ul>
-              <li>Consultar o histórico do veículo antes de abrir a OS</li>
-              <li>Registrar a queixa exatamente como relatada pelo cliente</li>
-              <li>Confirmar o tempo de reparo na tabela de tempos do PTS</li>
-              <li>Emitir a OS de garantia separadamente quando houver outros reparos não cobertos</li>
+              <li data-cid="step3-oque-li1">Consultar o histórico do veículo antes de abrir a OS</li>
+              <li data-cid="step3-oque-li2">Registrar a queixa exatamente como relatada pelo cliente</li>
+              <li data-cid="step3-oque-li3">Confirmar o tempo de reparo na tabela de tempos do PTS</li>
+              <li data-cid="step3-oque-li4">Emitir a OS de garantia separadamente quando houver outros reparos não cobertos</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Como coletar a queixa do cliente com clareza</h3>
-            <p>Pra evidenciar a causa (e não só o sintoma), vale estruturar a conversa com o cliente em 4 perguntas antes de escrever a descrição do problema na OS:</p>
+            <h3 data-cid="step3-queixa-h3">Como coletar a queixa do cliente com clareza</h3>
+            <p data-cid="step3-queixa-p1">Pra evidenciar a causa (e não só o sintoma), vale estruturar a conversa com o cliente em 4 perguntas antes de escrever a descrição do problema na OS:</p>
             <ul>
-              <li><b>Qual</b> é o problema? (é algo que dá pra ver, sentir, cheirar ou ouvir?)</li>
-              <li><b>Quando</b> o problema ocorre? (ao acelerar, desacelerar, motor frio ou quente?)</li>
-              <li><b>Onde</b> o problema ocorre? (em determinada velocidade, carga ou circunstância?)</li>
-              <li>Qual é a <b>história</b> do problema? (quando começou, quem percebeu, já foi reparado antes?)</li>
+              <li data-cid="step3-queixa-li1"><b>Qual</b> é o problema? (é algo que dá pra ver, sentir, cheirar ou ouvir?)</li>
+              <li data-cid="step3-queixa-li2"><b>Quando</b> o problema ocorre? (ao acelerar, desacelerar, motor frio ou quente?)</li>
+              <li data-cid="step3-queixa-li3"><b>Onde</b> o problema ocorre? (em determinada velocidade, carga ou circunstância?)</li>
+              <li data-cid="step3-queixa-li4">Qual é a <b>história</b> do problema? (quando começou, quem percebeu, já foi reparado antes?)</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>TMO / TPR — tempo de mão de obra</h3>
-            <p><b>TMO</b> (Tempo para Mão de Obra) e <b>TPR</b> (Tempo Padrão de Reparo) são o mesmo tipo de informação — só muda o nome de um sistema pro outro. É o tempo padrão que a Ford define pra cada reparo.</p>
-            <p>Esse dado é buscado <b>somente no PTS</b>, e só entra em jogo aqui, na abertura da OS — não faz parte do cadastro do veículo lá na Recepção.</p>
+            <h3 data-cid="step3-tmo-h3">TMO / TPR — tempo de mão de obra</h3>
+            <p data-cid="step3-tmo-p1"><b>TMO</b> (Tempo para Mão de Obra) e <b>TPR</b> (Tempo Padrão de Reparo) são o mesmo tipo de informação — só muda o nome de um sistema pro outro. É o tempo padrão que a Ford define pra cada reparo.</p>
+            <p data-cid="step3-tmo-p2">Esse dado é buscado <b>somente no PTS</b>, e só entra em jogo aqui, na abertura da OS — não faz parte do cadastro do veículo lá na Recepção.</p>
           </div>
 
           <div class="card">
-            <h3>Antes de abrir: checar se já existe boletim (TSB/GSB/SSM)</h3>
-            <p>Antes de abrir a OS, vale a pena pesquisar no PTS (aba TSB/GSB/SSM) se já existe um boletim de serviço pro problema relatado. Se não tiver boletim, segue pra busca de tempo padrão (TPR) normalmente.</p>
-            <p>Pra recall ou campanha, a OS é aberta direto como <b>GSR/GSC</b>, usando o TPR e o CCC do PTS — e vale conferir a hora da própria loja antes de lançar o serviço.</p>
+            <h3 data-cid="step3-boletim-h3">Antes de abrir: checar se já existe boletim (TSB/GSB/SSM)</h3>
+            <p data-cid="step3-boletim-p1">Antes de abrir a OS, vale a pena pesquisar no PTS (aba TSB/GSB/SSM) se já existe um boletim de serviço pro problema relatado. Se não tiver boletim, segue pra busca de tempo padrão (TPR) normalmente.</p>
+            <p data-cid="step3-boletim-p2">Pra recall ou campanha, a OS é aberta direto como <b>GSR/GSC</b>, usando o TPR e o CCC do PTS — e vale conferir a hora da própria loja antes de lançar o serviço.</p>
           </div>
 
           <div class="card">
-            <h3>Recap rápido antes de prosseguir</h3>
-            <p>Antes de abrir a OS como garantia, o Consultor/Analista de Garantia reavalia rapidamente:</p>
+            <h3 data-cid="step3-recap-h3">Recap rápido antes de prosseguir</h3>
+            <p data-cid="step3-recap-p1">Antes de abrir a OS como garantia, o Consultor/Analista de Garantia reavalia rapidamente:</p>
             <ul>
-              <li>Histórico do veículo</li>
-              <li>Data inicial da garantia</li>
-              <li>Evidências iniciais gravadas pelos técnicos — se serão aceitas pela montadora</li>
-              <li>Laudo técnico — se está compreensível pra quem não entende de mecânica</li>
+              <li data-cid="step3-recap-li1">Histórico do veículo</li>
+              <li data-cid="step3-recap-li2">Data inicial da garantia</li>
+              <li data-cid="step3-recap-li3">Evidências iniciais gravadas pelos técnicos — se serão aceitas pela montadora</li>
+              <li data-cid="step3-recap-li4">Laudo técnico — se está compreensível pra quem não entende de mecânica</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Dados obrigatórios na OS de garantia</h3>
+            <h3 data-cid="step3-dados-h3">Dados obrigatórios na OS de garantia</h3>
             <ul>
-              <li>Número e data de abertura da OS</li>
-              <li>Dados do veículo (chassi, data de início de garantia, quilometragem)</li>
-              <li>Descrição detalhada da reclamação do cliente</li>
-              <li>Diagnóstico do técnico — evidenciando a causa, não o sintoma</li>
-              <li>ID Stars do técnico e data</li>
+              <li data-cid="step3-dados-li1">Número e data de abertura da OS</li>
+              <li data-cid="step3-dados-li2">Dados do veículo (chassi, data de início de garantia, quilometragem)</li>
+              <li data-cid="step3-dados-li3">Descrição detalhada da reclamação do cliente</li>
+              <li data-cid="step3-dados-li4">Diagnóstico do técnico — evidenciando a causa, não o sintoma</li>
+              <li data-cid="step3-dados-li5">ID Stars do técnico e data</li>
             </ul>
           </div>
 
@@ -518,59 +569,59 @@
             <div class="media-body"><div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div><span class="hint">Abertura de OS no Dealer, passo a passo</span></div>
           </div>
 
-          <div class="card"><h3>Atenção</h3><p>Erros de preenchimento nesta etapa costumam gerar estorno lá na frente, na Auditoria Ford.</p></div>
+          <div class="card"><h3 data-cid="step3-atencao-h3">Atenção</h3><p data-cid="step3-atencao-p1">Erros de preenchimento nesta etapa costumam gerar estorno lá na frente, na Auditoria Ford.</p></div>
         </section>
 
         <!-- PAGE 4 -->
         <section class="page" id="page-4">
           <div class="section-head"><div class="section-tag">04</div><h1 class="page-title">Diagnóstico e Reparo</h1></div>
-          <p class="page-sub">Aqui o técnico faz o diagnóstico, o orçamento, o laudo e executa o reparo, seguindo os padrões Ford — com as evidências certas em cada parte do processo.</p>
+          <p class="page-sub" data-cid="step4-sub">Aqui o técnico faz o diagnóstico, o orçamento, o laudo e executa o reparo, seguindo os padrões Ford — com as evidências certas em cada parte do processo.</p>
           <div class="badge-row"><span class="badge role">Responsável: Produtivo (Mecânico)</span><span class="badge tool">Hotline</span><span class="badge tool">GTAC</span><span class="badge tool">PTS</span><span class="badge tool">Catálogo</span><span class="badge holmes">Fluxo interno via Holmes</span></div>
 
           <div class="card">
-            <h3>Diagnóstico</h3>
-            <p>O diagnóstico precisa confirmar se a causa está relacionada a defeito de fabricação/material coberto pela garantia — desgaste natural, falta de manutenção, mau uso ou dano acidental não entram. Deve ser feito por técnico treinado e certificado Ford, usando ferramentas homologadas. Vale consultar o PTS pra conferir boletins (TSB/GSB/SSM) relacionados ao problema antes de seguir.</p>
+            <h3 data-cid="step4-diag-h3">Diagnóstico</h3>
+            <p data-cid="step4-diag-p1">O diagnóstico precisa confirmar se a causa está relacionada a defeito de fabricação/material coberto pela garantia — desgaste natural, falta de manutenção, mau uso ou dano acidental não entram. Deve ser feito por técnico treinado e certificado Ford, usando ferramentas homologadas. Vale consultar o PTS pra conferir boletins (TSB/GSB/SSM) relacionados ao problema antes de seguir.</p>
           </div>
 
           <div class="card">
-            <h3>Responsabilidade do técnico</h3>
+            <h3 data-cid="step4-resp-h3">Responsabilidade do técnico</h3>
             <ul>
-              <li>Fazer o <b>orçamento</b> com todas as peças que serão necessárias pra substituição</li>
-              <li>Fazer um <b>laudo técnico</b> detalhado, com os testes realizados e o resultado de cada um</li>
-              <li>Produzir todas as evidências do processo</li>
+              <li data-cid="step4-resp-li1">Fazer o <b>orçamento</b> com todas as peças que serão necessárias pra substituição</li>
+              <li data-cid="step4-resp-li2">Fazer um <b>laudo técnico</b> detalhado, com os testes realizados e o resultado de cada um</li>
+              <li data-cid="step4-resp-li3">Produzir todas as evidências do processo</li>
             </ul>
-            <p><b>Evidências obrigatórias:</b></p>
+            <p data-cid="step4-resp-p1"><b>Evidências obrigatórias:</b></p>
             <ul>
-              <li>Evidência registrando a reclamação do cliente com clareza</li>
-              <li>Evidência de todos os testes realizados</li>
-              <li>Evidência do reparo</li>
-              <li>Evidência do defeito sanado</li>
+              <li data-cid="step4-resp-li4">Evidência registrando a reclamação do cliente com clareza</li>
+              <li data-cid="step4-resp-li5">Evidência de todos os testes realizados</li>
+              <li data-cid="step4-resp-li6">Evidência do reparo</li>
+              <li data-cid="step4-resp-li7">Evidência do defeito sanado</li>
             </ul>
-            <p>Em todas elas, sempre mostrando <b>chassi, placa e odômetro</b> do veículo.</p>
+            <p data-cid="step4-resp-p2">Em todas elas, sempre mostrando <b>chassi, placa e odômetro</b> do veículo.</p>
           </div>
 
           <div class="card">
-            <h3>Se a peça não estiver em estoque</h3>
-            <p>Antes de iniciar o reparo, o mecânico registra as evidências, o laudo e a OS no <b>Holmes</b>, pra análise do chefe de oficina. Com o processo aprovado, a OS é transformada em garantia — e assim que a peça chegar no estoque, o serviço começa.</p>
+            <h3 data-cid="step4-estoque-h3">Se a peça não estiver em estoque</h3>
+            <p data-cid="step4-estoque-p1">Antes de iniciar o reparo, o mecânico registra as evidências, o laudo e a OS no <b>Holmes</b>, pra análise do chefe de oficina. Com o processo aprovado, a OS é transformada em garantia — e assim que a peça chegar no estoque, o serviço começa.</p>
           </div>
 
           <div class="card">
-            <h3>Checklist de apontamento</h3>
+            <h3 data-cid="step4-check-h3">Checklist de apontamento</h3>
             <ol style="margin:0 0 12px; padding-left:20px; font-size:14.5px; line-height:1.7; color:var(--ink);">
-              <li>Faz o apontamento da OS</li>
-              <li>Requisita a peça no TPR que está apontado</li>
-              <li>Ao finalizar o serviço: finaliza o apontamento, registra a evidência final mostrando o serviço feito, e a quilometragem do painel</li>
+              <li data-cid="step4-check-li1">Faz o apontamento da OS</li>
+              <li data-cid="step4-check-li2">Requisita a peça no TPR que está apontado</li>
+              <li data-cid="step4-check-li3">Ao finalizar o serviço: finaliza o apontamento, registra a evidência final mostrando o serviço feito, e a quilometragem do painel</li>
             </ol>
-            <p><b>Lembrete:</b> se tiver mais de um TPR, aponta um tempo de cada vez, requisitando cada peça no seu respectivo tempo.</p>
+            <p data-cid="step4-check-p1"><b>Lembrete:</b> se tiver mais de um TPR, aponta um tempo de cada vez, requisitando cada peça no seu respectivo tempo.</p>
           </div>
 
           <div class="card">
-            <h3>Execução do reparo</h3>
+            <h3 data-cid="step4-exec-h3">Execução do reparo</h3>
             <ul>
-              <li>Reparo gratuito pro cliente, mesmo em veículos vendidos por outra Concessionária</li>
-              <li>Só peças originais Ford; Motorcraft apenas quando não há peça Ford liberada</li>
-              <li>Seguir a literatura de serviço e usar ferramentas homologadas</li>
-              <li>Se a peça não estiver disponível na Concessionária nem na Ford, pode comprar de outra Concessionária primeiro, e só depois de um revendedor autorizado</li>
+              <li data-cid="step4-exec-li1">Reparo gratuito pro cliente, mesmo em veículos vendidos por outra Concessionária</li>
+              <li data-cid="step4-exec-li2">Só peças originais Ford; Motorcraft apenas quando não há peça Ford liberada</li>
+              <li data-cid="step4-exec-li3">Seguir a literatura de serviço e usar ferramentas homologadas</li>
+              <li data-cid="step4-exec-li4">Se a peça não estiver disponível na Concessionária nem na Ford, pode comprar de outra Concessionária primeiro, e só depois de um revendedor autorizado</li>
             </ul>
           </div>
 
@@ -583,18 +634,18 @@
         <!-- PAGE 5 -->
         <section class="page" id="page-5">
           <div class="section-head"><div class="section-tag">05</div><h1 class="page-title">Submissão da Solicitação</h1></div>
-          <p class="page-sub">Com a OS fechada, a solicitação de reembolso é enviada à Ford pelo OWS. É aqui que a qualidade das informações técnicas realmente conta.</p>
+          <p class="page-sub" data-cid="step5-sub">Com a OS fechada, a solicitação de reembolso é enviada à Ford pelo OWS. É aqui que a qualidade das informações técnicas realmente conta.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) Técnico(a) → Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge holmes">Processo organizado no Holmes</span></div>
 
           <div class="card">
-            <h3>Resumo da etapa</h3>
-            <p>Antes de submeter, o Consultor Técnico colhe a assinatura do cliente na OS (1ª via) e na via já transformada em garantia. Esse processo é organizado direto no <b>Holmes</b>, que centraliza tudo até chegar no(a) Consultor(a) de Garantia — responsável por analisar, faturar e fazer a elaboração no OWS.</p>
-            <p>Cada tipo de garantia (normal, recall, campanha, revisão, leva e trás...) tem suas próprias regras de submissão e documentação exigida.</p>
+            <h3 data-cid="step5-resumo-h3">Resumo da etapa</h3>
+            <p data-cid="step5-resumo-p1">Antes de submeter, o Consultor Técnico colhe a assinatura do cliente na OS (1ª via) e na via já transformada em garantia. Esse processo é organizado direto no <b>Holmes</b>, que centraliza tudo até chegar no(a) Consultor(a) de Garantia — responsável por analisar, faturar e fazer a elaboração no OWS.</p>
+            <p data-cid="step5-resumo-p2">Cada tipo de garantia (normal, recall, campanha, revisão, leva e trás...) tem suas próprias regras de submissão e documentação exigida.</p>
           </div>
 
           <div class="card cta-card">
-            <h3>Passo a passo por tipo de garantia</h3>
-            <p>O detalhamento completo de como submeter cada tipo de garantia vai morar numa seção própria de referência rápida, com passo a passo específico pra cada caso.</p>
+            <h3 data-cid="step5-cta-h3">Passo a passo por tipo de garantia</h3>
+            <p data-cid="step5-cta-p1">O detalhamento completo de como submeter cada tipo de garantia vai morar numa seção própria de referência rápida, com passo a passo específico pra cada caso.</p>
             <button class="cta-btn" disabled>Ver Submissões de Tipos de Garantia <span class="soon-tag">em breve</span></button>
           </div>
         </section>
@@ -602,17 +653,17 @@
         <!-- PAGE 6 -->
         <section class="page" id="page-6">
           <div class="section-head"><div class="section-tag">06</div><h1 class="page-title">Devolução de Peças — CRPG</h1></div>
-          <p class="page-sub">Peças substituídas em garantia muitas vezes precisam voltar pro Centro de Retorno de Peças em Garantia (CRPG) pra análise técnica.</p>
+          <p class="page-sub" data-cid="step6-sub">Peças substituídas em garantia muitas vezes precisam voltar pro Centro de Retorno de Peças em Garantia (CRPG) pra análise técnica.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge tool">Dealer</span><span class="badge warn">Prazo de 45 dias</span></div>
 
           <div class="card">
-            <h3>Resumo da etapa</h3>
-            <p>Quando a Ford solicita a peça de volta, ela precisa ser preparada, identificada e devolvida ao CRPG dentro do prazo (45 dias corridos a partir do status "Pago"), acompanhada da nota fiscal de remessa emitida no Dealer Net.</p>
+            <h3 data-cid="step6-resumo-h3">Resumo da etapa</h3>
+            <p data-cid="step6-resumo-p1">Quando a Ford solicita a peça de volta, ela precisa ser preparada, identificada e devolvida ao CRPG dentro do prazo (45 dias corridos a partir do status "Pago"), acompanhada da nota fiscal de remessa emitida no Dealer Net.</p>
           </div>
 
           <div class="card cta-card">
-            <h3>Guia completo de devolução ao CRPG</h3>
-            <p>O passo a passo completo — consulta de status, emissão da nota fiscal de remessa e o processo de devolução em si — vai morar numa seção própria de referência rápida.</p>
+            <h3 data-cid="step6-cta-h3">Guia completo de devolução ao CRPG</h3>
+            <p data-cid="step6-cta-p1">O passo a passo completo — consulta de status, emissão da nota fiscal de remessa e o processo de devolução em si — vai morar numa seção própria de referência rápida.</p>
             <button class="cta-btn" disabled>Ver guia de Devolução de Peça ao CRPG <span class="soon-tag">em breve</span></button>
           </div>
         </section>
@@ -620,17 +671,17 @@
         <!-- PAGE 7 -->
         <section class="page" id="page-7">
           <div class="section-head"><div class="section-tag">07</div><h1 class="page-title">Descarte de Peça</h1></div>
-          <p class="page-sub">Peças não requisitadas pelo CRPG ou já estornadas precisam ser descartadas de forma correta, seguindo os padrões Ford.</p>
+          <p class="page-sub" data-cid="step7-sub">Peças não requisitadas pelo CRPG ou já estornadas precisam ser descartadas de forma correta, seguindo os padrões Ford.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">CRPG</span></div>
 
           <div class="card">
-            <h3>Resumo da etapa</h3>
-            <p>Peças não requisitadas ou estornadas devem ser danificadas nas áreas funcionais da Concessionária antes de serem destruídas e sucateadas — elas não podem ser reaproveitadas em outros reparos. Em ocasiões especiais, a Ford pode pedir evidência do sucateamento (antes e depois), avisando com antecedência.</p>
+            <h3 data-cid="step7-resumo-h3">Resumo da etapa</h3>
+            <p data-cid="step7-resumo-p1">Peças não requisitadas ou estornadas devem ser danificadas nas áreas funcionais da Concessionária antes de serem destruídas e sucateadas — elas não podem ser reaproveitadas em outros reparos. Em ocasiões especiais, a Ford pode pedir evidência do sucateamento (antes e depois), avisando com antecedência.</p>
           </div>
 
           <div class="card cta-card">
-            <h3>Guia completo de descarte</h3>
-            <p>O passo a passo completo de como e quando descartar cada tipo de peça vai morar numa seção própria de referência rápida.</p>
+            <h3 data-cid="step7-cta-h3">Guia completo de descarte</h3>
+            <p data-cid="step7-cta-p1">O passo a passo completo de como e quando descartar cada tipo de peça vai morar numa seção própria de referência rápida.</p>
             <button class="cta-btn" disabled>Ver guia de Descarte de Peça <span class="soon-tag">em breve</span></button>
           </div>
         </section>
@@ -638,90 +689,84 @@
         <!-- PAGE AUDITORIA (referência, fora do Caminho) -->
         <section class="page" id="page-audit">
           <div class="section-head"><div class="section-tag">i</div><h1 class="page-title">Auditoria Ford</h1></div>
-          <p class="page-sub">A Ford audita periodicamente os processos de garantia pra checar aderência às regras. Documentação completa em cada etapa do Caminho é o que te protege aqui.</p>
+          <p class="page-sub" data-cid="audit-sub">A Ford audita periodicamente os processos de garantia pra checar aderência às regras. Documentação completa em cada etapa do Caminho é o que te protege aqui.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge tool">FMCDealer</span><span class="badge warn">Prazo de 3 dias úteis</span></div>
 
           <div class="card">
-            <h3>Como funciona</h3>
+            <h3 data-cid="audit-como-h3">Como funciona</h3>
             <ul>
-              <li>Pode ser a qualquer momento — por indicadores, informações do CRPG ou escolha aleatória</li>
-              <li>Período auditado: até 12 meses (24 meses se houver suspeita de irregularidade grave)</li>
-              <li>Concessionária é avisada antes e recebe a lista de solicitações a apresentar</li>
-              <li>Prazo pra enviar documentação: 3 dias úteis da notificação — não cumprir gera débito automático</li>
+              <li data-cid="audit-como-li1">Pode ser a qualquer momento — por indicadores, informações do CRPG ou escolha aleatória</li>
+              <li data-cid="audit-como-li2">Período auditado: até 12 meses (24 meses se houver suspeita de irregularidade grave)</li>
+              <li data-cid="audit-como-li3">Concessionária é avisada antes e recebe a lista de solicitações a apresentar</li>
+              <li data-cid="audit-como-li4">Prazo pra enviar documentação: 3 dias úteis da notificação — não cumprir gera débito automático</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Classificação das irregularidades</h3>
+            <h3 data-cid="audit-classif-h3">Classificação das irregularidades</h3>
             <table>
-              <tr><th>Categoria</th><th>Descrição</th></tr>
-              <tr><td>Leve / Média / Grave</td><td>Falhas processuais, conforme checklist da auditoria</td></tr>
-              <tr><td>NOCIG</td><td>Prática intencional que gera pagamento indevido</td></tr>
+              <tr><th data-cid="audit-classif-th1">Categoria</th><th data-cid="audit-classif-th2">Descrição</th></tr>
+              <tr><td data-cid="audit-classif-td1">Leve / Média / Grave</td><td data-cid="audit-classif-td2">Falhas processuais, conforme checklist da auditoria</td></tr>
+              <tr><td data-cid="audit-classif-td3">NOCIG</td><td data-cid="audit-classif-td4">Prática intencional que gera pagamento indevido</td></tr>
             </table>
           </div>
 
           <div class="card">
-            <h3>Se você discordar do resultado</h3>
-            <p>Prazo de 30 dias corridos pra enviar carta de contestação. A Ford responde em até 15 dias úteis — se não responder, os argumentos da concessionária são aceitos integralmente. O débito mensal não pode passar de 25% do faturamento médio em garantia dos últimos 6 meses (exceto em casos de NOCIG ou irregularidade grave).</p>
+            <h3 data-cid="audit-discordar-h3">Se você discordar do resultado</h3>
+            <p data-cid="audit-discordar-p1">Prazo de 30 dias corridos pra enviar carta de contestação. A Ford responde em até 15 dias úteis — se não responder, os argumentos da concessionária são aceitos integralmente. O débito mensal não pode passar de 25% do faturamento médio em garantia dos últimos 6 meses (exceto em casos de NOCIG ou irregularidade grave).</p>
           </div>
         </section>
 
         <!-- PAGE OWS -->
         <section class="page" id="page-ows">
           <div class="section-head"><div class="section-tag">OWS</div><h1 class="page-title">OWS — Sistema Global de Garantia</h1></div>
-          <p class="page-sub">É onde toda solicitação de garantia é enviada, analisada e paga pela Ford. Praticamente todo o processo, da abertura até a devolução de peça, passa por aqui em algum momento.</p>
+          <p class="page-sub" data-cid="ows-sub">É onde toda solicitação de garantia é enviada, analisada e paga pela Ford. Praticamente todo o processo, da abertura até a devolução de peça, passa por aqui em algum momento.</p>
           <div class="badge-row"><span class="badge role">Usado por: Consultor(a) de Garantia</span><span class="badge holmes">Login SSO Ford (2 etapas)</span></div>
 
           <div class="card">
-            <h3>Como acessar</h3>
-            <p>Link oficial: <b>warrantyprocessing.dealerconnection.com</b>. Funciona melhor no <b>Google Chrome</b> (o Firefox e o Safari não têm suporte completo).</p>
-            <p><b>Login (SSO Ford/Microsoft):</b></p>
+            <h3 data-cid="ows-acessar-h3">Como acessar</h3>
+            <p data-cid="ows-acessar-p1">Link oficial: <b>warrantyprocessing.dealerconnection.com</b>. Funciona melhor no <b>Google Chrome</b> (o Firefox e o Safari não têm suporte completo).</p>
+            <p data-cid="ows-acessar-p2"><b>Login (SSO Ford/Microsoft):</b></p>
             <ol style="margin:0 0 12px; padding-left:20px; font-size:14.5px; line-height:1.7; color:var(--ink);">
-              <li>Acesse o link e clique em "Entrar"</li>
-              <li>Informe seu usuário no formato <code>usuario@b2bford.com</code></li>
-              <li>Informe sua senha e clique em "Acesso"</li>
-              <li>Aprove a solicitação de entrada no app <b>Microsoft Authenticator</b> (autenticação em duas etapas)</li>
+              <li data-cid="ows-acessar-li1">Acesse o link e clique em "Entrar"</li>
+              <li data-cid="ows-acessar-li2">Informe seu usuário no formato <code>usuario@b2bford.com</code></li>
+              <li data-cid="ows-acessar-li3">Informe sua senha e clique em "Acesso"</li>
+              <li data-cid="ows-acessar-li4">Aprove a solicitação de entrada no app <b>Microsoft Authenticator</b> (autenticação em duas etapas)</li>
             </ol>
-            <p>Depois de logado, cai direto na página inicial do OWS, que mostra os ícones de tarefa (Abrir Solicitação, Solicitar Aprovação Prévia, relatórios etc.) e as mensagens do sistema.</p>
+            <p data-cid="ows-acessar-p3">Depois de logado, cai direto na página inicial do OWS, que mostra os ícones de tarefa (Abrir Solicitação, Solicitar Aprovação Prévia, relatórios etc.) e as mensagens do sistema.</p>
           </div>
 
           <div class="card">
-            <h3>O que você encontra na página inicial do OWS</h3>
-            <p>Ao entrar, a tela mostra os ícones de tarefa direto na sua cara — é por ali que se faz tudo:</p>
+            <h3 data-cid="ows-home-h3">O que você encontra na página inicial do OWS</h3>
+            <p data-cid="ows-home-p1">Ao entrar, a tela mostra os ícones de tarefa direto na sua cara — é por ali que se faz tudo:</p>
             <table>
-              <tr><th>Ícone / Ação</th><th>Pra que serve</th></tr>
-              <tr><td>Abrir uma Solicitação</td><td>Inserir, editar ou cancelar uma Solicitação de garantia</td></tr>
-              <tr><td>Solicitar Aprovação Prévia</td><td>Pedir autorização antes de um reparo que exige aprovação</td></tr>
-              <tr><td>Visualizar relatório de status da aprovação prévia</td><td>Acompanhar o andamento dos pedidos de aprovação prévia já enviados</td></tr>
-              <tr><td>Visualizar relatório de Status da Solicitação</td><td>Acompanhar o status de cada Solicitação (pago, recusado, ação necessária...) — inclui contestação</td></tr>
-              <tr><td>Visualizar relatório de Status de peças</td><td>Acompanhar o status de devolução das peças ao CRPG e imprimir a etiqueta de devolução</td></tr>
-              <tr><td>Visualizar Relatório de Lançamentos Diários/Mensais</td><td>Relatórios contábeis de avisos relacionados à conta da Concessionária</td></tr>
-              <tr><td>Buscar Solicitação Padrão</td><td>Pesquisar pelos códigos de SG Padrão (soluções pré-definidas já configuradas)</td></tr>
+              <tr><th data-cid="ows-home-th1">Ícone / Ação</th><th data-cid="ows-home-th2">Pra que serve</th></tr>
+              <tr><td data-cid="ows-home-td1">Abrir uma Solicitação</td><td data-cid="ows-home-td2">Inserir, editar ou cancelar uma Solicitação de garantia</td></tr>
+              <tr><td data-cid="ows-home-td3">Solicitar Aprovação Prévia</td><td data-cid="ows-home-td4">Pedir autorização antes de um reparo que exige aprovação</td></tr>
+              <tr><td data-cid="ows-home-td5">Visualizar relatório de status da aprovação prévia</td><td data-cid="ows-home-td6">Acompanhar o andamento dos pedidos de aprovação prévia já enviados</td></tr>
+              <tr><td data-cid="ows-home-td7">Visualizar relatório de Status da Solicitação</td><td data-cid="ows-home-td8">Acompanhar o status de cada Solicitação (pago, recusado, ação necessária...) — inclui contestação</td></tr>
+              <tr><td data-cid="ows-home-td9">Visualizar relatório de Status de peças</td><td data-cid="ows-home-td10">Acompanhar o status de devolução das peças ao CRPG e imprimir a etiqueta de devolução</td></tr>
+              <tr><td data-cid="ows-home-td11">Visualizar Relatório de Lançamentos Diários/Mensais</td><td data-cid="ows-home-td12">Relatórios contábeis de avisos relacionados à conta da Concessionária</td></tr>
+              <tr><td data-cid="ows-home-td13">Buscar Solicitação Padrão</td><td data-cid="ows-home-td14">Pesquisar pelos códigos de SG Padrão (soluções pré-definidas já configuradas)</td></tr>
             </table>
           </div>
 
           <div class="card">
 
-            <h3>Abrindo uma Solicitação</h3>
-            <p>Pela página inicial, no botão "Abrir uma Solicitação". Os campos obrigatórios de partida são o <b>número da OS</b> e a <b>data de abertura da OS</b> — o resto muda de acordo com o tipo de Solicitação (normalmente pede VIN, ID Stars do consultor e quilometragem).</p>
-            <p>Depois de criada, dá pra editar quase tudo — exceto o número da OS e a data de abertura, que ficam travados.</p>
+            <h3 data-cid="ows-abrir-h3">Abrindo uma Solicitação</h3>
+            <p data-cid="ows-abrir-p1">Pela página inicial, no botão "Abrir uma Solicitação". Os campos obrigatórios de partida são o <b>número da OS</b> e a <b>data de abertura da OS</b> — o resto muda de acordo com o tipo de Solicitação (normalmente pede VIN, ID Stars do consultor e quilometragem).</p>
+            <p data-cid="ows-abrir-p2">Depois de criada, dá pra editar quase tudo — exceto o número da OS e a data de abertura, que ficam travados.</p>
           </div>
 
           <div class="card">
-            <h3>Relatórios disponíveis</h3>
+            <h3 data-cid="ows-rel-h3">Relatórios disponíveis</h3>
             <ul>
-              <li>Status da Aprovação Prévia</li>
-              <li>Status da Solicitação</li>
-              <li>Status de peças do CRPG</li>
-              <li>Lançamentos diários/mensais</li>
+              <li data-cid="ows-rel-li1">Status da Aprovação Prévia</li>
+              <li data-cid="ows-rel-li2">Status da Solicitação</li>
+              <li data-cid="ows-rel-li3">Status de peças do CRPG</li>
+              <li data-cid="ows-rel-li4">Lançamentos diários/mensais</li>
             </ul>
-            <p>O acesso a cada relatório depende da função atribuída ao usuário.</p>
-          </div>
-
-          <div class="edit-banner">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Modo de edição ativo: clique numa miniatura pra trocar o arquivo, ou no texto da legenda pra editar.
-            <button onclick="exportHTML()">Baixar HTML atualizado</button>
+            <p data-cid="ows-rel-p1">O acesso a cada relatório depende da função atribuída ao usuário.</p>
           </div>
 
           <div class="gallery-section">
@@ -730,11 +775,11 @@
               Prints de tela
             </div>
             <div class="gallery-grid">
-              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Tela de login (SSO Ford)</span></div></div>
-              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Página inicial (ícones de tarefa)</span></div></div>
-              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Abertura de Solicitação</span></div></div>
-              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Relatório de Status da Solicitação</span></div></div>
-              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Relatório de Status de peças</span></div></div>
+              <div class="gallery-item" data-mid="ows-print-login"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="ows-print-login-cap">Tela de login (SSO Ford)</span></div></div>
+              <div class="gallery-item" data-mid="ows-print-home"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="ows-print-home-cap">Página inicial (ícones de tarefa)</span></div></div>
+              <div class="gallery-item" data-mid="ows-print-abertura"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="ows-print-abertura-cap">Abertura de Solicitação</span></div></div>
+              <div class="gallery-item" data-mid="ows-print-status-sol"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="ows-print-status-sol-cap">Relatório de Status da Solicitação</span></div></div>
+              <div class="gallery-item" data-mid="ows-print-status-peca"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="ows-print-status-peca-cap">Relatório de Status de peças</span></div></div>
               <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
             </div>
           </div>
@@ -745,8 +790,8 @@
               Vídeos
             </div>
             <div class="gallery-grid">
-              <div class="gallery-item video"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text">Como fazer login no OWS</span><span class="dur">com áudio</span></div></div>
-              <div class="gallery-item video"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text">Abrindo e acompanhando uma Solicitação</span><span class="dur">com áudio</span></div></div>
+              <div class="gallery-item video" data-mid="ows-video-login"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="ows-video-login-cap">Como fazer login no OWS</span><span class="dur">com áudio</span></div></div>
+              <div class="gallery-item video" data-mid="ows-video-solicitacao"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="ows-video-solicitacao-cap">Abrindo e acompanhando uma Solicitação</span><span class="dur">com áudio</span></div></div>
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
           </div>
@@ -755,6 +800,7 @@
       </div>
     </main>
   </div>
+  </div><!-- /#appShell -->
 
 <script>
   const menuBtn = document.getElementById('menuBtn');
@@ -890,52 +936,98 @@
     });
   }
 
-  buildOverview();
-  buildSearchIndex();
-  wireSearch(document.getElementById('searchInput'), document.getElementById('searchResults'));
-  wireSearch(document.getElementById('searchInputMobile'), document.getElementById('searchResultsMobile'));
+  // O bootstrap (buildOverview/buildSearchIndex/showPage) só roda depois do login,
+  // chamado pelo módulo de autenticação — ver window.__initAppAfterAuth abaixo.
+  window.__initAppAfterAuth = function(){
+    buildOverview();
+    buildSearchIndex(); // precisa rodar depois dos overrides de conteúdo já aplicados no DOM
+    wireSearch(document.getElementById('searchInput'), document.getElementById('searchResults'));
+    wireSearch(document.getElementById('searchInputMobile'), document.getElementById('searchResultsMobile'));
+    showPage(0);
+  };
 
-  showPage(0); // agora abre direto na tela de apresentação
-
-  /* ---------- MODO DE EDIÇÃO DE MÍDIA ---------- */
+  /* ---------- MODO DE EDIÇÃO (texto + mídia), só pra role=editor ---------- */
   let editMode = false;
   const fileInputImg = document.createElement('input');
   fileInputImg.type = 'file'; fileInputImg.accept = 'image/*'; fileInputImg.style.display = 'none';
-  const fileInputVid = document.createElement('input');
-  fileInputVid.type = 'file'; fileInputVid.accept = 'video/*'; fileInputVid.style.display = 'none';
   document.body.appendChild(fileInputImg);
-  document.body.appendChild(fileInputVid);
   let currentThumb = null;
 
   function toggleEditMode(){
+    if(!window.__isEditor) return;
     editMode = !editMode;
     document.body.classList.toggle('edit-mode', editMode);
-    document.getElementById('editToggleLabel').textContent = editMode ? 'Sair da edição' : 'Editar mídia';
-    document.querySelectorAll('.cap-text').forEach(el => el.setAttribute('contenteditable', editMode ? 'true' : 'false'));
+    document.getElementById('editToggleLabel').textContent = editMode ? 'Sair da edição' : 'Editar conteúdo';
+    document.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', editMode ? 'true' : 'false'));
+  }
+
+  function newMediaId(){
+    return 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function extractYoutubeId(input){
+    const m = input.match(/(?:youtu\.be\/|[?&]v=|embed\/)([A-Za-z0-9_-]{11})/);
+    if(m) return m[1];
+    if(/^[A-Za-z0-9_-]{11}$/.test(input)) return input;
+    return null;
+  }
+
+  function applyVideoToItem(item, ytId){
+    item.querySelector('.thumb').innerHTML =
+      '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/'+ytId+'" title="vídeo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+    item.classList.add('has-media');
   }
 
   document.addEventListener('click', (e) => {
     if(!editMode) return;
     const thumb = e.target.closest('.gallery-item .thumb');
     if(!thumb) return;
-    currentThumb = thumb;
-    const isVideo = thumb.closest('.gallery-item').classList.contains('video');
-    (isVideo ? fileInputVid : fileInputImg).click();
+    const item = thumb.closest('.gallery-item');
+    if(item.classList.contains('video')){
+      const ytInput = prompt('Cole o link (ou ID) do vídeo do YouTube — suba como "não listado" antes:');
+      if(!ytInput) return;
+      const ytId = extractYoutubeId(ytInput.trim());
+      if(!ytId){ alert('Não consegui identificar o ID do vídeo nesse link.'); return; }
+      applyVideoToItem(item, ytId);
+      if(!item.dataset.mid) item.dataset.mid = newMediaId();
+      if(window.__mediaSaveVideo) window.__mediaSaveVideo(item.dataset.mid, ytId).catch(err => alert('Não consegui salvar o vídeo: ' + err.message));
+    } else {
+      currentThumb = thumb;
+      fileInputImg.click();
+    }
   });
 
-  fileInputImg.addEventListener('change', () => handleFile(fileInputImg, false));
-  fileInputVid.addEventListener('change', () => handleFile(fileInputVid, true));
+  fileInputImg.addEventListener('change', () => handleFile(fileInputImg));
 
-  function handleFile(input, isVideo){
+  function handleFile(input){
     const file = input.files[0];
     if(!file || !currentThumb) return;
+    if(file.size > 15 * 1024 * 1024){
+      alert('Imagem muito grande (máx. 15MB). Escolha um arquivo menor.');
+      input.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (ev) => {
-      currentThumb.innerHTML = isVideo
-        ? '<video controls src="'+ev.target.result+'"></video>'
-        : '<img src="'+ev.target.result+'" alt="">';
-      currentThumb.closest('.gallery-item').classList.add('has-media');
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 1280;
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+        currentThumb.innerHTML = '<img src="'+dataUrl+'" alt="">';
+        const item = currentThumb.closest('.gallery-item');
+        item.classList.add('has-media');
+        if(!item.dataset.mid) item.dataset.mid = newMediaId();
+        if(window.__mediaSaveImage) window.__mediaSaveImage(item.dataset.mid, dataUrl).catch(err => alert('Não consegui salvar a imagem: ' + err.message));
+      };
+      img.onerror = () => alert('Não consegui abrir essa imagem.');
+      img.src = ev.target.result;
     };
+    reader.onerror = () => alert('Não consegui ler esse arquivo.');
     reader.readAsDataURL(file);
     input.value = '';
   }
@@ -945,28 +1037,185 @@
     const grid = addBtn.closest('.gallery-grid');
     const item = document.createElement('div');
     item.className = 'gallery-item' + (type === 'video' ? ' video' : '');
+    item.dataset.mid = newMediaId();
+    const cid = item.dataset.mid + '-cap';
     const thumbInner = type === 'video'
       ? '<div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>'
       : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>';
     const durSpan = type === 'video' ? '<span class="dur">com áudio</span>' : '';
-    item.innerHTML = '<div class="thumb">'+thumbInner+'</div><div class="caption"><span class="cap-text" contenteditable="true">'+(type === 'video' ? 'Novo vídeo' : 'Novo print')+'</span>'+durSpan+'</div>';
+    item.innerHTML = '<div class="thumb">'+thumbInner+'</div><div class="caption"><span class="cap-text" data-cid="'+cid+'" contenteditable="true">'+(type === 'video' ? 'Novo vídeo' : 'Novo print')+'</span>'+durSpan+'</div>';
     grid.insertBefore(item, addBtn);
   }
 
-  function exportHTML(){
-    const clone = document.documentElement.cloneNode(true);
-    clone.classList.remove('edit-mode');
-    clone.querySelectorAll('.cap-text').forEach(el => el.setAttribute('contenteditable', 'false'));
-    const label = clone.querySelector('#editToggleLabel');
-    if(label) label.textContent = 'Editar mídia';
-    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
-    const blob = new Blob([html], {type:'text/html'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'manual_ford_caminho_atualizado.html';
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
+  function saveAllContent(){
+    const btn = document.getElementById('saveContentBtn');
+    if(btn){ btn.disabled = true; btn.textContent = 'Salvando…'; }
+    const done = () => { if(btn){ btn.disabled = false; btn.textContent = 'Salvar alterações'; } };
+    const pairs = [];
+    document.querySelectorAll('[data-cid]').forEach(el => {
+      const baseline = window.__contentBaseline ? window.__contentBaseline.get(el.dataset.cid) : undefined;
+      if(el.textContent !== baseline) pairs.push({ cid: el.dataset.cid, text: el.textContent });
+    });
+    if(pairs.length === 0){ alert('Nenhuma alteração pra salvar.'); done(); return; }
+    if(!window.__contentSaveAll){ alert('Ainda conectando ao banco de dados, tenta de novo em alguns segundos.'); done(); return; }
+    window.__contentSaveAll(pairs).then(() => {
+      pairs.forEach(p => window.__contentBaseline && window.__contentBaseline.set(p.cid, p.text));
+      done();
+    }).catch(err => { alert('Não consegui salvar: ' + err.message); done(); });
   }
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDocs, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+  // Config web do Firebase — não é segredo (a segurança vem das regras do Firestore, não do apiKey).
+  const firebaseConfig = {
+    apiKey: "AIzaSyBYWFohm1Ko1nHqZeN1nN2mEnoXNNyjfjw",
+    authDomain: "manual-garantia-ford-caminho.firebaseapp.com",
+    projectId: "manual-garantia-ford-caminho",
+    storageBucket: "manual-garantia-ford-caminho.firebasestorage.app",
+    messagingSenderId: "246814886705",
+    appId: "1:246814886705:web:f33d1b754a8e423bc43e10"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const EMAIL_SUFFIX = '@manualford.local';
+  const VALID_ROLES = ['owner', 'editor', 'viewer'];
+
+  const authGate = document.getElementById('authGate');
+  const appShell = document.getElementById('appShell');
+  const loginForm = document.getElementById('loginForm');
+  const authError = document.getElementById('authError');
+  const authSubmit = document.getElementById('authSubmit');
+  const userBadge = document.getElementById('userBadge');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  function showError(msg){ authError.textContent = msg; authError.classList.add('show'); }
+  function clearError(){ authError.textContent = ''; authError.classList.remove('show'); }
+  function resetSubmit(){ authSubmit.disabled = false; authSubmit.textContent = 'Entrar'; }
+
+  let justSignedIn = false;
+
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearError();
+    const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+    const password = document.getElementById('loginPassword').value;
+    if(!username || !password) return;
+    authSubmit.disabled = true;
+    authSubmit.textContent = 'Entrando…';
+    justSignedIn = true;
+    signInWithEmailAndPassword(auth, username + EMAIL_SUFFIX, password).catch(err => {
+      justSignedIn = false;
+      resetSubmit();
+      if(['auth/invalid-credential','auth/user-not-found','auth/wrong-password'].includes(err.code)){
+        showError('Usuário ou senha incorretos.');
+      } else if(err.code === 'auth/too-many-requests'){
+        showError('Muitas tentativas. Aguarde um pouco e tente de novo.');
+      } else {
+        showError('Não consegui entrar: ' + err.message);
+      }
+    });
+  });
+
+  logoutBtn.addEventListener('click', () => signOut(auth));
+
+  onAuthStateChanged(auth, async (user) => {
+    resetSubmit();
+
+    if(!user){
+      window.__isEditor = false;
+      document.body.classList.remove('role-editor', 'role-viewer', 'edit-mode');
+      authGate.classList.remove('hidden');
+      appShell.style.display = 'none';
+      return;
+    }
+
+    let role, username;
+    try{
+      const tokenResult = await user.getIdTokenResult(justSignedIn);
+      justSignedIn = false;
+      role = tokenResult.claims.role;
+      username = tokenResult.claims.username;
+    } catch(err){
+      showError('Erro ao verificar sua conta: ' + err.message);
+      await signOut(auth);
+      return;
+    }
+
+    if(!VALID_ROLES.includes(role)){
+      await signOut(auth);
+      showError('Essa conta não tem permissão de acesso configurada. Fale com quem administra o manual.');
+      return;
+    }
+
+    const canEdit = role === 'editor' || role === 'owner';
+    window.__isEditor = canEdit;
+    document.body.classList.toggle('role-editor', canEdit);
+    document.body.classList.toggle('role-viewer', role === 'viewer');
+    const roleLabel = role === 'owner' ? 'dono' : (role === 'editor' ? 'editor' : 'visualizador');
+    userBadge.innerHTML = '<b>' + (username || user.email.split('@')[0]) + '</b> · ' + roleLabel;
+
+    try{
+      await loadContentOverrides();
+      await loadMediaOverrides();
+    } catch(err){
+      console.error('Falha ao carregar conteúdo salvo do Firestore:', err);
+    }
+
+    authGate.classList.add('hidden');
+    appShell.style.display = 'block';
+    if(window.__initAppAfterAuth) window.__initAppAfterAuth();
+  });
+
+  async function loadContentOverrides(){
+    const snap = await getDocs(collection(db, 'content'));
+    snap.forEach(docSnap => {
+      const el = document.querySelector('[data-cid="' + CSS.escape(docSnap.id) + '"]');
+      if(el && typeof docSnap.data().text === 'string') el.textContent = docSnap.data().text;
+    });
+    window.__contentBaseline = new Map();
+    document.querySelectorAll('[data-cid]').forEach(el => window.__contentBaseline.set(el.dataset.cid, el.textContent));
+  }
+
+  async function loadMediaOverrides(){
+    const snap = await getDocs(collection(db, 'media'));
+    snap.forEach(docSnap => {
+      const item = document.querySelector('.gallery-item[data-mid="' + CSS.escape(docSnap.id) + '"]');
+      if(!item) return;
+      const data = docSnap.data();
+      const thumb = item.querySelector('.thumb');
+      if(data.type === 'image' && data.dataUrl){
+        thumb.innerHTML = '<img src="' + data.dataUrl + '" alt="">';
+        item.classList.add('has-media');
+      } else if(data.type === 'video' && data.youtubeId){
+        thumb.innerHTML = '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/' + data.youtubeId + '" title="vídeo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        item.classList.add('has-media');
+      }
+    });
+  }
+
+  window.__contentSaveAll = async (pairs) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await Promise.all(pairs.map(p =>
+      setDoc(doc(db, 'content', p.cid), { text: p.text, updatedAt: serverTimestamp(), updatedBy: uid })
+    ));
+  };
+
+  window.__mediaSaveImage = async (mid, dataUrl) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await setDoc(doc(db, 'media', mid), { type: 'image', dataUrl, updatedAt: serverTimestamp(), updatedBy: uid });
+  };
+
+  window.__mediaSaveVideo = async (mid, youtubeId) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await setDoc(doc(db, 'media', mid), { type: 'video', youtubeId, updatedAt: serverTimestamp(), updatedBy: uid });
+  };
 </script>
 </body>
 </html>
