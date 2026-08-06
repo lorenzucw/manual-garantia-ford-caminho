@@ -141,7 +141,6 @@
   .badge.role{background:#eafff5; color:#0a8a5c; border:1px solid #bdf2d9;}
   .badge.holmes{background:#f2ecff; color:#6b3fd4; border:1px solid #ddccff;}
 
-  .media-block{border:1.5px dashed var(--line); border-radius:12px; background:#fbfcfe; padding:0; margin:18px 0; overflow:hidden;}
 
   .gallery-section{margin:22px 0;}
   .gallery-section-title{display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;}
@@ -159,9 +158,30 @@
   .edit-toggle{display:flex; align-items:center; gap:7px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:9px 14px; border-radius:8px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:all .15s;}
   .edit-toggle:hover{border-color:var(--ford-blue); color:var(--ford-blue);}
   body.edit-mode .edit-toggle{background:var(--ford-blue); border-color:var(--ford-blue); color:#fff;}
-  .edit-banner{display:none; align-items:center; gap:10px; background:#eafff5; border:1px solid #bdf2d9; color:#0a8a5c; font-size:13px; padding:10px 16px; border-radius:10px; margin-bottom:18px;}
+  .edit-banner{display:none; align-items:center; gap:10px; background:#eafff5; border:1px solid #bdf2d9; color:#0a8a5c; font-size:13px; padding:10px 16px; border-radius:10px; margin-bottom:18px; line-height:1.5;}
   body.edit-mode .edit-banner{display:flex;}
-  .edit-banner button{margin-left:auto; font-family:'Inter',sans-serif; font-weight:600; font-size:12.5px; background:#0a8a5c; color:#fff; border:none; padding:7px 12px; border-radius:7px; cursor:pointer;}
+  .edit-banner svg{flex-shrink:0;}
+  .edit-toggle:disabled{opacity:.6; cursor:wait;}
+
+  /* TOAST */
+  .toast{position:fixed; bottom:26px; left:50%; transform:translate(-50%,14px); background:var(--ford-navy-deep); color:#fff; font-size:13.5px; font-weight:500; padding:12px 20px; border-radius:10px; box-shadow:0 10px 30px rgba(0,10,30,.3); opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:1200;}
+  .toast.show{opacity:1; transform:translate(-50%,0);}
+
+  /* LIGHTBOX */
+  .lightbox{position:fixed; inset:0; z-index:1100; display:flex; align-items:center; justify-content:center; padding:40px 24px; background:rgba(0,10,30,.82); opacity:0; pointer-events:none; transition:opacity .28s ease;}
+  .lightbox.open{opacity:1; pointer-events:auto;}
+  .lightbox-inner{max-width:1100px; width:100%; max-height:100%; display:flex; flex-direction:column; align-items:center; gap:14px; transform:scale(.94) translateY(10px); transition:transform .28s cubic-bezier(.22,.61,.36,1);}
+  .lightbox.open .lightbox-inner{transform:scale(1) translateY(0);}
+  .lightbox-inner img{max-width:100%; max-height:78vh; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.45); display:block;}
+  .lightbox-frame{width:100%; aspect-ratio:16/9; max-height:78vh; border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.45); background:#000;}
+  .lightbox-frame iframe{width:100%; height:100%; border:0; display:block;}
+  .lightbox-caption{color:rgba(255,255,255,.88); font-size:14px; text-align:center; max-width:60ch;}
+  .lightbox-close{position:absolute; top:18px; right:22px; width:42px; height:42px; border-radius:50%; border:none; background:rgba(255,255,255,.14); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .15s;}
+  .lightbox-close:hover{background:rgba(255,255,255,.26);}
+  body:not(.edit-mode) .gallery-item.has-media{cursor:zoom-in;}
+  @media (prefers-reduced-motion: reduce){
+    .lightbox, .lightbox-inner, .toast{transition:none;}
+  }
 
   body.edit-mode .gallery-item{cursor:pointer; border-style:solid;}
   body.edit-mode .gallery-item .thumb{position:relative;}
@@ -174,10 +194,8 @@
   body.edit-mode .cap-text:focus{outline:1.5px solid var(--ford-blue); background:#f5f9ff;}
   body.edit-mode .gallery-add{cursor:pointer; color:var(--ford-blue); border-color:var(--ford-blue);}
   body.edit-mode .gallery-add:hover{background:#eaf2ff;}
-  .media-block .media-label{display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); padding:10px 16px; border-bottom:1.5px dashed var(--line); text-transform:uppercase; letter-spacing:.06em;}
-  .media-block .media-body{padding:34px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:var(--ink-soft); text-align:center;}
-  .play-btn{width:52px; height:52px; border-radius:50%; background:var(--ford-blue); display:flex; align-items:center; justify-content:center; color:#fff;}
-  .media-body .hint{font-size:12.5px; color:var(--ink-soft); max-width:34ch;}
+  /* botão de play sobreposto à capa do vídeo */
+  .gallery-item.video .thumb .play-mini.overlay{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 3px 12px rgba(0,0,0,.4);}
 
   .steps-strip{display:flex; align-items:center; gap:0; margin:28px 0 6px; overflow-x:auto; padding-bottom:6px;}
   .steps-strip .step{display:flex; align-items:center; gap:8px; flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:var(--paper); white-space:nowrap; cursor:pointer; transition:background .15s,border-color .15s,color .15s;}
@@ -286,7 +304,7 @@
       </div>
       <button class="edit-toggle" id="editToggle" onclick="toggleEditMode()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-        <span id="editToggleLabel">Editar mídia</span>
+        <span id="editToggleLabel">Editar conteúdo</span>
       </button>
       <span class="user-badge" id="userBadge"></span>
       <button class="logout-btn" id="logoutBtn">Sair</button>
@@ -354,8 +372,7 @@
 
         <div class="edit-banner">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Modo de edição ativo: clique no texto pra editar, ou numa miniatura de mídia pra trocar o print/vídeo.
-          <button id="saveContentBtn" onclick="saveAllContent()">Salvar alterações</button>
+          Modo de edição ativo: clique no texto pra editar, ou numa miniatura pra trocar o print/vídeo. Ao clicar em <b>“Salvar e sair”</b> lá em cima, tudo é salvo automaticamente.
         </div>
 
         <div class="crumb" id="crumb"></div>
@@ -450,13 +467,27 @@
             <p data-cid="step1-posreparo-p1">Para casos de entrega após reparo em garantia, recall ou campanha: o que importa aqui é coletar a assinatura do cliente na OS de garantia (1ª via) — veja o detalhe completo na etapa 03.</p>
           </div>
 
-          <div class="media-block">
-            <div class="media-label">Print de tela — Checklist de recepção</div>
-            <div class="media-body"><span>[ espaço reservado ]</span></div>
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item" data-mid="step1-print-checklist"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step1-print-checklist-cap">Checklist de recepção</span></div></div>
+              <div class="gallery-item" data-mid="step1-print-cadastro"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step1-print-cadastro-cap">Cadastro do veículo no Dealer Net</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
           </div>
-          <div class="media-block">
-            <div class="media-label">Vídeo com áudio</div>
-            <div class="media-body"><div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div><span class="hint">Passo a passo da inspeção de recepção e entrega ao cliente</span></div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item video" data-mid="step1-video-inspecao"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="step1-video-inspecao-cap">Inspeção de recepção e entrega ao cliente</span><span class="dur">com áudio</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
         </section>
 
@@ -492,9 +523,27 @@
             <p data-cid="step2-fim-p1">Se o defeito aparecer perto do vencimento e a peça não estiver disponível, mantenha a OS aberta e solicite a peça à Ford em até 5 dias corridos — isso garante que o reparo seja tratado como garantia mesmo que a instalação aconteça depois do vencimento.</p>
           </div>
 
-          <div class="media-block">
-            <div class="media-label">Print de tela — Consulta PTS</div>
-            <div class="media-body"><span>[ espaço reservado ]</span></div>
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item" data-mid="step2-print-pts"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step2-print-pts-cap">Consulta de garantia no PTS</span></div></div>
+              <div class="gallery-item" data-mid="step2-print-recall"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step2-print-recall-cap">Listagem de recall e campanha</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item video" data-mid="step2-video-elegibilidade"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="step2-video-elegibilidade-cap">Conferindo elegibilidade no PTS</span><span class="dur">com áudio</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
         </section>
 
@@ -560,13 +609,28 @@
             </ul>
           </div>
 
-          <div class="media-block">
-            <div class="media-label">Print de tela — Dealer</div>
-            <div class="media-body"><span>[ espaço reservado ]</span></div>
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item" data-mid="step3-print-dealer"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step3-print-dealer-cap">Abertura de OS no Dealer</span></div></div>
+              <div class="gallery-item" data-mid="step3-print-tpr"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step3-print-tpr-cap">Busca de TPR no PTS</span></div></div>
+              <div class="gallery-item" data-mid="step3-print-boletim"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step3-print-boletim-cap">Consulta de boletim (TSB/GSB/SSM)</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
           </div>
-          <div class="media-block">
-            <div class="media-label">Vídeo com áudio</div>
-            <div class="media-body"><div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div><span class="hint">Abertura de OS no Dealer, passo a passo</span></div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item video" data-mid="step3-video-os"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="step3-video-os-cap">Abertura de OS no Dealer, passo a passo</span><span class="dur">com áudio</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
 
           <div class="card"><h3 data-cid="step3-atencao-h3">Atenção</h3><p data-cid="step3-atencao-p1">Erros de preenchimento nesta etapa costumam gerar estorno lá na frente, na Auditoria Ford.</p></div>
@@ -625,9 +689,28 @@
             </ul>
           </div>
 
-          <div class="media-block">
-            <div class="media-label">Print de tela — Consulta de peça no Catálogo</div>
-            <div class="media-body"><span>[ espaço reservado ]</span></div>
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item" data-mid="step4-print-catalogo"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step4-print-catalogo-cap">Consulta de peça no Catálogo</span></div></div>
+              <div class="gallery-item" data-mid="step4-print-holmes"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step4-print-holmes-cap">Registro de evidências no Holmes</span></div></div>
+              <div class="gallery-item" data-mid="step4-print-evidencia"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step4-print-evidencia-cap">Exemplo de evidência (chassi, placa e odômetro)</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item video" data-mid="step4-video-apontamento"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="step4-video-apontamento-cap">Apontamento da OS e requisição de peça</span><span class="dur">com áudio</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
         </section>
 
@@ -802,6 +885,15 @@
   </div>
   </div><!-- /#appShell -->
 
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Mídia ampliada">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Fechar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="lightbox-inner" id="lightboxInner"></div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
   const menuBtn = document.getElementById('menuBtn');
   const sidebar = document.getElementById('sidebar');
@@ -955,10 +1047,11 @@
 
   function toggleEditMode(){
     if(!window.__isEditor) return;
-    editMode = !editMode;
-    document.body.classList.toggle('edit-mode', editMode);
-    document.getElementById('editToggleLabel').textContent = editMode ? 'Sair da edição' : 'Editar conteúdo';
-    document.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', editMode ? 'true' : 'false'));
+    if(editMode){ exitEditModeAndSave(); return; }
+    editMode = true;
+    document.body.classList.add('edit-mode');
+    document.getElementById('editToggleLabel').textContent = 'Salvar e sair';
+    document.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', 'true'));
   }
 
   function newMediaId(){
@@ -972,17 +1065,28 @@
     return null;
   }
 
+  // Na grade mostramos só a capa do vídeo; o player só é carregado no lightbox.
+  // Isso deixa a página leve e faz o clique chegar até nós (um iframe do YouTube
+  // engoliria o clique e tocaria o vídeo dentro da miniatura).
   function applyVideoToItem(item, ytId){
+    item.dataset.yt = ytId;
     item.querySelector('.thumb').innerHTML =
-      '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/'+ytId+'" title="vídeo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+      '<img src="https://img.youtube.com/vi/'+ytId+'/hqdefault.jpg" alt="">' +
+      '<div class="play-mini overlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>';
     item.classList.add('has-media');
   }
 
   document.addEventListener('click', (e) => {
-    if(!editMode) return;
     const thumb = e.target.closest('.gallery-item .thumb');
     if(!thumb) return;
     const item = thumb.closest('.gallery-item');
+
+    // Fora do modo de edição, clicar numa mídia já preenchida abre o lightbox.
+    if(!editMode){
+      if(item.classList.contains('has-media')) openLightbox(item);
+      return;
+    }
+
     if(item.classList.contains('video')){
       const ytInput = prompt('Cole o link (ou ID) do vídeo do YouTube — suba como "não listado" antes:');
       if(!ytInput) return;
@@ -1047,21 +1151,89 @@
     grid.insertBefore(item, addBtn);
   }
 
-  function saveAllContent(){
-    const btn = document.getElementById('saveContentBtn');
-    if(btn){ btn.disabled = true; btn.textContent = 'Salvando…'; }
-    const done = () => { if(btn){ btn.disabled = false; btn.textContent = 'Salvar alterações'; } };
+  // Sair da edição salva sozinho. Se o salvamento falhar, continua em modo de
+  // edição — assim as alterações não se perdem da tela sem terem sido gravadas.
+  function exitEditModeAndSave(){
+    const toggle = document.getElementById('editToggle');
+    const label = document.getElementById('editToggleLabel');
+
     const pairs = [];
     document.querySelectorAll('[data-cid]').forEach(el => {
       const baseline = window.__contentBaseline ? window.__contentBaseline.get(el.dataset.cid) : undefined;
       if(el.textContent !== baseline) pairs.push({ cid: el.dataset.cid, text: el.textContent });
     });
-    if(pairs.length === 0){ alert('Nenhuma alteração pra salvar.'); done(); return; }
-    if(!window.__contentSaveAll){ alert('Ainda conectando ao banco de dados, tenta de novo em alguns segundos.'); done(); return; }
+
+    const leaveEditMode = () => {
+      editMode = false;
+      document.body.classList.remove('edit-mode');
+      label.textContent = 'Editar conteúdo';
+      toggle.disabled = false;
+      document.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', 'false'));
+    };
+
+    if(pairs.length === 0){ leaveEditMode(); return; }
+
+    if(!window.__contentSaveAll){
+      alert('Ainda conectando ao banco de dados. Espere alguns segundos e clique de novo — suas alterações continuam na tela.');
+      return;
+    }
+
+    toggle.disabled = true;
+    label.textContent = 'Salvando…';
     window.__contentSaveAll(pairs).then(() => {
       pairs.forEach(p => window.__contentBaseline && window.__contentBaseline.set(p.cid, p.text));
-      done();
-    }).catch(err => { alert('Não consegui salvar: ' + err.message); done(); });
+      leaveEditMode();
+      showToast(pairs.length === 1 ? '1 alteração salva' : pairs.length + ' alterações salvas');
+    }).catch(err => {
+      toggle.disabled = false;
+      label.textContent = 'Salvar e sair';
+      alert('Não consegui salvar: ' + err.message + '\n\nSuas alterações continuam na tela. Tente sair da edição de novo.');
+    });
+  }
+
+  /* ---------- LIGHTBOX ---------- */
+  const lightbox = document.getElementById('lightbox');
+  const lightboxInner = document.getElementById('lightboxInner');
+
+  function openLightbox(item){
+    const caption = item.querySelector('.cap-text');
+    const capHtml = caption ? '<div class="lightbox-caption"></div>' : '';
+
+    if(item.classList.contains('video') && item.dataset.yt){
+      lightboxInner.innerHTML = '<div class="lightbox-frame"><iframe src="https://www.youtube.com/embed/' +
+        item.dataset.yt + '?autoplay=1&rel=0" title="vídeo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>' + capHtml;
+    } else {
+      const img = item.querySelector('.thumb img');
+      if(!img) return;
+      lightboxInner.innerHTML = '<img alt="">' + capHtml;
+      lightboxInner.querySelector('img').src = img.src;
+    }
+
+    // textContent (nunca innerHTML) porque a legenda é texto que um editor escreveu
+    if(caption) lightboxInner.querySelector('.lightbox-caption').textContent = caption.textContent;
+
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    // limpa depois da animação — também é o que interrompe o vídeo que estava tocando
+    setTimeout(() => { if(!lightbox.classList.contains('open')) lightboxInner.innerHTML = ''; }, 300);
+  }
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox(); });
+
+  let toastTimer = null;
+  function showToast(msg){
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
   }
 </script>
 
@@ -1194,7 +1366,9 @@
         thumb.innerHTML = '<img src="' + data.dataUrl + '" alt="">';
         item.classList.add('has-media');
       } else if(data.type === 'video' && data.youtubeId){
-        thumb.innerHTML = '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/' + data.youtubeId + '" title="vídeo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        item.dataset.yt = data.youtubeId;
+        thumb.innerHTML = '<img src="https://img.youtube.com/vi/' + data.youtubeId + '/hqdefault.jpg" alt="">' +
+          '<div class="play-mini overlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>';
         item.classList.add('has-media');
       }
     });
