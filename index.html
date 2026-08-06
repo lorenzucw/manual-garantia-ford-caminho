@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="no-reveal-js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +29,8 @@
   button{font-family:inherit; cursor:pointer;}
 
   /* TOPBAR */
-  .topbar{position:fixed; top:0; left:0; right:0; height:var(--topbar-h); background:var(--paper); border-bottom:3px solid var(--ford-blue); display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:100;}
+  .topbar{position:fixed; top:0; left:0; right:0; height:var(--topbar-h); background:var(--paper); border-bottom:3px solid var(--ford-blue); display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:100; transition:background .25s ease, box-shadow .25s ease, backdrop-filter .25s ease;}
+  .topbar.scrolled{background:rgba(255,255,255,.72); backdrop-filter:blur(12px) saturate(1.4); -webkit-backdrop-filter:blur(12px) saturate(1.4); box-shadow:0 6px 24px rgba(0,20,50,.08);}
   .brand-link{display:flex; align-items:center; gap:14px; min-width:0; background:none; border:none; padding:4px 6px; margin:-4px -6px; border-radius:10px; cursor:pointer; transition:background .15s, transform .18s cubic-bezier(.34,1.56,.64,1);}
   .brand-link:hover{background:var(--canvas); transform:scale(1.03);}
   .brand-link:active{transform:scale(.97);}
@@ -113,6 +114,12 @@
   .crumb-link:hover{color:var(--ford-blue); background:#eaf2ff;}
   .crumb-sep{margin:0 6px; color:var(--line);}
 
+  .step-progress{display:none; align-items:center; gap:10px; margin:2px 0 14px;}
+  .step-progress.show{display:flex;}
+  .step-progress-track{flex:1; background:var(--line); border-radius:999px; height:5px; overflow:hidden;}
+  .step-progress-fill{display:block; height:5px; width:0%; background:linear-gradient(90deg,var(--ford-blue),var(--ford-accent)); border-radius:999px; transition:width .45s cubic-bezier(.22,.61,.36,1);}
+  .step-progress-label{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft); white-space:nowrap; flex-shrink:0;}
+
   .section-head{display:flex; align-items:flex-start; gap:16px; margin-bottom:8px;}
   .section-tag{font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; color:#fff; background:var(--ford-blue); width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
   h1.page-title{font-size:30px; color:var(--ink); font-weight:600; padding-top:6px;}
@@ -120,6 +127,16 @@
 
   .card{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin-bottom:20px; transition:transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;}
   body:not(.edit-mode) .card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,30,70,.09);}
+
+  /* aparecer ao rolar — o JS marca .revealed; sem JS/observer, .no-reveal-js
+     (setada de imediato no <html>) garante que o conteúdo já nasce visível */
+  html:not(.no-reveal-js) .card{opacity:0; transform:translateY(18px);}
+  html:not(.no-reveal-js) .card.revealed{animation:cardReveal .5s cubic-bezier(.22,.61,.36,1) forwards;}
+  @keyframes cardReveal{ to{opacity:1; transform:translateY(0);} }
+  @media (prefers-reduced-motion: reduce){
+    html:not(.no-reveal-js) .card{opacity:1; transform:none;}
+    html:not(.no-reveal-js) .card.revealed{animation:none;}
+  }
   .card h3{font-size:15px; color:var(--ford-blue); margin-bottom:12px; letter-spacing:.02em;}
   .card p{margin:0 0 12px; font-size:14.5px; line-height:1.65; color:var(--ink);}
   .card p:last-child{margin-bottom:0;}
@@ -410,6 +427,11 @@
         </div>
 
         <div class="crumb" id="crumb"></div>
+
+        <div class="step-progress" id="stepProgress">
+          <div class="step-progress-track"><div class="step-progress-fill" id="stepProgressFill"></div></div>
+          <span class="step-progress-label" id="stepProgressLabel"></span>
+        </div>
 
         <div class="steps-strip">
           <div class="strip-indicator" id="stripIndicator"></div>
@@ -937,6 +959,12 @@
   menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
   overlay.addEventListener('click', closeMenu);
 
+  // Topbar vira vidro fosco assim que a página rola um pouco.
+  // (.content não tem overflow próprio — quem rola de verdade é a window.)
+  const topbarEl = document.querySelector('.topbar');
+  function updateTopbarScrolled(){ topbarEl.classList.toggle('scrolled', window.scrollY > 8); }
+  window.addEventListener('scroll', updateTopbarScrolled, {passive:true});
+
   const stepNames = {0:'Início',1:'Recepção do Veículo',2:'Elegibilidade',3:'Ordem de Serviço',4:'Diagnóstico e Reparo',5:'Submissão da Solicitação',6:'Devolução de Peças (CRPG)',7:'Descarte de Peça'};
   const stepSubs  = {1:'Recepcionista + Consultor Técnico · Inspeção e entrega do veículo novo',2:'Consultor Técnico · Confirmar prazo e cobertura',3:'Consultor Técnico/Garantia · Formalizar o atendimento',4:'Produtivo · Diagnóstico, laudo e reparo',5:'Consultor Técnico → Garantia · Enviar a solicitação à Ford',6:'Consultor de Garantia · Devolver peças ao CRPG',7:'Consultor de Garantia · Descartar peças não requisitadas/estornadas'};
 
@@ -945,7 +973,9 @@
     // Sai da edição (o que já salva sozinho) pra poder trocar de página de novo.
     if(editMode) return;
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-'+id).classList.add('active');
+    const activePageEl = document.getElementById('page-'+id);
+    activePageEl.classList.add('active');
+    observeCardsInPage(activePageEl);
 
     document.querySelectorAll('.road-step').forEach(s => s.classList.remove('active'));
     const roadEl = document.querySelector('.road-step[data-idx="'+id+'"]');
@@ -965,10 +995,12 @@
     const stripWrap = document.querySelector('.steps-strip');
     stripWrap.style.display = (typeof id === 'number' && id >= 1) ? 'flex' : 'none';
     positionStripIndicator();
+    updateStepProgress(id);
 
     closeMenu();
     document.querySelector('.content').scrollTo(0,0);
     window.scrollTo(0,0);
+    setTimeout(safetyRevealCurrentPage, 700);
   }
 
   // Move os indicadores deslizantes (barra lateral + faixa de etapas) até o
@@ -1009,6 +1041,15 @@
   }
 
   window.addEventListener('resize', () => { positionRoadIndicator(); positionStripIndicator(); });
+
+  function updateStepProgress(id){
+    const wrap = document.getElementById('stepProgress');
+    const isStep = typeof id === 'number' && id >= 1 && id <= 7;
+    wrap.classList.toggle('show', isStep);
+    if(!isStep) return;
+    document.getElementById('stepProgressFill').style.width = Math.round((id / 7) * 100) + '%';
+    document.getElementById('stepProgressLabel').textContent = 'Etapa ' + id + ' de 7';
+  }
 
   function updateCrumb(id){
     const crumb = document.getElementById('crumb');
@@ -1126,8 +1167,56 @@
     buildSearchIndex(); // precisa rodar depois dos overrides de conteúdo já aplicados no DOM
     wireSearch(document.getElementById('searchInput'), document.getElementById('searchResults'));
     wireSearch(document.getElementById('searchInputMobile'), document.getElementById('searchResultsMobile'));
+    setupCardReveal();
     showPage(0);
   };
+
+  /* ---------- CARDS APARECENDO AO ROLAR ---------- */
+  // Progressive enhancement: html começa com .no-reveal-js (cards visíveis
+  // por padrão). Só tira a classe — ativando esconder+animar — se o
+  // navegador suporta IntersectionObserver e reduced-motion não está pedido.
+  // Timeout de segurança por página garante que nada fica escondido pra
+  // sempre, mesmo se o observer falhar por algum motivo.
+  function setupCardReveal(){
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!('IntersectionObserver' in window) || reduceMotion){
+      document.querySelectorAll('.card').forEach(c => c.classList.add('revealed'));
+      return;
+    }
+    document.documentElement.classList.remove('no-reveal-js');
+    window.__cardRevealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('revealed');
+          window.__cardRevealObserver.unobserve(entry.target);
+        }
+      });
+    }, {rootMargin: '0px 0px -40px 0px', threshold: 0.08});
+  }
+
+  // Observa os cards de uma página só quando ela fica ativa (display:block) —
+  // alguns navegadores não recalculam interseção de forma confiável pra
+  // elementos que estavam display:none no momento do observe().
+  function observeCardsInPage(pageEl){
+    if(!window.__cardRevealObserver || !pageEl) return;
+    pageEl.querySelectorAll('.card:not(.revealed)').forEach(c => window.__cardRevealObserver.observe(c));
+  }
+
+  // Rede de segurança: só força os cards que já estão (ou quase) na tela —
+  // preserva o efeito de "aparecer ao rolar" pra o que está mais abaixo,
+  // e garante que nada fica preso invisível se o observer falhar.
+  function safetyRevealCurrentPage(){
+    const active = document.querySelector('.page.active');
+    if(!active) return;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    active.querySelectorAll('.card:not(.revealed)').forEach(c => {
+      const rect = c.getBoundingClientRect();
+      if(rect.top < vh + 200){
+        c.classList.add('revealed');
+        if(window.__cardRevealObserver) window.__cardRevealObserver.unobserve(c);
+      }
+    });
+  }
 
   /* ---------- MODO DE EDIÇÃO (texto + mídia), só pra role=editor ---------- */
   let editMode = false;
@@ -1143,6 +1232,7 @@
     document.body.classList.add('edit-mode');
     document.getElementById('editToggleLabel').textContent = 'Salvar e sair';
     document.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', 'true'));
+    safetyRevealCurrentPage(); // garante que todo card já esteja visível antes de editar
   }
 
   function newMediaId(){
