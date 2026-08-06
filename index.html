@@ -45,11 +45,14 @@
     --ford-blue:#4f8fe0;
     --ford-navy-deep:#00142e;
     --ford-accent:#5fb3ff;
-    --canvas:#0b1220;
-    --paper:#141e30;
-    --ink:#e7ecf5;
-    --ink-soft:#93a1ba;
-    --line:#263049;
+    /* canvas/paper/line seguem a mesma família de matiz do azul Ford
+       (~211-218°), só bem mais escuros — pra combinar com a sidebar
+       em vez de parecer um azul-marinho genérico à parte */
+    --canvas:#0a1424;
+    --paper:#111f36;
+    --ink:#e9eef7;
+    --ink-soft:#8fa0bd;
+    --line:#22314c;
     --sidebar-grad-start:#003478;
     --topbar-glass:rgba(11,18,32,.72);
     --shadow-tint:rgba(0,0,0,.35);
@@ -117,16 +120,16 @@
   .road::before{content:''; position:absolute; left:9px; top:6px; bottom:6px; width:2px; background:rgba(255,255,255,.16);}
   .road-step{position:relative; padding:9px 10px 9px 0; margin-bottom:2px;}
   .road-step::before{content:''; position:absolute; left:-22px; top:50%; transform:translateY(-50%); width:12px; height:12px; border-radius:50%; background:var(--ford-navy-deep); border:2px solid rgba(255,255,255,.4); box-sizing:border-box; z-index:2; transition:background .15s,border-color .15s,box-shadow .15s;}
-  .road-step button{display:flex; width:100%; align-items:center; justify-content:space-between; gap:8px; text-decoration:none; color:rgba(255,255,255,.82); font-size:14px; font-weight:500; border-radius:8px; padding:6px 10px; background:none; border:none; text-align:left; transition:background .15s,transform .18s cubic-bezier(.34,1.56,.64,1);}
-  .road-step button:hover{transform:scale(1.035);}
-  .road-step button:active{transform:scale(.97);}
-  .road-step button:hover{background:rgba(255,255,255,.07); color:#fff;}
+  .road-step [role="button"]{display:flex; width:100%; align-items:center; justify-content:space-between; gap:8px; text-decoration:none; color:rgba(255,255,255,.82); font-size:14px; font-weight:500; border-radius:8px; padding:6px 10px; background:none; border:none; text-align:left; cursor:pointer; transition:background .15s,transform .18s cubic-bezier(.34,1.56,.64,1);}
+  .road-step [role="button"]:hover{transform:scale(1.035);}
+  .road-step [role="button"]:active{transform:scale(.97);}
+  .road-step [role="button"]:hover{background:rgba(255,255,255,.07); color:#fff;}
   .road-step .num{font-family:'IBM Plex Mono',monospace; font-size:10px; color:rgba(255,255,255,.4);}
   .road-step.active::before{background:var(--ford-accent); border-color:#fff; box-shadow:0 0 0 4px rgba(31,143,255,.28);}
-  .road-step.active button{color:#fff; font-weight:600; background:rgba(255,255,255,.09);}
+  .road-step.active [role="button"]{color:#fff; font-weight:600; background:rgba(255,255,255,.09);}
   /* dentro do grupo com indicador deslizante, quem faz o destaque é o .road-indicator */
-  #mainRoad .road-step button{position:relative; z-index:1;}
-  #mainRoad .road-step.active button, #mainRoad .road-step.active button:hover{background:none;}
+  #mainRoad .road-step [role="button"]{position:relative; z-index:1;}
+  #mainRoad .road-step.active [role="button"], #mainRoad .road-step.active [role="button"]:hover{background:none;}
   .road-indicator{position:absolute; left:0; top:0; width:0; height:0; background:rgba(255,255,255,.09); border-radius:8px; z-index:0; pointer-events:none; opacity:0; transition:left .32s cubic-bezier(.22,.61,.36,1), top .32s cubic-bezier(.22,.61,.36,1), width .32s ease, height .32s ease, opacity .2s ease;}
   .road-indicator.show{opacity:1;}
 
@@ -277,7 +280,7 @@
   /* botão de play sobreposto à capa do vídeo */
   .gallery-item.video .thumb .play-mini.overlay{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 3px 12px rgba(0,0,0,.4);}
 
-  .steps-strip{display:flex; align-items:center; gap:0; margin:28px 0 6px; overflow-x:auto; padding-bottom:6px; position:relative;}
+  .steps-strip{display:flex; align-items:center; gap:0; margin:28px 0 6px; overflow-x:auto; padding:6px 2px; position:relative;}
   .steps-strip .step{position:relative; z-index:1; display:flex; align-items:center; gap:8px; flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:var(--paper); white-space:nowrap; cursor:pointer; transition:background .15s,border-color .15s,color .15s,transform .18s cubic-bezier(.34,1.56,.64,1);}
   .steps-strip .step:hover{transform:scale(1.06);}
   .steps-strip .step:active{transform:scale(.95);}
@@ -433,28 +436,28 @@
       <div class="sidebar-group">
         <div class="sidebar-group-label" data-cid="nav-label-overview">Visão Geral</div>
         <div class="road">
-          <div class="road-step" data-idx="guide"><button onclick="showPage('guide')"><span data-cid="nav-guide">Visão Geral</span></button></div>
+          <div class="road-step" data-idx="guide"><div role="button" tabindex="0" onclick="showPage('guide')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('guide');}"><span data-cid="nav-guide">Visão Geral</span></div></div>
         </div>
       </div>
 
       <div class="sidebar-group">
-        <button class="sidebar-group-label" style="background:none;border:none;cursor:pointer;width:100%;text-align:left;" onclick="showPage('ov')"><span data-cid="nav-label-caminho">O Caminho da Garantia →</span></button>
+        <div class="sidebar-group-label" role="button" tabindex="0" style="background:none;border:none;cursor:pointer;width:100%;text-align:left;" onclick="showPage('ov')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('ov');}"><span data-cid="nav-label-caminho">O Caminho da Garantia →</span></div>
         <div class="road" id="mainRoad">
           <div class="road-indicator" id="roadIndicator"></div>
-          <div class="road-step" data-idx="1"><button onclick="showPage(1)"><span data-cid="nav-step1">1. Recepção do veículo</span> <span class="num">01</span></button></div>
-          <div class="road-step" data-idx="2"><button onclick="showPage(2)"><span data-cid="nav-step2">2. Elegibilidade</span> <span class="num">02</span></button></div>
-          <div class="road-step" data-idx="3"><button onclick="showPage(3)"><span data-cid="nav-step3">3. Ordem de Serviço</span> <span class="num">03</span></button></div>
-          <div class="road-step" data-idx="4"><button onclick="showPage(4)"><span data-cid="nav-step4">4. Diagnóstico e reparo</span> <span class="num">04</span></button></div>
-          <div class="road-step" data-idx="5"><button onclick="showPage(5)"><span data-cid="nav-step5">5. Submissão da solicitação</span> <span class="num">05</span></button></div>
-          <div class="road-step" data-idx="6"><button onclick="showPage(6)"><span data-cid="nav-step6">6. Devolução de peças (CRPG)</span> <span class="num">06</span></button></div>
-          <div class="road-step" data-idx="7"><button onclick="showPage(7)"><span data-cid="nav-step7">7. Descarte de Peça</span> <span class="num">07</span></button></div>
+          <div class="road-step" data-idx="1"><div role="button" tabindex="0" onclick="showPage(1)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(1);}"><span data-cid="nav-step1">1. Recepção do veículo</span> <span class="num">01</span></div></div>
+          <div class="road-step" data-idx="2"><div role="button" tabindex="0" onclick="showPage(2)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(2);}"><span data-cid="nav-step2">2. Elegibilidade</span> <span class="num">02</span></div></div>
+          <div class="road-step" data-idx="3"><div role="button" tabindex="0" onclick="showPage(3)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(3);}"><span data-cid="nav-step3">3. Ordem de Serviço</span> <span class="num">03</span></div></div>
+          <div class="road-step" data-idx="4"><div role="button" tabindex="0" onclick="showPage(4)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(4);}"><span data-cid="nav-step4">4. Diagnóstico e reparo</span> <span class="num">04</span></div></div>
+          <div class="road-step" data-idx="5"><div role="button" tabindex="0" onclick="showPage(5)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(5);}"><span data-cid="nav-step5">5. Submissão da solicitação</span> <span class="num">05</span></div></div>
+          <div class="road-step" data-idx="6"><div role="button" tabindex="0" onclick="showPage(6)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(6);}"><span data-cid="nav-step6">6. Devolução de peças (CRPG)</span> <span class="num">06</span></div></div>
+          <div class="road-step" data-idx="7"><div role="button" tabindex="0" onclick="showPage(7)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(7);}"><span data-cid="nav-step7">7. Descarte de Peça</span> <span class="num">07</span></div></div>
         </div>
       </div>
 
       <div class="sidebar-group">
         <div class="sidebar-group-label" data-cid="nav-label-referencia">Referência</div>
         <div class="road">
-          <div class="road-step" data-idx="audit"><button onclick="showPage('audit')"><span data-cid="nav-audit">Auditoria Ford</span></button></div>
+          <div class="road-step" data-idx="audit"><div role="button" tabindex="0" onclick="showPage('audit')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('audit');}"><span data-cid="nav-audit">Auditoria Ford</span></div></div>
         </div>
       </div>
 
@@ -489,13 +492,13 @@
 
         <div class="steps-strip">
           <div class="strip-indicator" id="stripIndicator"></div>
-          <button class="step" data-strip="1" data-cid="strip-1" onclick="showPage(1)">01 Recepção</button><div class="arrow">→</div>
-          <button class="step" data-strip="2" data-cid="strip-2" onclick="showPage(2)">02 Elegibilidade</button><div class="arrow">→</div>
-          <button class="step" data-strip="3" data-cid="strip-3" onclick="showPage(3)">03 Ordem de Serviço</button><div class="arrow">→</div>
-          <button class="step" data-strip="4" data-cid="strip-4" onclick="showPage(4)">04 Reparo</button><div class="arrow">→</div>
-          <button class="step" data-strip="5" data-cid="strip-5" onclick="showPage(5)">05 Submissão</button><div class="arrow">→</div>
-          <button class="step" data-strip="6" data-cid="strip-6" onclick="showPage(6)">06 CRPG</button><div class="arrow">→</div>
-          <button class="step" data-strip="7" data-cid="strip-7" onclick="showPage(7)">07 Descarte</button>
+          <div class="step" role="button" tabindex="0" data-strip="1" data-cid="strip-1" onclick="showPage(1)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(1);}">01 Recepção</div><div class="arrow">→</div>
+          <div class="step" role="button" tabindex="0" data-strip="2" data-cid="strip-2" onclick="showPage(2)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(2);}">02 Elegibilidade</div><div class="arrow">→</div>
+          <div class="step" role="button" tabindex="0" data-strip="3" data-cid="strip-3" onclick="showPage(3)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(3);}">03 Ordem de Serviço</div><div class="arrow">→</div>
+          <div class="step" role="button" tabindex="0" data-strip="4" data-cid="strip-4" onclick="showPage(4)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(4);}">04 Reparo</div><div class="arrow">→</div>
+          <div class="step" role="button" tabindex="0" data-strip="5" data-cid="strip-5" onclick="showPage(5)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(5);}">05 Submissão</div><div class="arrow">→</div>
+          <div class="step" role="button" tabindex="0" data-strip="6" data-cid="strip-6" onclick="showPage(6)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(6);}">06 CRPG</div><div class="arrow">→</div>
+          <div class="step" role="button" tabindex="0" data-strip="7" data-cid="strip-7" onclick="showPage(7)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage(7);}">07 Descarte</div>
         </div>
 
         <!-- PAGE 0 — HOME -->
@@ -1032,6 +1035,15 @@
     }
   });
 
+  // Reposiciona os indicadores deslizantes em tempo real enquanto o editor
+  // digita — se não, a pílula só se ajusta ao tamanho do texto novo na
+  // próxima navegação, ficando visivelmente desencaixada até lá.
+  document.addEventListener('input', (e) => {
+    if(!editMode || !e.target.closest('[data-cid]')) return;
+    if(e.target.closest('#mainRoad')) positionRoadIndicator();
+    if(e.target.closest('.steps-strip')) positionStripIndicator();
+  });
+
   const stepNames = {0:'Início',1:'Recepção do Veículo',2:'Elegibilidade',3:'Ordem de Serviço',4:'Diagnóstico e Reparo',5:'Submissão da Solicitação',6:'Devolução de Peças (CRPG)',7:'Descarte de Peça'};
   const stepSubs  = {1:'Recepcionista + Consultor Técnico · Inspeção e entrega do veículo novo',2:'Consultor Técnico · Confirmar prazo e cobertura',3:'Consultor Técnico/Garantia · Formalizar o atendimento',4:'Produtivo · Diagnóstico, laudo e reparo',5:'Consultor Técnico → Garantia · Enviar a solicitação à Ford',6:'Consultor de Garantia · Devolver peças ao CRPG',7:'Consultor de Garantia · Descartar peças não requisitadas/estornadas'};
 
@@ -1093,7 +1105,7 @@
     positionIndicator(
       document.getElementById('roadIndicator'),
       document.getElementById('mainRoad'),
-      document.querySelector('#mainRoad .road-step.active button')
+      document.querySelector('#mainRoad .road-step.active [role="button"]')
     );
   }
 
@@ -1152,10 +1164,10 @@
       const titleCid = 'ov-step'+i+'-title', subCid = 'ov-step'+i+'-sub';
       const title = overrides[titleCid] || stepNames[i];
       const sub = overrides[subCid] || stepSubs[i];
-      html += '<button class="step-link" onclick="showPage('+i+')">' +
+      html += '<div class="step-link" role="button" tabindex="0" onclick="showPage('+i+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();showPage('+i+');}">' +
         '<span class="step-link-num">'+String(i).padStart(2,'0')+'</span>' +
         '<span class="step-link-text"><span class="step-link-title" data-cid="'+titleCid+'">'+title+'</span><span class="step-link-sub" data-cid="'+subCid+'">'+sub+'</span></span>' +
-        '<span class="step-link-arrow">→</span></button>';
+        '<span class="step-link-arrow">→</span></div>';
       if(i < 7) html += '<hr class="ov-divider">';
     }
     list.innerHTML = html;
