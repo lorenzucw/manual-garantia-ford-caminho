@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Garantia — Ford Caminho</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ford-blue:#003478;
+    --ford-navy-deep:#00193b;
+    --ford-accent:#1f8fff;
+    --canvas:#f2f5f9;
+    --paper:#ffffff;
+    --ink:#14213d;
+    --ink-soft:#5b6b85;
+    --line:#e1e6ef;
+    --sidebar-w:296px;
+    --topbar-h:72px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--canvas); color:var(--ink); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.03em; margin:0;}
+  code,.mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+
+  /* TOPBAR */
+  .topbar{position:fixed; top:0; left:0; right:0; height:var(--topbar-h); background:var(--paper); border-bottom:3px solid var(--ford-blue); display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:100;}
+  .brand-link{display:flex; align-items:center; gap:14px; min-width:0; background:none; border:none; padding:4px 6px; margin:-4px -6px; border-radius:10px; cursor:pointer; transition:background .15s;}
+  .brand-link:hover{background:var(--canvas);}
+  .topbar-left{display:flex; align-items:center; gap:10px; min-width:0;}
+  .logo-mark{height:38px; width:auto; display:block; flex-shrink:0;}
+  .topbar-title{display:flex; flex-direction:column; line-height:1.1; min-width:0;}
+  .topbar-title .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ford-accent); letter-spacing:.12em; text-transform:uppercase; font-weight:500;}
+  .topbar-title .title{font-family:'Oswald',sans-serif; font-size:17px; font-weight:600; color:var(--ford-blue); letter-spacing:.01em; text-transform:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .topbar-right{display:flex; align-items:center; gap:10px;}
+  .search-wrap{position:relative; width:260px;}
+  .search-box{display:flex; align-items:center; gap:8px; background:var(--canvas); border:1px solid var(--line); border-radius:8px; padding:9px 14px; color:var(--ink-soft); font-size:13.5px;}
+  .search-box svg{flex-shrink:0; opacity:.55;}
+  .search-box input{border:none; background:none; outline:none; font-family:'Inter',sans-serif; font-size:13.5px; color:var(--ink); width:100%;}
+  .search-box input::placeholder{color:var(--ink-soft);}
+  .search-results{display:none; position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--paper); border:1px solid var(--line); border-radius:10px; box-shadow:0 12px 28px rgba(10,30,60,.14); max-height:360px; overflow-y:auto; z-index:120;}
+  .search-results.open{display:block;}
+  .search-results .res-empty{padding:16px; font-size:13px; color:var(--ink-soft); text-align:center;}
+  .search-results .res-item{display:block; width:100%; text-align:left; background:none; border:none; padding:11px 14px; border-bottom:1px solid var(--line); cursor:pointer;}
+  .search-results .res-item:last-child{border-bottom:none;}
+  .search-results .res-item:hover{background:var(--canvas);}
+  .search-results .res-page{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ford-accent); margin-bottom:3px;}
+  .search-results .res-title{font-size:13.5px; font-weight:600; color:var(--ink); margin-bottom:2px;}
+  .search-results .res-snippet{font-size:12px; color:var(--ink-soft); line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .menu-btn{display:none; background:none; border:none; width:40px; height:40px; align-items:center; justify-content:center; border-radius:8px; color:var(--ford-blue);}
+  .menu-btn:hover{background:var(--canvas);}
+  .sidebar-search{display:none;}
+  @keyframes flashCard{0%{background:#eaf2ff;} 100%{background:var(--paper);}}
+  .card.flash{animation:flashCard 1.4s ease;}
+
+  .shell{display:flex; padding-top:var(--topbar-h); min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{width:var(--sidebar-w); flex-shrink:0; background:linear-gradient(180deg,var(--ford-blue) 0%,var(--ford-navy-deep) 100%); color:#fff; position:fixed; top:var(--topbar-h); bottom:0; left:0; overflow-y:auto; padding:26px 0 40px;}
+  .sidebar-group{padding:0 22px; margin-bottom:6px;}
+  .sidebar-group-label{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.45); margin:22px 0 10px; padding-left:26px;}
+  .road{position:relative; padding-left:26px;}
+  .road::before{content:''; position:absolute; left:9px; top:6px; bottom:6px; width:2px; background:rgba(255,255,255,.16);}
+  .road-step{position:relative; padding:9px 10px 9px 0; margin-bottom:2px;}
+  .road-step::before{content:''; position:absolute; left:-22px; top:50%; transform:translateY(-50%); width:12px; height:12px; border-radius:50%; background:var(--ford-navy-deep); border:2px solid rgba(255,255,255,.4); box-sizing:border-box; z-index:2; transition:background .15s,border-color .15s,box-shadow .15s;}
+  .road-step button{display:flex; width:100%; align-items:center; justify-content:space-between; gap:8px; text-decoration:none; color:rgba(255,255,255,.82); font-size:14px; font-weight:500; border-radius:8px; padding:6px 10px; background:none; border:none; text-align:left;}
+  .road-step button:hover{background:rgba(255,255,255,.07); color:#fff;}
+  .road-step .num{font-family:'IBM Plex Mono',monospace; font-size:10px; color:rgba(255,255,255,.4);}
+  .road-step.active::before{background:var(--ford-accent); border-color:#fff; box-shadow:0 0 0 4px rgba(31,143,255,.28);}
+  .road-step.active button{color:#fff; font-weight:600; background:rgba(255,255,255,.09);}
+
+  .tool-list{padding-left:26px; display:flex; flex-direction:column; gap:2px;}
+  .tool-item{display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-radius:8px; font-size:13.5px; color:rgba(255,255,255,.55);}
+  .tool-item .soon{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.06em; background:rgba(255,255,255,.1); padding:2px 6px; border-radius:4px; color:rgba(255,255,255,.55); text-transform:uppercase;}
+  .tool-item.active-link{background:none; border:none; width:100%; text-align:left; cursor:pointer; color:rgba(255,255,255,.82); font:inherit;}
+  .tool-item.active-link:hover{background:rgba(255,255,255,.07); color:#fff;}
+  .tool-item.active-link.current{color:#fff; font-weight:600; background:rgba(255,255,255,.09);}
+  .tool-item.active-link .go{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.06em; color:var(--ford-accent); text-transform:uppercase;}
+
+  /* CONTENT */
+  .content{margin-left:var(--sidebar-w); flex:1; min-width:0; padding:40px 44px 80px;}
+  .content-inner{max-width:760px; margin:0 auto;}
+  .page{display:none;}
+  .page.active{display:block; animation:pageIn .38s cubic-bezier(.22,.61,.36,1);}
+  @keyframes pageIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){
+    .page.active{animation:none;}
+  }
+
+  .crumb{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px; display:flex; align-items:center; flex-wrap:wrap;}
+  .crumb b{color:var(--ford-blue); font-weight:500;}
+  .crumb-link{background:none; border:none; padding:2px 4px; margin:-2px -4px; font:inherit; color:var(--ink-soft); cursor:pointer; border-radius:4px; text-transform:uppercase; letter-spacing:.08em;}
+  .crumb-link:hover{color:var(--ford-blue); background:#eaf2ff;}
+  .crumb-sep{margin:0 6px; color:var(--line);}
+
+  .section-head{display:flex; align-items:flex-start; gap:16px; margin-bottom:8px;}
+  .section-tag{font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; color:#fff; background:var(--ford-blue); width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  h1.page-title{font-size:30px; color:var(--ink); font-weight:600; padding-top:6px;}
+  .page-sub{color:var(--ink-soft); font-size:15px; margin:10px 0 32px; max-width:60ch; text-transform:none; letter-spacing:normal; font-family:'Inter',sans-serif;}
+
+  .card{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin-bottom:20px;}
+  .card h3{font-size:15px; color:var(--ford-blue); margin-bottom:12px; letter-spacing:.02em;}
+  .card p{margin:0 0 12px; font-size:14.5px; line-height:1.65; color:var(--ink);}
+  .card p:last-child{margin-bottom:0;}
+  .card ul{margin:0 0 12px; padding-left:20px; font-size:14.5px; line-height:1.7; color:var(--ink);}
+  .card ul:last-child{margin-bottom:0;}
+  .card table{width:100%; border-collapse:collapse; font-size:13.5px; margin-top:6px;}
+  .card table th{text-align:left; font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft); padding:8px 10px; border-bottom:1.5px solid var(--line);}
+  .card table td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink);}
+  .card table tr:last-child td{border-bottom:none;}
+
+  .cta-card{background:linear-gradient(135deg,#eaf2ff,#f7faff); border:1px solid #cfe2ff;}
+  .cta-card h3{color:var(--ford-blue);}
+  .cta-btn{display:inline-flex; align-items:center; gap:8px; margin-top:6px; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; padding:11px 18px; border-radius:9px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:not-allowed; opacity:.75;}
+  .cta-btn .soon-tag{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; background:#eee; color:var(--ink-soft); padding:2px 7px; border-radius:999px;}
+
+  .hero{padding:36px 0 8px; text-align:center; max-width:600px; margin:0 auto;}
+  .hero-eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ford-accent); font-weight:500;}
+  .hero-title{font-size:44px; line-height:1.05; color:var(--ford-blue); margin:16px 0 18px;}
+  .hero-sub{font-family:'Inter',sans-serif; text-transform:none; letter-spacing:normal; font-size:15.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 28px;}
+  .hero-actions{display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:32px;}
+  .hero-btn{font-family:'Inter',sans-serif; font-size:14.5px; font-weight:600; padding:13px 22px; border-radius:10px; cursor:pointer; border:1.5px solid transparent;}
+  .hero-btn.primary{background:var(--ford-blue); color:#fff;}
+  .hero-btn.primary:hover{background:var(--ford-navy-deep);}
+  .hero-btn.primary span{margin-left:4px;}
+  .hero-btn.secondary{background:var(--paper); color:var(--ford-blue); border-color:var(--line);}
+  .hero-btn.secondary:hover{border-color:var(--ford-blue); background:#eaf2ff;}
+  .hero-stats{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .stat-chip{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); background:var(--paper); border:1px solid var(--line); padding:8px 14px; border-radius:999px;}
+  .stat-chip b{color:var(--ford-blue);}
+
+  .badge-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; padding:5px 10px; border-radius:6px; letter-spacing:.02em;}
+  .badge.tool{background:#eaf2ff; color:var(--ford-blue); border:1px solid #cfe2ff;}
+  .badge.warn{background:#fff2e6; color:#b45300; border:1px solid #ffdbb0;}
+  .badge.role{background:#eafff5; color:#0a8a5c; border:1px solid #bdf2d9;}
+  .badge.holmes{background:#f2ecff; color:#6b3fd4; border:1px solid #ddccff;}
+
+  .media-block{border:1.5px dashed var(--line); border-radius:12px; background:#fbfcfe; padding:0; margin:18px 0; overflow:hidden;}
+
+  .gallery-section{margin:22px 0;}
+  .gallery-section-title{display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;}
+  .gallery-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:12px;}
+  .gallery-item{border:1.5px dashed var(--line); border-radius:10px; background:#fbfcfe; overflow:hidden; cursor:pointer; transition:border-color .15s,box-shadow .15s;}
+  .gallery-item:hover{border-color:var(--ford-blue); box-shadow:0 4px 14px rgba(0,52,120,.10);}
+  .gallery-item .thumb{aspect-ratio:16/10; display:flex; align-items:center; justify-content:center; background:#eef1f6; color:var(--ink-soft); position:relative;}
+  .gallery-item .thumb svg{opacity:.5;}
+  .gallery-item.video .thumb .play-mini{width:34px; height:34px; border-radius:50%; background:var(--ford-blue); display:flex; align-items:center; justify-content:center; opacity:.9;}
+  .gallery-item .caption{padding:8px 10px; font-size:12px; color:var(--ink); border-top:1.5px dashed var(--line); line-height:1.4;}
+  .gallery-item .caption .dur{display:block; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft); margin-top:2px;}
+  .gallery-add{display:none; flex-direction:column; align-items:center; justify-content:center; gap:6px; border:1.5px dashed #cfd6e3; border-radius:10px; aspect-ratio:16/10; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-align:center; padding:10px;}
+  body.edit-mode .gallery-add{display:flex;}
+
+  .edit-toggle{display:flex; align-items:center; gap:7px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:9px 14px; border-radius:8px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:all .15s;}
+  .edit-toggle:hover{border-color:var(--ford-blue); color:var(--ford-blue);}
+  body.edit-mode .edit-toggle{background:var(--ford-blue); border-color:var(--ford-blue); color:#fff;}
+  .edit-banner{display:none; align-items:center; gap:10px; background:#eafff5; border:1px solid #bdf2d9; color:#0a8a5c; font-size:13px; padding:10px 16px; border-radius:10px; margin-bottom:18px;}
+  body.edit-mode .edit-banner{display:flex;}
+  .edit-banner button{margin-left:auto; font-family:'Inter',sans-serif; font-weight:600; font-size:12.5px; background:#0a8a5c; color:#fff; border:none; padding:7px 12px; border-radius:7px; cursor:pointer;}
+
+  body.edit-mode .gallery-item{cursor:pointer; border-style:solid;}
+  body.edit-mode .gallery-item .thumb{position:relative;}
+  body.edit-mode .gallery-item .thumb::after{content:'trocar imagem'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,52,120,.75); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em; opacity:0; transition:opacity .15s;}
+  body.edit-mode .gallery-item.video .thumb::after{content:'trocar vídeo';}
+  body.edit-mode .gallery-item .thumb:hover::after{opacity:1;}
+  body.edit-mode .gallery-item.has-media .thumb::after{content:'trocar';}
+  .gallery-item .thumb img, .gallery-item .thumb video{width:100%; height:100%; object-fit:cover;}
+  body.edit-mode .cap-text{outline:1.5px dashed #cfe2ff; outline-offset:2px; border-radius:4px; cursor:text;}
+  body.edit-mode .cap-text:focus{outline:1.5px solid var(--ford-blue); background:#f5f9ff;}
+  body.edit-mode .gallery-add{cursor:pointer; color:var(--ford-blue); border-color:var(--ford-blue);}
+  body.edit-mode .gallery-add:hover{background:#eaf2ff;}
+  .media-block .media-label{display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); padding:10px 16px; border-bottom:1.5px dashed var(--line); text-transform:uppercase; letter-spacing:.06em;}
+  .media-block .media-body{padding:34px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:var(--ink-soft); text-align:center;}
+  .play-btn{width:52px; height:52px; border-radius:50%; background:var(--ford-blue); display:flex; align-items:center; justify-content:center; color:#fff;}
+  .media-body .hint{font-size:12.5px; color:var(--ink-soft); max-width:34ch;}
+
+  .steps-strip{display:flex; align-items:center; gap:0; margin:28px 0 6px; overflow-x:auto; padding-bottom:6px;}
+  .steps-strip .step{display:flex; align-items:center; gap:8px; flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:var(--paper); white-space:nowrap; cursor:pointer; transition:background .15s,border-color .15s,color .15s;}
+  .steps-strip .step:hover{border-color:var(--ford-blue); color:var(--ford-blue); background:#eaf2ff;}
+  .steps-strip .step.current{background:var(--ford-blue); color:#fff; border-color:var(--ford-blue); font-weight:600;}
+  .steps-strip .step.current:hover{background:var(--ford-navy-deep); color:#fff;}
+  .steps-strip .arrow{color:var(--line); flex-shrink:0; padding:0 2px;}
+
+  .step-link{display:flex; align-items:center; gap:14px; width:100%; background:none; border:none; padding:14px 14px; border-radius:10px; cursor:pointer; text-align:left;}
+  .step-link:hover{background:var(--canvas);}
+  .step-link .step-link-num{font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--ford-blue); background:#eaf2ff; width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .step-link .step-link-text{flex:1; min-width:0;}
+  .step-link .step-link-title{font-size:14.5px; font-weight:600; color:var(--ink);}
+  .step-link .step-link-sub{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+  .step-link .step-link-arrow{color:var(--ink-soft); flex-shrink:0;}
+  .ov-divider{border:none; border-top:1px solid var(--line); margin:0;}
+
+  .overlay{display:none;}
+  @media (max-width:900px){
+    .search-box{display:none;}
+    .menu-btn{display:flex;}
+    #editToggleLabel{display:none;}
+    .edit-toggle{padding:9px 10px;}
+    .sidebar{transform:translateX(-100%); transition:transform .25s ease; width:82%; max-width:340px; z-index:200; box-shadow:8px 0 24px rgba(0,0,0,.25);}
+    .sidebar.open{transform:translateX(0);}
+    .content{margin-left:0; padding:28px 18px 60px;}
+    .overlay{display:none; position:fixed; inset:0; top:var(--topbar-h); background:rgba(0,10,30,.45); z-index:150;}
+    .overlay.open{display:block;}
+    h1.page-title{font-size:24px;}
+    .hero-title{font-size:32px;}
+    .hero{padding-top:14px;}
+    .topbar-title .title{font-size:14.5px;}
+    .card{padding:20px 18px;}
+    .card table{font-size:12.5px;}
+    .sidebar-search{display:block; padding:0 22px 18px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,.12);}
+    .sidebar-search input::placeholder{color:rgba(255,255,255,.55);}
+    .sidebar-search .search-results{position:static; margin-top:8px; box-shadow:none; border-color:rgba(255,255,255,.18);}
+  }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn" id="menuBtn" aria-label="Abrir menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <button class="brand-link" onclick="showPage(0)" aria-label="Voltar para o início">
+      <img class="logo-mark" src="data:image/png;base64,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mgAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK4vx5rOoeGrzQNajuWXSEvRbanDtBUxyjashOMjY2Oh712lZniPRLfxJ4c1DRrniK8haLdjOwno2PUHB/CgDhdb8fTaZ4v1u8Msr6HoNtFbyW0IXN1ezN8q7j/dXrzx+lNvPilMdJ1+CbTDp2qWWm/bYfLu4rlWQnZuDLxuViODVqD4VQ/8ACuLnwzdakZr66uTeTag0IbdPvBDFCeRgBSCeRnpmoE+F12+j6zZzXOg2739n9lRtO0VLYp8wYszBtzZwPlzjgGgB1j40v9Ojj0LRdD1PxLd2FjDcahcyXaKymVd4BL8sxGSFHbgdK6ew8V/bNb1HS5NOlt5bGygu3EkgJzIGOwgZAI24JBIrCfwHrmnaxcal4c8Rw2Et7aQW94s9kJgzQpsWRPmGDjscj+jtW8EeIZNbuNV0bxNFa3F7Yx2l759kJPMKAgSLgjaTk8dv5AFLTvG0mq+KdC1R5JrPS7nQLi+mtTJuVSsi/McdSBnnFT6f8ULi5fSbq98LXtjourXC29pqElxG25nzs3Rg5UHHU/rT4/hmbV9BS21X/RrDTZNMu0khybmKTG4qc/Ic/X/GCx+G+siLRNM1TxLFeaHo1xHcW9utkElkMf8Aq1d9x4HsOcfkAWtC+I9x4h15rGx8PlrNLqS2e5OoQiRNhILtDneBwa76vNH+GWo3view1bUdW0uQ2d+t759tpKwXM21shHkVuV7HjJAr0ugAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9k=" alt="Ford Caminho">
+      <div class="topbar-title">
+        <span class="eyebrow">Rede Ford Caminho</span>
+        <span class="title">Manual de Garantia — Passo a Passo</span>
+      </div>
+    </button>
+    </div>
+    <div class="topbar-right">
+      <div class="search-wrap">
+        <div class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="Buscar no manual…" autocomplete="off">
+        </div>
+        <div class="search-results" id="searchResults"></div>
+      </div>
+      <button class="edit-toggle" id="editToggle" onclick="toggleEditMode()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        <span id="editToggleLabel">Editar mídia</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+
+      <div class="sidebar-group sidebar-search">
+        <div class="search-wrap" style="width:100%;">
+          <div class="search-box" style="background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.18); color:#fff;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.7;"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchInputMobile" placeholder="Buscar no manual…" autocomplete="off" style="color:#fff;">
+          </div>
+          <div class="search-results" id="searchResultsMobile"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Visão Geral</div>
+        <div class="road">
+          <div class="road-step" data-idx="guide"><button onclick="showPage('guide')"><span>Visão Geral</span></button></div>
+        </div>
+      </div>
+
+      <div class="sidebar-group">
+        <button class="sidebar-group-label" style="background:none;border:none;cursor:pointer;width:100%;text-align:left;" onclick="showPage('ov')">O Caminho da Garantia →</button>
+        <div class="road">
+          <div class="road-step" data-idx="1"><button onclick="showPage(1)"><span>1. Recepção do veículo</span> <span class="num">01</span></button></div>
+          <div class="road-step" data-idx="2"><button onclick="showPage(2)"><span>2. Elegibilidade</span> <span class="num">02</span></button></div>
+          <div class="road-step" data-idx="3"><button onclick="showPage(3)"><span>3. Ordem de Serviço</span> <span class="num">03</span></button></div>
+          <div class="road-step" data-idx="4"><button onclick="showPage(4)"><span>4. Diagnóstico e reparo</span> <span class="num">04</span></button></div>
+          <div class="road-step" data-idx="5"><button onclick="showPage(5)"><span>5. Submissão da solicitação</span> <span class="num">05</span></button></div>
+          <div class="road-step" data-idx="6"><button onclick="showPage(6)"><span>6. Devolução de peças (CRPG)</span> <span class="num">06</span></button></div>
+          <div class="road-step" data-idx="7"><button onclick="showPage(7)"><span>7. Descarte de Peça</span> <span class="num">07</span></button></div>
+        </div>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Referência</div>
+        <div class="road">
+          <div class="road-step" data-idx="audit"><button onclick="showPage('audit')"><span>Auditoria Ford</span></button></div>
+        </div>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Ferramentas Ford</div>
+        <div class="tool-list">
+          <div class="tool-item">Dealer <span class="soon">em breve</span></div>
+          <button class="tool-item active-link" data-idx="ows" onclick="showPage('ows')">OWS <span class="go">abrir →</span></button>
+          <div class="tool-item">PTS <span class="soon">em breve</span></div>
+          <div class="tool-item">Agenda <span class="soon">em breve</span></div>
+          <div class="tool-item">Catálogo <span class="soon">em breve</span></div>
+          <div class="tool-item">Holmes <span class="soon">em breve</span></div>
+        </div>
+      </div>
+
+    </aside>
+
+    <main class="content">
+      <div class="content-inner">
+
+        <div class="crumb" id="crumb"></div>
+
+        <div class="steps-strip">
+          <button class="step" data-strip="1" onclick="showPage(1)">01 Recepção</button><div class="arrow">→</div>
+          <button class="step" data-strip="2" onclick="showPage(2)">02 Elegibilidade</button><div class="arrow">→</div>
+          <button class="step" data-strip="3" onclick="showPage(3)">03 Ordem de Serviço</button><div class="arrow">→</div>
+          <button class="step" data-strip="4" onclick="showPage(4)">04 Reparo</button><div class="arrow">→</div>
+          <button class="step" data-strip="5" onclick="showPage(5)">05 Submissão</button><div class="arrow">→</div>
+          <button class="step" data-strip="6" onclick="showPage(6)">06 CRPG</button><div class="arrow">→</div>
+          <button class="step" data-strip="7" onclick="showPage(7)">07 Descarte</button>
+        </div>
+
+        <!-- PAGE 0 — HOME -->
+        <section class="page" id="page-0">
+          <div class="hero">
+            <span class="hero-eyebrow">Rede Ford Caminho · Interior de São Paulo</span>
+            <h1 class="hero-title">Manual de<br>Garantia</h1>
+            <p class="hero-sub">O guia oficial da Ford Caminho pra conduzir o processo de garantia do início ao fim — seguindo as regras do Manual de Garantia Ford e o passo a passo de cada ferramenta usada no dia a dia.</p>
+            <div class="hero-actions">
+              <button class="hero-btn primary" onclick="showPage('ov')">Ver o Caminho da Garantia <span>→</span></button>
+              <button class="hero-btn secondary" onclick="showPage('guide')">Como usar este manual</button>
+            </div>
+            <div class="hero-stats">
+              <div class="stat-chip"><b>7</b>&nbsp;etapas do processo</div>
+              <div class="stat-chip"><b>6</b>&nbsp;ferramentas Ford</div>
+              <div class="stat-chip">Vídeos narrados com áudio</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE GUIDE — VISÃO GERAL -->
+        <section class="page" id="page-guide">
+          <div class="section-head">
+            <div class="section-tag">i</div>
+            <h1 class="page-title">Visão Geral</h1>
+          </div>
+          <p class="page-sub">Este manual segue o processo de garantia Ford do início ao fim, na ordem em que ele acontece de verdade na Concessionária. Use a barra lateral pra pular direto pra etapa que você precisa.</p>
+          <div class="card">
+            <h3>O que você vai encontrar em cada etapa</h3>
+            <ul>
+              <li>Explicação da etapa com base no Manual de Garantia Ford (regras oficiais)</li>
+              <li>Prints das telas dos sistemas envolvidos</li>
+              <li>Vídeo narrado mostrando o passo a passo na prática</li>
+            </ul>
+            <p>As ferramentas Ford (Dealer, OWS, PTS, Agenda, Catálogo, Holmes) ganharão módulos próprios em breve.</p>
+          </div>
+        </section>
+
+        <!-- PAGE OVERVIEW -->
+        <section class="page" id="page-ov">
+          <div class="section-head"><div class="section-tag">→</div><h1 class="page-title">O Caminho da Garantia</h1></div>
+          <p class="page-sub">As 7 etapas do processo de garantia, na ordem em que elas acontecem na Concessionária. Clique em qualquer uma pra abrir o conteúdo completo.</p>
+          <div class="card" style="padding:10px; display:flex; flex-direction:column; gap:2px;" id="ov-list"></div>
+        </section>
+
+        <!-- PAGE 1 -->
+        <section class="page" id="page-1">
+          <div class="section-head"><div class="section-tag">01</div><h1 class="page-title">Recepção do Veículo</h1></div>
+          <p class="page-sub">Etapa que cobre desde a chegada do veículo novo na Concessionária até a entrega ao cliente — é aqui que muitos problemas de cobertura começam (ou são evitados).</p>
+          <div class="badge-row"><span class="badge role">Responsável: Recepcionista e Consultor(a) Técnico(a)</span><span class="badge tool">Referência: Manual do Proprietário</span><span class="badge tool">PTS</span><span class="badge warn">Inspeção obrigatória</span></div>
+
+          <div class="card">
+            <h3>Cadastro do cliente e do veículo</h3>
+            <p>Antes de tudo, confirme se o cliente já tem cadastro no Dealer Net e no Agenda Ford — se não tiver, cria na hora. O mesmo vale pro veículo: confirme os dados cadastrados no Dealer Net (data de venda, placa, cor, chassi).</p>
+            <p><b>De onde tirar cada dado:</b> data de venda, chassi e tipo de motor vêm do <b>PTS</b>; cor e acabamento vêm do <b>Catálogo Ford</b> (consulta por VIN — o Catálogo é onde se busca tudo sobre o chassi: motor, transmissão, peças).</p>
+          </div>
+
+          <div class="card">
+            <h3>Recebimento de veículo novo</h3>
+            <p>Ao receber um veículo novo, a Concessionária é obrigada a fazer uma inspeção visual completa pra verificar avarias de transporte. Se não houver registro formal de avaria no ato da recepção, a responsabilidade por qualquer problema encontrado depois passa a ser da própria Concessionária.</p>
+            <p>Veículos com avarias no fluxo logístico normalmente já são reparados no PDI Ford, sem ação da Concessionária. Em casos excepcionais, o veículo chega com um "Protocolo de Avaria" — nesse caso, o reembolso é solicitado no OWS usando o tipo de Solicitação 51, subcódigo TD2.</p>
+          </div>
+
+          <div class="card">
+            <h3>Falha de fabricação (peça faltante ou divergência de catálogo)</h3>
+            <ul>
+              <li>Peça de fácil visualização (retrovisor, calota): reparo até a preparação de entrega</li>
+              <li>Peça de difícil visualização (sensor, chicote): reparo até a primeira revisão</li>
+              <li>Solicitação no OWS: tipo 14, subcódigo MVC — código 39 pra peça faltante, código 38 pra divergência de catálogo</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Entrega ao cliente (veículo 0km)</h3>
+            <p>Para casos de entrega de veículo novo (0km): antes da entrega, a bateria precisa ser testada no equipamento próprio — se reprovar, é trocada por uma nova. O comprovante dessa verificação deve ser guardado, porque a Ford pode exigi-lo se a bateria apresentar defeito depois.</p>
+          </div>
+
+          <div class="card">
+            <h3>Entrega ao cliente pós-reparo</h3>
+            <p>Para casos de entrega após reparo em garantia, recall ou campanha: o que importa aqui é coletar a assinatura do cliente na OS de garantia (1ª via) — veja o detalhe completo na etapa 03.</p>
+          </div>
+
+          <div class="media-block">
+            <div class="media-label">Print de tela — Checklist de recepção</div>
+            <div class="media-body"><span>[ espaço reservado ]</span></div>
+          </div>
+          <div class="media-block">
+            <div class="media-label">Vídeo com áudio</div>
+            <div class="media-body"><div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div><span class="hint">Passo a passo da inspeção de recepção e entrega ao cliente</span></div>
+          </div>
+        </section>
+
+        <!-- PAGE 2 -->
+        <section class="page" id="page-2">
+          <div class="section-head"><div class="section-tag">02</div><h1 class="page-title">Identificação de Elegibilidade</h1></div>
+          <p class="page-sub">Antes de qualquer reparo, é preciso confirmar se o veículo (ou a peça) ainda está dentro do prazo de garantia — e se o problema relatado é realmente coberto.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) Técnico(a)</span><span class="badge tool">PTS</span><span class="badge tool">Agenda</span></div>
+
+          <div class="card">
+            <h3>Consultando a data de início da garantia</h3>
+            <p>A data de início da garantia contratual é a data de entrega do veículo novo ao primeiro proprietário. Essa consulta é feita no Sistema PTS, por chassi (VIN).</p>
+            <p><b>Atenção:</b> se houver divergência entre a data mostrada no PTS e a data do Sistema Agenda, vale a data do Agenda.</p>
+          </div>
+
+          <div class="card">
+            <h3>Não esqueça de checar recall, campanha e programas de satisfação</h3>
+            <p>Além do prazo de garantia, verifique se o chassi está na listagem de recall, campanha ou programa de satisfação (consulta no PTS). Se estiver na listagem, o atendimento segue direto como garantia — sem precisar reavaliar cobertura.</p>
+          </div>
+
+          <div class="card">
+            <h3>O que a garantia contratual não cobre</h3>
+            <ul>
+              <li>Mau uso do veículo</li>
+              <li>Danos por colisão ou acidente</li>
+              <li>Desgaste natural (peças de desgaste)</li>
+              <li>Problemas decorrentes de modificação feita pelo cliente (ex: blindagem, conversão pra gás) — perde a garantia só dos itens afetados pela modificação</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Veículo perto do fim da garantia</h3>
+            <p>Se o defeito aparecer perto do vencimento e a peça não estiver disponível, mantenha a OS aberta e solicite a peça à Ford em até 5 dias corridos — isso garante que o reparo seja tratado como garantia mesmo que a instalação aconteça depois do vencimento.</p>
+          </div>
+
+          <div class="media-block">
+            <div class="media-label">Print de tela — Consulta PTS</div>
+            <div class="media-body"><span>[ espaço reservado ]</span></div>
+          </div>
+        </section>
+
+        <!-- PAGE 3 -->
+        <section class="page" id="page-3">
+          <div class="section-head"><div class="section-tag">03</div><h1 class="page-title">Abertura da Ordem de Serviço</h1></div>
+          <p class="page-sub">Depois de confirmada a elegibilidade da garantia, esta é a etapa em que a Concessionária formaliza o atendimento e dá início ao controle interno do reparo.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) Técnico(a) / Consultor(a) de Garantia</span><span class="badge tool">Dealer</span><span class="badge tool">PTS</span><span class="badge warn">Exige atenção ao prazo</span></div>
+
+          <div class="card">
+            <h3>O que acontece nesta etapa</h3>
+            <p>A OS é o documento que formaliza o atendimento e serve de base pra toda a solicitação de garantia depois. Nenhum reparo pode ser executado sem uma OS aberta.</p>
+            <ul>
+              <li>Consultar o histórico do veículo antes de abrir a OS</li>
+              <li>Registrar a queixa exatamente como relatada pelo cliente</li>
+              <li>Confirmar o tempo de reparo na tabela de tempos do PTS</li>
+              <li>Emitir a OS de garantia separadamente quando houver outros reparos não cobertos</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Como coletar a queixa do cliente com clareza</h3>
+            <p>Pra evidenciar a causa (e não só o sintoma), vale estruturar a conversa com o cliente em 4 perguntas antes de escrever a descrição do problema na OS:</p>
+            <ul>
+              <li><b>Qual</b> é o problema? (é algo que dá pra ver, sentir, cheirar ou ouvir?)</li>
+              <li><b>Quando</b> o problema ocorre? (ao acelerar, desacelerar, motor frio ou quente?)</li>
+              <li><b>Onde</b> o problema ocorre? (em determinada velocidade, carga ou circunstância?)</li>
+              <li>Qual é a <b>história</b> do problema? (quando começou, quem percebeu, já foi reparado antes?)</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>TMO / TPR — tempo de mão de obra</h3>
+            <p><b>TMO</b> (Tempo para Mão de Obra) e <b>TPR</b> (Tempo Padrão de Reparo) são o mesmo tipo de informação — só muda o nome de um sistema pro outro. É o tempo padrão que a Ford define pra cada reparo.</p>
+            <p>Esse dado é buscado <b>somente no PTS</b>, e só entra em jogo aqui, na abertura da OS — não faz parte do cadastro do veículo lá na Recepção.</p>
+          </div>
+
+          <div class="card">
+            <h3>Antes de abrir: checar se já existe boletim (TSB/GSB/SSM)</h3>
+            <p>Antes de abrir a OS, vale a pena pesquisar no PTS (aba TSB/GSB/SSM) se já existe um boletim de serviço pro problema relatado. Se não tiver boletim, segue pra busca de tempo padrão (TPR) normalmente.</p>
+            <p>Pra recall ou campanha, a OS é aberta direto como <b>GSR/GSC</b>, usando o TPR e o CCC do PTS — e vale conferir a hora da própria loja antes de lançar o serviço.</p>
+          </div>
+
+          <div class="card">
+            <h3>Recap rápido antes de prosseguir</h3>
+            <p>Antes de abrir a OS como garantia, o Consultor/Analista de Garantia reavalia rapidamente:</p>
+            <ul>
+              <li>Histórico do veículo</li>
+              <li>Data inicial da garantia</li>
+              <li>Evidências iniciais gravadas pelos técnicos — se serão aceitas pela montadora</li>
+              <li>Laudo técnico — se está compreensível pra quem não entende de mecânica</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Dados obrigatórios na OS de garantia</h3>
+            <ul>
+              <li>Número e data de abertura da OS</li>
+              <li>Dados do veículo (chassi, data de início de garantia, quilometragem)</li>
+              <li>Descrição detalhada da reclamação do cliente</li>
+              <li>Diagnóstico do técnico — evidenciando a causa, não o sintoma</li>
+              <li>ID Stars do técnico e data</li>
+            </ul>
+          </div>
+
+          <div class="media-block">
+            <div class="media-label">Print de tela — Dealer</div>
+            <div class="media-body"><span>[ espaço reservado ]</span></div>
+          </div>
+          <div class="media-block">
+            <div class="media-label">Vídeo com áudio</div>
+            <div class="media-body"><div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div><span class="hint">Abertura de OS no Dealer, passo a passo</span></div>
+          </div>
+
+          <div class="card"><h3>Atenção</h3><p>Erros de preenchimento nesta etapa costumam gerar estorno lá na frente, na Auditoria Ford.</p></div>
+        </section>
+
+        <!-- PAGE 4 -->
+        <section class="page" id="page-4">
+          <div class="section-head"><div class="section-tag">04</div><h1 class="page-title">Diagnóstico e Reparo</h1></div>
+          <p class="page-sub">Aqui o técnico faz o diagnóstico, o orçamento, o laudo e executa o reparo, seguindo os padrões Ford — com as evidências certas em cada parte do processo.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Produtivo (Mecânico)</span><span class="badge tool">Hotline</span><span class="badge tool">GTAC</span><span class="badge tool">PTS</span><span class="badge tool">Catálogo</span><span class="badge holmes">Fluxo interno via Holmes</span></div>
+
+          <div class="card">
+            <h3>Diagnóstico</h3>
+            <p>O diagnóstico precisa confirmar se a causa está relacionada a defeito de fabricação/material coberto pela garantia — desgaste natural, falta de manutenção, mau uso ou dano acidental não entram. Deve ser feito por técnico treinado e certificado Ford, usando ferramentas homologadas. Vale consultar o PTS pra conferir boletins (TSB/GSB/SSM) relacionados ao problema antes de seguir.</p>
+          </div>
+
+          <div class="card">
+            <h3>Responsabilidade do técnico</h3>
+            <ul>
+              <li>Fazer o <b>orçamento</b> com todas as peças que serão necessárias pra substituição</li>
+              <li>Fazer um <b>laudo técnico</b> detalhado, com os testes realizados e o resultado de cada um</li>
+              <li>Produzir todas as evidências do processo</li>
+            </ul>
+            <p><b>Evidências obrigatórias:</b></p>
+            <ul>
+              <li>Evidência registrando a reclamação do cliente com clareza</li>
+              <li>Evidência de todos os testes realizados</li>
+              <li>Evidência do reparo</li>
+              <li>Evidência do defeito sanado</li>
+            </ul>
+            <p>Em todas elas, sempre mostrando <b>chassi, placa e odômetro</b> do veículo.</p>
+          </div>
+
+          <div class="card">
+            <h3>Se a peça não estiver em estoque</h3>
+            <p>Antes de iniciar o reparo, o mecânico registra as evidências, o laudo e a OS no <b>Holmes</b>, pra análise do chefe de oficina. Com o processo aprovado, a OS é transformada em garantia — e assim que a peça chegar no estoque, o serviço começa.</p>
+          </div>
+
+          <div class="card">
+            <h3>Checklist de apontamento</h3>
+            <ol style="margin:0 0 12px; padding-left:20px; font-size:14.5px; line-height:1.7; color:var(--ink);">
+              <li>Faz o apontamento da OS</li>
+              <li>Requisita a peça no TPR que está apontado</li>
+              <li>Ao finalizar o serviço: finaliza o apontamento, registra a evidência final mostrando o serviço feito, e a quilometragem do painel</li>
+            </ol>
+            <p><b>Lembrete:</b> se tiver mais de um TPR, aponta um tempo de cada vez, requisitando cada peça no seu respectivo tempo.</p>
+          </div>
+
+          <div class="card">
+            <h3>Execução do reparo</h3>
+            <ul>
+              <li>Reparo gratuito pro cliente, mesmo em veículos vendidos por outra Concessionária</li>
+              <li>Só peças originais Ford; Motorcraft apenas quando não há peça Ford liberada</li>
+              <li>Seguir a literatura de serviço e usar ferramentas homologadas</li>
+              <li>Se a peça não estiver disponível na Concessionária nem na Ford, pode comprar de outra Concessionária primeiro, e só depois de um revendedor autorizado</li>
+            </ul>
+          </div>
+
+          <div class="media-block">
+            <div class="media-label">Print de tela — Consulta de peça no Catálogo</div>
+            <div class="media-body"><span>[ espaço reservado ]</span></div>
+          </div>
+        </section>
+
+        <!-- PAGE 5 -->
+        <section class="page" id="page-5">
+          <div class="section-head"><div class="section-tag">05</div><h1 class="page-title">Submissão da Solicitação</h1></div>
+          <p class="page-sub">Com a OS fechada, a solicitação de reembolso é enviada à Ford pelo OWS. É aqui que a qualidade das informações técnicas realmente conta.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) Técnico(a) → Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge holmes">Processo organizado no Holmes</span></div>
+
+          <div class="card">
+            <h3>Resumo da etapa</h3>
+            <p>Antes de submeter, o Consultor Técnico colhe a assinatura do cliente na OS (1ª via) e na via já transformada em garantia. Esse processo é organizado direto no <b>Holmes</b>, que centraliza tudo até chegar no(a) Consultor(a) de Garantia — responsável por analisar, faturar e fazer a elaboração no OWS.</p>
+            <p>Cada tipo de garantia (normal, recall, campanha, revisão, leva e trás...) tem suas próprias regras de submissão e documentação exigida.</p>
+          </div>
+
+          <div class="card cta-card">
+            <h3>Passo a passo por tipo de garantia</h3>
+            <p>O detalhamento completo de como submeter cada tipo de garantia vai morar numa seção própria de referência rápida, com passo a passo específico pra cada caso.</p>
+            <button class="cta-btn" disabled>Ver Submissões de Tipos de Garantia <span class="soon-tag">em breve</span></button>
+          </div>
+        </section>
+
+        <!-- PAGE 6 -->
+        <section class="page" id="page-6">
+          <div class="section-head"><div class="section-tag">06</div><h1 class="page-title">Devolução de Peças — CRPG</h1></div>
+          <p class="page-sub">Peças substituídas em garantia muitas vezes precisam voltar pro Centro de Retorno de Peças em Garantia (CRPG) pra análise técnica.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge tool">Dealer</span><span class="badge warn">Prazo de 45 dias</span></div>
+
+          <div class="card">
+            <h3>Resumo da etapa</h3>
+            <p>Quando a Ford solicita a peça de volta, ela precisa ser preparada, identificada e devolvida ao CRPG dentro do prazo (45 dias corridos a partir do status "Pago"), acompanhada da nota fiscal de remessa emitida no Dealer Net.</p>
+          </div>
+
+          <div class="card cta-card">
+            <h3>Guia completo de devolução ao CRPG</h3>
+            <p>O passo a passo completo — consulta de status, emissão da nota fiscal de remessa e o processo de devolução em si — vai morar numa seção própria de referência rápida.</p>
+            <button class="cta-btn" disabled>Ver guia de Devolução de Peça ao CRPG <span class="soon-tag">em breve</span></button>
+          </div>
+        </section>
+
+        <!-- PAGE 7 -->
+        <section class="page" id="page-7">
+          <div class="section-head"><div class="section-tag">07</div><h1 class="page-title">Descarte de Peça</h1></div>
+          <p class="page-sub">Peças não requisitadas pelo CRPG ou já estornadas precisam ser descartadas de forma correta, seguindo os padrões Ford.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">CRPG</span></div>
+
+          <div class="card">
+            <h3>Resumo da etapa</h3>
+            <p>Peças não requisitadas ou estornadas devem ser danificadas nas áreas funcionais da Concessionária antes de serem destruídas e sucateadas — elas não podem ser reaproveitadas em outros reparos. Em ocasiões especiais, a Ford pode pedir evidência do sucateamento (antes e depois), avisando com antecedência.</p>
+          </div>
+
+          <div class="card cta-card">
+            <h3>Guia completo de descarte</h3>
+            <p>O passo a passo completo de como e quando descartar cada tipo de peça vai morar numa seção própria de referência rápida.</p>
+            <button class="cta-btn" disabled>Ver guia de Descarte de Peça <span class="soon-tag">em breve</span></button>
+          </div>
+        </section>
+
+        <!-- PAGE AUDITORIA (referência, fora do Caminho) -->
+        <section class="page" id="page-audit">
+          <div class="section-head"><div class="section-tag">i</div><h1 class="page-title">Auditoria Ford</h1></div>
+          <p class="page-sub">A Ford audita periodicamente os processos de garantia pra checar aderência às regras. Documentação completa em cada etapa do Caminho é o que te protege aqui.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge tool">FMCDealer</span><span class="badge warn">Prazo de 3 dias úteis</span></div>
+
+          <div class="card">
+            <h3>Como funciona</h3>
+            <ul>
+              <li>Pode ser a qualquer momento — por indicadores, informações do CRPG ou escolha aleatória</li>
+              <li>Período auditado: até 12 meses (24 meses se houver suspeita de irregularidade grave)</li>
+              <li>Concessionária é avisada antes e recebe a lista de solicitações a apresentar</li>
+              <li>Prazo pra enviar documentação: 3 dias úteis da notificação — não cumprir gera débito automático</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Classificação das irregularidades</h3>
+            <table>
+              <tr><th>Categoria</th><th>Descrição</th></tr>
+              <tr><td>Leve / Média / Grave</td><td>Falhas processuais, conforme checklist da auditoria</td></tr>
+              <tr><td>NOCIG</td><td>Prática intencional que gera pagamento indevido</td></tr>
+            </table>
+          </div>
+
+          <div class="card">
+            <h3>Se você discordar do resultado</h3>
+            <p>Prazo de 30 dias corridos pra enviar carta de contestação. A Ford responde em até 15 dias úteis — se não responder, os argumentos da concessionária são aceitos integralmente. O débito mensal não pode passar de 25% do faturamento médio em garantia dos últimos 6 meses (exceto em casos de NOCIG ou irregularidade grave).</p>
+          </div>
+        </section>
+
+        <!-- PAGE OWS -->
+        <section class="page" id="page-ows">
+          <div class="section-head"><div class="section-tag">OWS</div><h1 class="page-title">OWS — Sistema Global de Garantia</h1></div>
+          <p class="page-sub">É onde toda solicitação de garantia é enviada, analisada e paga pela Ford. Praticamente todo o processo, da abertura até a devolução de peça, passa por aqui em algum momento.</p>
+          <div class="badge-row"><span class="badge role">Usado por: Consultor(a) de Garantia</span><span class="badge holmes">Login SSO Ford (2 etapas)</span></div>
+
+          <div class="card">
+            <h3>Como acessar</h3>
+            <p>Link oficial: <b>warrantyprocessing.dealerconnection.com</b>. Funciona melhor no <b>Google Chrome</b> (o Firefox e o Safari não têm suporte completo).</p>
+            <p><b>Login (SSO Ford/Microsoft):</b></p>
+            <ol style="margin:0 0 12px; padding-left:20px; font-size:14.5px; line-height:1.7; color:var(--ink);">
+              <li>Acesse o link e clique em "Entrar"</li>
+              <li>Informe seu usuário no formato <code>usuario@b2bford.com</code></li>
+              <li>Informe sua senha e clique em "Acesso"</li>
+              <li>Aprove a solicitação de entrada no app <b>Microsoft Authenticator</b> (autenticação em duas etapas)</li>
+            </ol>
+            <p>Depois de logado, cai direto na página inicial do OWS, que mostra os ícones de tarefa (Abrir Solicitação, Solicitar Aprovação Prévia, relatórios etc.) e as mensagens do sistema.</p>
+          </div>
+
+          <div class="card">
+            <h3>O que você encontra na página inicial do OWS</h3>
+            <p>Ao entrar, a tela mostra os ícones de tarefa direto na sua cara — é por ali que se faz tudo:</p>
+            <table>
+              <tr><th>Ícone / Ação</th><th>Pra que serve</th></tr>
+              <tr><td>Abrir uma Solicitação</td><td>Inserir, editar ou cancelar uma Solicitação de garantia</td></tr>
+              <tr><td>Solicitar Aprovação Prévia</td><td>Pedir autorização antes de um reparo que exige aprovação</td></tr>
+              <tr><td>Visualizar relatório de status da aprovação prévia</td><td>Acompanhar o andamento dos pedidos de aprovação prévia já enviados</td></tr>
+              <tr><td>Visualizar relatório de Status da Solicitação</td><td>Acompanhar o status de cada Solicitação (pago, recusado, ação necessária...) — inclui contestação</td></tr>
+              <tr><td>Visualizar relatório de Status de peças</td><td>Acompanhar o status de devolução das peças ao CRPG e imprimir a etiqueta de devolução</td></tr>
+              <tr><td>Visualizar Relatório de Lançamentos Diários/Mensais</td><td>Relatórios contábeis de avisos relacionados à conta da Concessionária</td></tr>
+              <tr><td>Buscar Solicitação Padrão</td><td>Pesquisar pelos códigos de SG Padrão (soluções pré-definidas já configuradas)</td></tr>
+            </table>
+          </div>
+
+          <div class="card">
+
+            <h3>Abrindo uma Solicitação</h3>
+            <p>Pela página inicial, no botão "Abrir uma Solicitação". Os campos obrigatórios de partida são o <b>número da OS</b> e a <b>data de abertura da OS</b> — o resto muda de acordo com o tipo de Solicitação (normalmente pede VIN, ID Stars do consultor e quilometragem).</p>
+            <p>Depois de criada, dá pra editar quase tudo — exceto o número da OS e a data de abertura, que ficam travados.</p>
+          </div>
+
+          <div class="card">
+            <h3>Relatórios disponíveis</h3>
+            <ul>
+              <li>Status da Aprovação Prévia</li>
+              <li>Status da Solicitação</li>
+              <li>Status de peças do CRPG</li>
+              <li>Lançamentos diários/mensais</li>
+            </ul>
+            <p>O acesso a cada relatório depende da função atribuída ao usuário.</p>
+          </div>
+
+          <div class="edit-banner">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Modo de edição ativo: clique numa miniatura pra trocar o arquivo, ou no texto da legenda pra editar.
+            <button onclick="exportHTML()">Baixar HTML atualizado</button>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Tela de login (SSO Ford)</span></div></div>
+              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Página inicial (ícones de tarefa)</span></div></div>
+              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Abertura de Solicitação</span></div></div>
+              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Relatório de Status da Solicitação</span></div></div>
+              <div class="gallery-item"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text">Relatório de Status de peças</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-item video"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text">Como fazer login no OWS</span><span class="dur">com áudio</span></div></div>
+              <div class="gallery-item video"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text">Abrindo e acompanhando uma Solicitação</span><span class="dur">com áudio</span></div></div>
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+  menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
+  overlay.addEventListener('click', closeMenu);
+
+  const stepNames = {0:'Início',1:'Recepção do Veículo',2:'Elegibilidade',3:'Ordem de Serviço',4:'Diagnóstico e Reparo',5:'Submissão da Solicitação',6:'Devolução de Peças (CRPG)',7:'Descarte de Peça'};
+  const stepSubs  = {1:'Recepcionista + Consultor Técnico · Inspeção e entrega do veículo novo',2:'Consultor Técnico · Confirmar prazo e cobertura',3:'Consultor Técnico/Garantia · Formalizar o atendimento',4:'Produtivo · Diagnóstico, laudo e reparo',5:'Consultor Técnico → Garantia · Enviar a solicitação à Ford',6:'Consultor de Garantia · Devolver peças ao CRPG',7:'Consultor de Garantia · Descartar peças não requisitadas/estornadas'};
+
+  function showPage(id){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-'+id).classList.add('active');
+
+    document.querySelectorAll('.road-step').forEach(s => s.classList.remove('active'));
+    const roadEl = document.querySelector('.road-step[data-idx="'+id+'"]');
+    if(roadEl) roadEl.classList.add('active');
+
+    document.querySelectorAll('.tool-item.active-link').forEach(s => s.classList.remove('current'));
+    const toolEl = document.querySelector('.tool-item[data-idx="'+id+'"]');
+    if(toolEl) toolEl.classList.add('current');
+
+    document.querySelectorAll('.steps-strip .step').forEach(s => s.classList.remove('current'));
+    const stripEl = document.querySelector('.steps-strip .step[data-strip="'+id+'"]');
+    if(stripEl) stripEl.classList.add('current');
+
+    updateCrumb(id);
+
+    const stripWrap = document.querySelector('.steps-strip');
+    stripWrap.style.display = (typeof id === 'number' && id >= 1) ? 'flex' : 'none';
+
+    closeMenu();
+    document.querySelector('.content').scrollTo(0,0);
+    window.scrollTo(0,0);
+  }
+
+  function updateCrumb(id){
+    const crumb = document.getElementById('crumb');
+    const sep = '<span class="crumb-sep">/</span>';
+    if(id === 0){
+      crumb.innerHTML = '<b>Manual</b>';
+    } else if(id === 'guide'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Visão Geral</b>';
+    } else if(id === 'ov'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>O Caminho da Garantia</b>';
+    } else if(id === 'audit'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Auditoria Ford</b>';
+    } else if(id === 'ows'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Ferramentas Ford</b>' + sep + '<b>OWS</b>';
+    } else {
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(\'ov\')">O Caminho da Garantia</button>' + sep +
+        '<b>' + stepNames[id] + '</b>';
+    }
+  }
+
+  // monta a página "O Caminho da Garantia" com base nas mesmas etapas da sidebar
+  function buildOverview(){
+    const list = document.getElementById('ov-list');
+    let html = '';
+    for(let i=1; i<=7; i++){
+      html += '<button class="step-link" onclick="showPage('+i+')">' +
+        '<span class="step-link-num">'+String(i).padStart(2,'0')+'</span>' +
+        '<span class="step-link-text"><span class="step-link-title">'+stepNames[i]+'</span><span class="step-link-sub">'+stepSubs[i]+'</span></span>' +
+        '<span class="step-link-arrow">→</span></button>';
+      if(i < 7) html += '<hr class="ov-divider">';
+    }
+    list.innerHTML = html;
+  }
+
+  /* ---------- BUSCA ---------- */
+  // índice é montado a partir do próprio conteúdo das páginas, então qualquer
+  // etapa ou ferramenta nova adicionada depois entra automaticamente na busca
+  let searchIndex = [];
+  function buildSearchIndex(){
+    searchIndex = [];
+    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','ows'];
+    pageIds.forEach(i => {
+      const page = document.getElementById('page-'+i);
+      if(!page) return;
+      const title = page.querySelector('.page-title')?.textContent.trim() || '';
+      const cards = page.querySelectorAll('.card');
+      cards.forEach((card, cIdx) => {
+        const h3 = card.querySelector('h3')?.textContent.trim() || title;
+        const text = card.textContent.replace(/\s+/g,' ').trim();
+        searchIndex.push({ pageId:i, pageTitle:title, cardTitle:h3, snippet:text.slice(0,140), full:(title+' '+text).toLowerCase(), cardIdx:cIdx });
+      });
+    });
+  }
+
+  function runSearch(query, resultsEl){
+    const q = query.trim().toLowerCase();
+    if(q.length < 2){ resultsEl.classList.remove('open'); resultsEl.innerHTML=''; return; }
+    const matches = searchIndex.filter(item => item.full.includes(q)).slice(0,8);
+    if(matches.length === 0){
+      resultsEl.innerHTML = '<div class="res-empty">Nenhum resultado pra "'+query+'" ainda — mais conteúdo entra na busca conforme o manual cresce.</div>';
+    } else {
+      resultsEl.innerHTML = matches.map((m,idx) =>
+        '<button class="res-item" data-page="'+m.pageId+'" data-card="'+m.cardIdx+'" data-result-idx="'+idx+'">' +
+          '<div class="res-page">'+(typeof m.pageId === 'number' ? 'Etapa '+String(m.pageId).padStart(2,'0')+' · ' : '')+m.pageTitle+'</div>' +
+          '<div class="res-title">'+m.cardTitle+'</div>' +
+          '<div class="res-snippet">'+m.snippet+'…</div>' +
+        '</button>'
+      ).join('');
+    }
+    resultsEl.classList.add('open');
+    resultsEl.querySelectorAll('.res-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pageIdRaw = btn.dataset.page;
+        const pageId = isNaN(pageIdRaw) ? pageIdRaw : parseInt(pageIdRaw, 10);
+        const cardIdx = parseInt(btn.dataset.card, 10);
+        showPage(pageId);
+        setTimeout(() => {
+          const card = document.querySelectorAll('#page-'+pageId+' .card')[cardIdx];
+          if(card){
+            card.scrollIntoView({behavior:'smooth', block:'center'});
+            card.classList.add('flash');
+            setTimeout(() => card.classList.remove('flash'), 1400);
+          }
+        }, 60);
+        resultsEl.classList.remove('open');
+      });
+    });
+  }
+
+  function wireSearch(inputEl, resultsEl){
+    inputEl.addEventListener('input', () => runSearch(inputEl.value, resultsEl));
+    inputEl.addEventListener('focus', () => { if(inputEl.value.trim().length >= 2) runSearch(inputEl.value, resultsEl); });
+    document.addEventListener('click', (e) => {
+      if(!inputEl.parentElement.parentElement.contains(e.target)){ resultsEl.classList.remove('open'); }
+    });
+  }
+
+  buildOverview();
+  buildSearchIndex();
+  wireSearch(document.getElementById('searchInput'), document.getElementById('searchResults'));
+  wireSearch(document.getElementById('searchInputMobile'), document.getElementById('searchResultsMobile'));
+
+  showPage(0); // agora abre direto na tela de apresentação
+
+  /* ---------- MODO DE EDIÇÃO DE MÍDIA ---------- */
+  let editMode = false;
+  const fileInputImg = document.createElement('input');
+  fileInputImg.type = 'file'; fileInputImg.accept = 'image/*'; fileInputImg.style.display = 'none';
+  const fileInputVid = document.createElement('input');
+  fileInputVid.type = 'file'; fileInputVid.accept = 'video/*'; fileInputVid.style.display = 'none';
+  document.body.appendChild(fileInputImg);
+  document.body.appendChild(fileInputVid);
+  let currentThumb = null;
+
+  function toggleEditMode(){
+    editMode = !editMode;
+    document.body.classList.toggle('edit-mode', editMode);
+    document.getElementById('editToggleLabel').textContent = editMode ? 'Sair da edição' : 'Editar mídia';
+    document.querySelectorAll('.cap-text').forEach(el => el.setAttribute('contenteditable', editMode ? 'true' : 'false'));
+  }
+
+  document.addEventListener('click', (e) => {
+    if(!editMode) return;
+    const thumb = e.target.closest('.gallery-item .thumb');
+    if(!thumb) return;
+    currentThumb = thumb;
+    const isVideo = thumb.closest('.gallery-item').classList.contains('video');
+    (isVideo ? fileInputVid : fileInputImg).click();
+  });
+
+  fileInputImg.addEventListener('change', () => handleFile(fileInputImg, false));
+  fileInputVid.addEventListener('change', () => handleFile(fileInputVid, true));
+
+  function handleFile(input, isVideo){
+    const file = input.files[0];
+    if(!file || !currentThumb) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      currentThumb.innerHTML = isVideo
+        ? '<video controls src="'+ev.target.result+'"></video>'
+        : '<img src="'+ev.target.result+'" alt="">';
+      currentThumb.closest('.gallery-item').classList.add('has-media');
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  function addGalleryItem(addBtn, type){
+    if(!editMode) return;
+    const grid = addBtn.closest('.gallery-grid');
+    const item = document.createElement('div');
+    item.className = 'gallery-item' + (type === 'video' ? ' video' : '');
+    const thumbInner = type === 'video'
+      ? '<div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>'
+      : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>';
+    const durSpan = type === 'video' ? '<span class="dur">com áudio</span>' : '';
+    item.innerHTML = '<div class="thumb">'+thumbInner+'</div><div class="caption"><span class="cap-text" contenteditable="true">'+(type === 'video' ? 'Novo vídeo' : 'Novo print')+'</span>'+durSpan+'</div>';
+    grid.insertBefore(item, addBtn);
+  }
+
+  function exportHTML(){
+    const clone = document.documentElement.cloneNode(true);
+    clone.classList.remove('edit-mode');
+    clone.querySelectorAll('.cap-text').forEach(el => el.setAttribute('contenteditable', 'false'));
+    const label = clone.querySelector('#editToggleLabel');
+    if(label) label.textContent = 'Editar mídia';
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'manual_ford_caminho_atualizado.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+</script>
+</body>
+</html>
