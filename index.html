@@ -81,6 +81,11 @@
   .road-step .num{font-family:'IBM Plex Mono',monospace; font-size:10px; color:rgba(255,255,255,.4);}
   .road-step.active::before{background:var(--ford-accent); border-color:#fff; box-shadow:0 0 0 4px rgba(31,143,255,.28);}
   .road-step.active button{color:#fff; font-weight:600; background:rgba(255,255,255,.09);}
+  /* dentro do grupo com indicador deslizante, quem faz o destaque é o .road-indicator */
+  #mainRoad .road-step button{position:relative; z-index:1;}
+  #mainRoad .road-step.active button, #mainRoad .road-step.active button:hover{background:none;}
+  .road-indicator{position:absolute; left:0; top:0; width:0; height:0; background:rgba(255,255,255,.09); border-radius:8px; z-index:0; pointer-events:none; opacity:0; transition:left .32s cubic-bezier(.22,.61,.36,1), top .32s cubic-bezier(.22,.61,.36,1), width .32s ease, height .32s ease, opacity .2s ease;}
+  .road-indicator.show{opacity:1;}
 
   .tool-list{padding-left:26px; display:flex; flex-direction:column; gap:2px;}
   .tool-item{display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-radius:8px; font-size:13.5px; color:rgba(255,255,255,.55);}
@@ -113,7 +118,8 @@
   h1.page-title{font-size:30px; color:var(--ink); font-weight:600; padding-top:6px;}
   .page-sub{color:var(--ink-soft); font-size:15px; margin:10px 0 32px; max-width:60ch; text-transform:none; letter-spacing:normal; font-family:'Inter',sans-serif;}
 
-  .card{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin-bottom:20px;}
+  .card{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin-bottom:20px; transition:transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;}
+  body:not(.edit-mode) .card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,30,70,.09);}
   .card h3{font-size:15px; color:var(--ford-blue); margin-bottom:12px; letter-spacing:.02em;}
   .card p{margin:0 0 12px; font-size:14.5px; line-height:1.65; color:var(--ink);}
   .card p:last-child{margin-bottom:0;}
@@ -212,14 +218,16 @@
   /* botão de play sobreposto à capa do vídeo */
   .gallery-item.video .thumb .play-mini.overlay{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 3px 12px rgba(0,0,0,.4);}
 
-  .steps-strip{display:flex; align-items:center; gap:0; margin:28px 0 6px; overflow-x:auto; padding-bottom:6px;}
-  .steps-strip .step{display:flex; align-items:center; gap:8px; flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:var(--paper); white-space:nowrap; cursor:pointer; transition:background .15s,border-color .15s,color .15s,transform .18s cubic-bezier(.34,1.56,.64,1);}
+  .steps-strip{display:flex; align-items:center; gap:0; margin:28px 0 6px; overflow-x:auto; padding-bottom:6px; position:relative;}
+  .steps-strip .step{position:relative; z-index:1; display:flex; align-items:center; gap:8px; flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:var(--paper); white-space:nowrap; cursor:pointer; transition:background .15s,border-color .15s,color .15s,transform .18s cubic-bezier(.34,1.56,.64,1);}
   .steps-strip .step:hover{transform:scale(1.06);}
   .steps-strip .step:active{transform:scale(.95);}
   .steps-strip .step:hover{border-color:var(--ford-blue); color:var(--ford-blue); background:#eaf2ff;}
-  .steps-strip .step.current{background:var(--ford-blue); color:#fff; border-color:var(--ford-blue); font-weight:600;}
-  .steps-strip .step.current:hover{background:var(--ford-navy-deep); color:#fff;}
+  .steps-strip .step.current{background:transparent; color:#fff; border-color:transparent; font-weight:600;}
+  .steps-strip .step.current:hover{background:transparent; color:#fff;}
   .steps-strip .arrow{color:var(--line); flex-shrink:0; padding:0 2px;}
+  .strip-indicator{position:absolute; top:0; height:0; width:0; background:var(--ford-blue); border-radius:999px; z-index:0; pointer-events:none; opacity:0; transition:left .32s cubic-bezier(.22,.61,.36,1), width .32s cubic-bezier(.22,.61,.36,1), top .32s ease, height .32s ease, opacity .2s ease;}
+  .strip-indicator.show{opacity:1;}
 
   .step-link{display:flex; align-items:center; gap:14px; width:100%; background:none; border:none; padding:14px 14px; border-radius:10px; cursor:pointer; text-align:left; transition:background .15s,transform .18s cubic-bezier(.34,1.56,.64,1);}
   .step-link:hover{transform:scale(1.02);}
@@ -360,7 +368,8 @@
 
       <div class="sidebar-group">
         <button class="sidebar-group-label" style="background:none;border:none;cursor:pointer;width:100%;text-align:left;" onclick="showPage('ov')"><span data-cid="nav-label-caminho">O Caminho da Garantia →</span></button>
-        <div class="road">
+        <div class="road" id="mainRoad">
+          <div class="road-indicator" id="roadIndicator"></div>
           <div class="road-step" data-idx="1"><button onclick="showPage(1)"><span data-cid="nav-step1">1. Recepção do veículo</span> <span class="num">01</span></button></div>
           <div class="road-step" data-idx="2"><button onclick="showPage(2)"><span data-cid="nav-step2">2. Elegibilidade</span> <span class="num">02</span></button></div>
           <div class="road-step" data-idx="3"><button onclick="showPage(3)"><span data-cid="nav-step3">3. Ordem de Serviço</span> <span class="num">03</span></button></div>
@@ -403,6 +412,7 @@
         <div class="crumb" id="crumb"></div>
 
         <div class="steps-strip">
+          <div class="strip-indicator" id="stripIndicator"></div>
           <button class="step" data-strip="1" data-cid="strip-1" onclick="showPage(1)">01 Recepção</button><div class="arrow">→</div>
           <button class="step" data-strip="2" data-cid="strip-2" onclick="showPage(2)">02 Elegibilidade</button><div class="arrow">→</div>
           <button class="step" data-strip="3" data-cid="strip-3" onclick="showPage(3)">03 Ordem de Serviço</button><div class="arrow">→</div>
@@ -940,6 +950,7 @@
     document.querySelectorAll('.road-step').forEach(s => s.classList.remove('active'));
     const roadEl = document.querySelector('.road-step[data-idx="'+id+'"]');
     if(roadEl) roadEl.classList.add('active');
+    positionRoadIndicator();
 
     document.querySelectorAll('.tool-item.active-link').forEach(s => s.classList.remove('current'));
     const toolEl = document.querySelector('.tool-item[data-idx="'+id+'"]');
@@ -953,11 +964,51 @@
 
     const stripWrap = document.querySelector('.steps-strip');
     stripWrap.style.display = (typeof id === 'number' && id >= 1) ? 'flex' : 'none';
+    positionStripIndicator();
 
     closeMenu();
     document.querySelector('.content').scrollTo(0,0);
     window.scrollTo(0,0);
   }
+
+  // Move os indicadores deslizantes (barra lateral + faixa de etapas) até o
+  // item ativo. Chamado sempre que a página muda, e no resize (o layout da
+  // sidebar/strip pode quebrar linha de forma diferente em telas menores).
+  // Usa getBoundingClientRect (posição real na tela) em vez de offsetLeft/Top,
+  // porque tanto .road-step quanto .step têm position:relative por outros
+  // motivos — isso quebraria offsetLeft/Top, que é relativo ao ancestral
+  // posicionado mais próximo, nem sempre o container que a gente quer.
+  function positionIndicator(ind, container, target){
+    if(!ind) return;
+    if(!target){ ind.classList.remove('show'); return; }
+    const cRect = container.getBoundingClientRect();
+    const tRect = target.getBoundingClientRect();
+    ind.style.left = (tRect.left - cRect.left) + 'px';
+    ind.style.top = (tRect.top - cRect.top) + 'px';
+    ind.style.width = tRect.width + 'px';
+    ind.style.height = tRect.height + 'px';
+    ind.classList.add('show');
+  }
+
+  function positionRoadIndicator(){
+    positionIndicator(
+      document.getElementById('roadIndicator'),
+      document.getElementById('mainRoad'),
+      document.querySelector('#mainRoad .road-step.active button')
+    );
+  }
+
+  function positionStripIndicator(){
+    const stripWrap = document.querySelector('.steps-strip');
+    const activeStep = document.querySelector('.steps-strip .step.current');
+    positionIndicator(
+      document.getElementById('stripIndicator'),
+      stripWrap,
+      (stripWrap.style.display === 'none') ? null : activeStep
+    );
+  }
+
+  window.addEventListener('resize', () => { positionRoadIndicator(); positionStripIndicator(); });
 
   function updateCrumb(id){
     const crumb = document.getElementById('crumb');
