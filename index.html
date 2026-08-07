@@ -42,30 +42,39 @@
     --topbar-h:72px;
   }
   :root[data-theme="dark"]{
-    --ford-blue:#4f8fe0;
+    /* "Neutro + Ford único destaque": canvas/paper/sidebar ficam num
+       cinza-chumbo quase sem tom de azul — o azul Ford vira a ÚNICA cor
+       saturada da tela inteira, então ele salta como sinal de marca/ação
+       em vez de competir com um segundo azul de fundo. */
+    --ford-blue:#2f7fe0;
     --ford-navy-deep:#00142e;
     --ford-accent:#5fb3ff;
-    /* canvas/paper/line seguem a mesma família de matiz do azul Ford
-       (~211-218°), só bem mais escuros — pra combinar com a sidebar
-       em vez de parecer um azul-marinho genérico à parte */
-    --canvas:#0a1424;
-    --paper:#111f36;
-    --ink:#e9eef7;
-    --ink-soft:#8fa0bd;
-    --line:#22314c;
-    --sidebar-grad-start:#003478;
-    --topbar-glass:rgba(11,18,32,.72);
-    --shadow-tint:rgba(0,0,0,.35);
-    --tint-blue-bg:rgba(79,143,224,.16); --tint-blue-border:rgba(79,143,224,.32);
+    --canvas:#14161a;
+    --paper:#1b1e24;
+    --ink:#eceef1;
+    --ink-soft:#9199a6;
+    --line:#2a2e37;
+    --sidebar-bg-dark:#191c22;
+    --topbar-glass:rgba(20,22,26,.72);
+    --shadow-tint:rgba(0,0,0,.4);
+    --tint-blue-bg:rgba(47,127,224,.18); --tint-blue-border:rgba(47,127,224,.34);
     --tint-warn-bg:rgba(255,166,77,.14); --tint-warn-ink:#ffb066; --tint-warn-border:rgba(255,166,77,.3);
     --tint-role-bg:rgba(28,201,138,.14); --tint-role-ink:#3ddb9c; --tint-role-border:rgba(28,201,138,.3);
     --tint-holmes-bg:rgba(160,120,255,.16); --tint-holmes-ink:#b79bff; --tint-holmes-border:rgba(160,120,255,.32);
     --tint-error-bg:rgba(255,90,79,.14); --tint-error-ink:#ff8177; --tint-error-border:rgba(255,90,79,.3);
-    --tint-media-bg:#101828; --tint-thumb-bg:#1a2436;
-    --cta-gradient:linear-gradient(135deg,#16233d,#101a30);
+    --tint-media-bg:#191c22; --tint-thumb-bg:#20242c;
+    --cta-gradient:linear-gradient(135deg,#1c222c,#181b21);
     color-scheme:dark;
   }
   *{box-sizing:border-box;}
+
+  /* barra de rolagem combinando com o tema, em vez do cinza padrão do navegador */
+  html{scrollbar-width:thin; scrollbar-color:var(--line) var(--canvas);}
+  ::-webkit-scrollbar{width:11px; height:11px;}
+  ::-webkit-scrollbar-track{background:var(--canvas);}
+  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:999px; border:2.5px solid var(--canvas); background-clip:padding-box;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--ink-soft); background-clip:padding-box;}
+  ::-webkit-scrollbar-corner{background:var(--canvas);}
   html,body{margin:0;padding:0;}
   body{background:var(--canvas); color:var(--ink); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; transition:background .25s ease, color .25s ease;}
   h1,h2,h3,.display{font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.03em; margin:0;}
@@ -113,7 +122,16 @@
   .shell{display:flex; padding-top:var(--topbar-h); min-height:100vh;}
 
   /* SIDEBAR */
-  .sidebar{width:var(--sidebar-w); flex-shrink:0; background:linear-gradient(180deg,var(--sidebar-grad-start) 0%,var(--ford-navy-deep) 100%); color:#fff; position:fixed; top:var(--topbar-h); bottom:0; left:0; overflow-y:auto; padding:26px 0 40px;}
+  .sidebar{width:var(--sidebar-w); flex-shrink:0; background:linear-gradient(180deg,var(--sidebar-grad-start) 0%,var(--ford-navy-deep) 100%); color:#fff; position:fixed; top:var(--topbar-h); bottom:0; left:0; overflow-y:auto; padding:26px 0 40px; transition:background .25s ease;}
+  /* modo escuro: a sidebar deixa de ser um azul vivo e vira parte do
+     mesmo fundo neutro — o azul Ford só aparece nos estados ativos */
+  :root[data-theme="dark"] .sidebar{background:var(--sidebar-bg-dark);}
+  /* a sidebar é sempre um painel escuro, mesmo no tema claro do site — usa
+     sua própria barra de rolagem clara-sobre-escuro, não a do tema geral */
+  .sidebar{scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.28) transparent;}
+  .sidebar::-webkit-scrollbar-track{background:transparent;}
+  .sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28); border-color:transparent;}
+  .sidebar::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.42);}
   .sidebar-group{padding:0 22px; margin-bottom:6px;}
   .sidebar-group-label{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.45); margin:22px 0 10px; padding-left:26px;}
   .road{position:relative; padding-left:26px;}
@@ -130,8 +148,11 @@
   /* dentro do grupo com indicador deslizante, quem faz o destaque é o .road-indicator */
   #mainRoad .road-step [role="button"]{position:relative; z-index:1;}
   #mainRoad .road-step.active [role="button"], #mainRoad .road-step.active [role="button"]:hover{background:none;}
-  .road-indicator{position:absolute; left:0; top:0; width:0; height:0; background:rgba(255,255,255,.09); border-radius:8px; z-index:0; pointer-events:none; opacity:0; transition:left .32s cubic-bezier(.22,.61,.36,1), top .32s cubic-bezier(.22,.61,.36,1), width .32s ease, height .32s ease, opacity .2s ease;}
+  .road-indicator{position:absolute; left:0; top:0; width:0; height:0; background:rgba(255,255,255,.09); border-radius:8px; z-index:0; pointer-events:none; opacity:0; transition:left .32s cubic-bezier(.22,.61,.36,1), top .32s cubic-bezier(.22,.61,.36,1), width .32s ease, height .32s ease, opacity .2s ease, background .25s ease;}
   .road-indicator.show{opacity:1;}
+  /* no escuro a sidebar é neutra, então o item ativo usa o azul Ford
+     sólido (o único destaque saturado da tela) em vez de um branco fraco */
+  :root[data-theme="dark"] .road-indicator{background:var(--ford-blue);}
 
   .tool-list{padding-left:26px; display:flex; flex-direction:column; gap:2px;}
   .tool-item{display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-radius:8px; font-size:13.5px; color:rgba(255,255,255,.55);}
@@ -307,6 +328,7 @@
   /* AUTH GATE */
   #appShell{display:none;}
   .auth-gate{position:fixed; inset:0; z-index:1000; background:linear-gradient(180deg,var(--sidebar-grad-start) 0%,var(--ford-navy-deep) 100%); display:flex; align-items:center; justify-content:center; padding:24px;}
+  :root[data-theme="dark"] .auth-gate{background:var(--sidebar-bg-dark);}
   .auth-gate.hidden{display:none;}
   .auth-card{background:var(--paper); border-radius:16px; padding:40px 36px; width:100%; max-width:380px; box-shadow:0 24px 60px rgba(0,10,30,.35);}
   .auth-eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ford-accent); font-weight:500; text-align:center;}
@@ -323,13 +345,26 @@
   .auth-submit:disabled{opacity:.6; cursor:not-allowed;}
   .auth-hint{margin-top:18px; font-size:11.5px; color:var(--ink-soft); text-align:center;}
 
-  .theme-toggle{display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:8px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; flex-shrink:0; transition:all .15s, transform .18s cubic-bezier(.34,1.56,.64,1);}
+  .theme-toggle{position:relative; display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:8px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; flex-shrink:0; transition:all .15s, transform .18s cubic-bezier(.34,1.56,.64,1);}
   .theme-toggle:hover{border-color:var(--ford-blue); color:var(--ford-blue); transform:scale(1.06);}
   .theme-toggle:active{transform:scale(.94);}
-  .theme-toggle .icon-moon{display:block;}
-  .theme-toggle .icon-sun{display:none;}
-  :root[data-theme="dark"] .theme-toggle .icon-moon{display:none;}
-  :root[data-theme="dark"] .theme-toggle .icon-sun{display:block;}
+  /* os dois ícones ficam sempre no DOM, sobrepostos — trocar de tema gira
+     um pra dentro enquanto o outro gira pra fora, em vez de só trocar */
+  .theme-toggle .icon-moon, .theme-toggle .icon-sun{
+    position:absolute; top:50%; left:50%;
+    transition:transform .5s cubic-bezier(.34,1.56,.64,1), opacity .4s ease;
+  }
+  .theme-toggle .icon-moon{transform:translate(-50%,-50%) rotate(0deg) scale(1); opacity:1;}
+  .theme-toggle .icon-sun{transform:translate(-50%,-50%) rotate(-75deg) scale(.4); opacity:0;}
+  :root[data-theme="dark"] .theme-toggle .icon-moon{transform:translate(-50%,-50%) rotate(75deg) scale(.4); opacity:0;}
+  :root[data-theme="dark"] .theme-toggle .icon-sun{transform:translate(-50%,-50%) rotate(0deg) scale(1); opacity:1;}
+  @media (prefers-reduced-motion: reduce){
+    .theme-toggle .icon-moon, .theme-toggle .icon-sun{transition:opacity .15s ease;}
+    .theme-toggle .icon-moon{transform:translate(-50%,-50%);}
+    .theme-toggle .icon-sun{transform:translate(-50%,-50%);}
+    :root[data-theme="dark"] .theme-toggle .icon-moon{transform:translate(-50%,-50%);}
+    :root[data-theme="dark"] .theme-toggle .icon-sun{transform:translate(-50%,-50%);}
+  }
 
   .user-badge{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); white-space:nowrap;}
   .user-badge b{color:var(--ford-blue);}
