@@ -562,6 +562,19 @@
         </div>
       </div>
 
+      <div class="sidebar-zone" id="zone-descarte">
+        <button class="sidebar-back" onclick="showPage(7)"><span>←</span> Voltar</button>
+        <div class="sidebar-group">
+          <div class="sidebar-group-label" data-cid="nav-label-descarte">Descarte de Peça</div>
+          <div class="tool-list">
+            <div class="tool-item active-link" data-idx="descarte-status" role="button" tabindex="0" onclick="showPage('descarte-status')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('descarte-status');}"><span data-cid="nav-descarte-status">Status e Lista</span></div>
+            <div class="tool-item active-link" data-idx="descarte-holmes-abrir" role="button" tabindex="0" onclick="showPage('descarte-holmes-abrir')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('descarte-holmes-abrir');}"><span data-cid="nav-descarte-abrir">Abrir no Holmes</span></div>
+            <div class="tool-item active-link" data-idx="descarte-nota" role="button" tabindex="0" onclick="showPage('descarte-nota')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('descarte-nota');}"><span data-cid="nav-descarte-nota">Nota de Descarte</span></div>
+            <div class="tool-item active-link" data-idx="descarte-holmes-finalizar" role="button" tabindex="0" onclick="showPage('descarte-holmes-finalizar')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('descarte-holmes-finalizar');}"><span data-cid="nav-descarte-finalizar">Finalizar no Holmes</span></div>
+          </div>
+        </div>
+      </div>
+
     </aside>
 
     <main class="content">
@@ -1451,7 +1464,213 @@
             <div class="card-body" data-cid="step7-cta-body" data-rich="1">
               <p>O passo a passo completo de como e quando descartar cada tipo de peça vai morar numa seção própria de referência rápida.</p>
             </div>
-            <button class="cta-btn" disabled>Ver guia de Descarte de Peça <span class="soon-tag">em breve</span></button>
+            <button class="cta-btn enabled" onclick="showPage('descarte')">Ver guia do Processo de Descarte →</button>
+          </div>
+        </section>
+
+        <!-- PAGE DESCARTE (landing) -->
+        <section class="page" id="page-descarte">
+          <div class="section-head"><div class="section-tag">→</div><h1 class="page-title" data-cid="title-descarte">Processo de Descarte</h1></div>
+          <p class="page-sub" data-cid="descarte-landing-sub">O caminho da peça que não volta pro CRPG: identificar, registrar, documentar e encerrar. Siga as quatro partes na ordem.</p>
+          <div class="card" style="padding:10px; display:flex; flex-direction:column; gap:2px;">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('descarte-status')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('descarte-status');}">
+              <span class="step-link-num">01</span>
+              <span class="step-link-text"><span class="step-link-title" data-cid="descarte-link-status">Status e Lista</span><span class="step-link-sub" data-cid="descarte-linksub-status">Identificar as peças liberadas para descarte</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('descarte-holmes-abrir')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('descarte-holmes-abrir');}">
+              <span class="step-link-num">02</span>
+              <span class="step-link-text"><span class="step-link-title" data-cid="descarte-link-abrir">Abrir no Holmes</span><span class="step-link-sub" data-cid="descarte-linksub-abrir">Abrir o processo interno de descarte</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('descarte-nota')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('descarte-nota');}">
+              <span class="step-link-num">03</span>
+              <span class="step-link-text"><span class="step-link-title" data-cid="descarte-link-nota">Nota de Descarte</span><span class="step-link-sub" data-cid="descarte-linksub-nota">Emitir a nota e registrar o sucateamento</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('descarte-holmes-finalizar')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('descarte-holmes-finalizar');}">
+              <span class="step-link-num">04</span>
+              <span class="step-link-text"><span class="step-link-title" data-cid="descarte-link-finalizar">Finalizar no Holmes</span><span class="step-link-sub" data-cid="descarte-linksub-finalizar">Anexar as evidências e encerrar o processo</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE DESCARTE-STATUS -->
+        <section class="page" id="page-descarte-status">
+          <div class="section-head"><div class="section-tag">01</div><h1 class="page-title" data-cid="title-descarte-status">Status e Lista</h1></div>
+          <p class="page-sub" data-cid="descartestatus-sub">Primeira parte: saber quais peças já podem ser descartadas — e quais ainda não podem sair do lugar.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge warn">Não descartar antes da liberação</span></div>
+
+          <div class="card" data-card="descartestatus-quais">
+            <h3 data-cid="descartestatus-quais-h3">Quais peças entram no descarte</h3>
+            <div class="card-body" data-cid="descartestatus-quais-body" data-rich="1">
+              <ul>
+                <li>Peças <b>não requisitadas</b> pelo CRPG</li>
+                <li>Peças de solicitações <b>estornadas</b></li>
+              </ul>
+              <p>Peça que ainda pode ser requisitada não se descarta — na dúvida, confira o status no OWS antes.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="descartestatus-lista">
+            <h3 data-cid="descartestatus-lista-h3">Montar a lista</h3>
+            <div class="card-body" data-cid="descartestatus-lista-body" data-rich="1">
+              <p>Gere a lista das peças liberadas para descarte. É ela que sustenta o processo no Holmes e serve de referência se a Ford pedir comprovação depois.</p>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="descarte-status-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="descarte-status-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE DESCARTE-HOLMES-ABRIR -->
+        <section class="page" id="page-descarte-holmes-abrir">
+          <div class="section-head"><div class="section-tag">02</div><h1 class="page-title" data-cid="title-descarte-abrir">Abrir no Holmes</h1></div>
+          <p class="page-sub" data-cid="descarteabrir-sub">Com a lista pronta, abre-se o processo interno que registra o descarte do começo ao fim.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge holmes">Fluxo interno via Holmes</span></div>
+
+          <div class="card" data-card="descarteabrir-abertura">
+            <h3 data-cid="descarteabrir-abertura-h3">Abrir o processo de descarte</h3>
+            <div class="card-body" data-cid="descarteabrir-abertura-body" data-rich="1">
+              <p>Abra o processo de descarte no Holmes anexando a lista de peças liberadas. É esse processo que autoriza o sucateamento e guarda o rastro para a auditoria.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="descarteabrir-oquevai">
+            <h3 data-cid="descarteabrir-oquevai-h3">O que anexar</h3>
+            <div class="card-body" data-cid="descarteabrir-oquevai-body" data-rich="1">
+              <ul>
+                <li>Lista das peças liberadas para descarte</li>
+                <li>Evidência das peças <b>antes</b> do sucateamento</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="descarte-holmes-abrir-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="descarte-holmes-abrir-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE DESCARTE-NOTA -->
+        <section class="page" id="page-descarte-nota">
+          <div class="section-head"><div class="section-tag">03</div><h1 class="page-title" data-cid="title-descarte-nota">Nota de Descarte</h1></div>
+          <p class="page-sub" data-cid="descartenota-sub">O documento do descarte e a destruição da peça em si, feita nas áreas funcionais.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">Dealer</span></div>
+
+          <div class="card" data-card="descartenota-emissao">
+            <h3 data-cid="descartenota-emissao-h3">Emitir a nota de descarte</h3>
+            <div class="card-body" data-cid="descartenota-emissao-body" data-rich="1">
+              <p>Com o processo aberto no Holmes, emita a nota de descarte no Dealer Net, conferindo se as peças batem exatamente com as da lista.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="descartenota-sucateamento">
+            <h3 data-cid="descartenota-sucateamento-h3">Danificar e sucatear</h3>
+            <div class="card-body" data-cid="descartenota-sucateamento-body" data-rich="1">
+              <p>A peça precisa ser <b>danificada nas áreas funcionais</b> antes de ir para a sucata — o objetivo é impedir que ela volte a ser usada em qualquer reparo.</p>
+              <ul>
+                <li>Registre a evidência <b>antes</b> e <b>depois</b> do sucateamento</li>
+                <li>A Ford pode pedir essas evidências, avisando com antecedência</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="descarte-nota-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="descarte-nota-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE DESCARTE-HOLMES-FINALIZAR -->
+        <section class="page" id="page-descarte-holmes-finalizar">
+          <div class="section-head"><div class="section-tag">04</div><h1 class="page-title" data-cid="title-descarte-finalizar">Finalizar no Holmes</h1></div>
+          <p class="page-sub" data-cid="descartefinal-sub">Última parte: fechar o processo com nota e evidências anexadas, deixando o descarte comprovado.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge holmes">Fluxo interno via Holmes</span></div>
+
+          <div class="card" data-card="descartefinal-anexar">
+            <h3 data-cid="descartefinal-anexar-h3">Anexar e encerrar</h3>
+            <div class="card-body" data-cid="descartefinal-anexar-body" data-rich="1">
+              <p>Volte ao processo aberto no Holmes, anexe a nota de descarte e as evidências do antes e depois do sucateamento, e finalize.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="descartefinal-porque">
+            <h3 data-cid="descartefinal-porque-h3">Por que isso importa</h3>
+            <div class="card-body" data-cid="descartefinal-porque-body" data-rich="1">
+              <p>O processo finalizado é a única prova de que a peça foi destruída como manda a regra. Sem ele, um descarte legítimo pode virar apontamento na Auditoria Ford.</p>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="descarte-holmes-finalizar-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="descarte-holmes-finalizar-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
         </section>
 
@@ -1634,7 +1853,8 @@
   // nomes de exibição das mini-páginas dos sub-guias (usado no crumb)
   const subGuideNames = {
     'sub-basica':'Garantia Básica', 'sub-levaetraz':'Leva e Traz', 'sub-revisao':'Revisão', 'sub-recall':'Recall/Campanha',
-    'crpg-status':'Status e Etiqueta', 'crpg-holmes-abrir':'Abrir no Holmes', 'crpg-nota':'Nota de Remessa', 'crpg-holmes-finalizar':'Finalizar no Holmes'
+    'crpg-status':'Status e Etiqueta', 'crpg-holmes-abrir':'Abrir no Holmes', 'crpg-nota':'Nota de Remessa', 'crpg-holmes-finalizar':'Finalizar no Holmes',
+    'descarte-status':'Status e Lista', 'descarte-holmes-abrir':'Abrir no Holmes', 'descarte-nota':'Nota de Descarte', 'descarte-holmes-finalizar':'Finalizar no Holmes'
   };
 
   // Prefixo do id decide a "zona" — cada sub-guia (Submissão, Remessa, Descarte)
@@ -1776,6 +1996,15 @@
         '<button class="crumb-link" onclick="showPage(6)">Devolução de Peças (CRPG)</button>' + sep +
         '<button class="crumb-link" onclick="showPage(\'crpg\')">Processo de Remessa</button>' + sep +
         '<b>' + subGuideNames[id] + '</b>';
+    } else if(id === 'descarte'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(7)">Descarte de Peça</button>' + sep +
+        '<b>Processo de Descarte</b>';
+    } else if(getZoneForPage(id) === 'descarte'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(7)">Descarte de Peça</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(\'descarte\')">Processo de Descarte</button>' + sep +
+        '<b>' + subGuideNames[id] + '</b>';
     } else {
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
         '<button class="crumb-link" onclick="showPage(\'ov\')">O Caminho da Garantia</button>' + sep +
@@ -1816,7 +2045,8 @@
   function buildSearchIndex(){
     searchIndex = [];
     const pageIds = ['guide',1,2,3,4,5,6,7,'audit','ows','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall',
-      'crpg','crpg-status','crpg-holmes-abrir','crpg-nota','crpg-holmes-finalizar'];
+      'crpg','crpg-status','crpg-holmes-abrir','crpg-nota','crpg-holmes-finalizar',
+      'descarte','descarte-status','descarte-holmes-abrir','descarte-nota','descarte-holmes-finalizar'];
     pageIds.forEach(i => {
       const page = document.getElementById('page-'+i);
       if(!page) return;
