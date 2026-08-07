@@ -1073,7 +1073,7 @@
 
     const stripWrap = document.querySelector('.steps-strip');
     stripWrap.style.display = (typeof id === 'number' && id >= 1) ? 'flex' : 'none';
-    positionStripIndicator();
+    positionStripIndicator(true);
     updateStepProgress(id);
 
     closeMenu();
@@ -1094,8 +1094,13 @@
     if(!target){ ind.classList.remove('show'); return; }
     const cRect = container.getBoundingClientRect();
     const tRect = target.getBoundingClientRect();
-    ind.style.left = (tRect.left - cRect.left) + 'px';
-    ind.style.top = (tRect.top - cRect.top) + 'px';
+    // O indicador é filho (position:absolute) do próprio container, então o
+    // "left/top" dele é interpretado a partir da origem do conteúdo, sem
+    // descontar rolagem — soma o scrollLeft/scrollTop de volta, senão a
+    // rolagem é contada em dobro (funciona nas primeiras etapas, foge da
+    // pílula certa assim que a faixa de etapas precisa rolar).
+    ind.style.left = (tRect.left - cRect.left + container.scrollLeft) + 'px';
+    ind.style.top = (tRect.top - cRect.top + container.scrollTop) + 'px';
     ind.style.width = tRect.width + 'px';
     ind.style.height = tRect.height + 'px';
     ind.classList.add('show');
@@ -1109,14 +1114,14 @@
     );
   }
 
-  function positionStripIndicator(){
+  function positionStripIndicator(scrollIntoView){
     const stripWrap = document.querySelector('.steps-strip');
     const activeStep = document.querySelector('.steps-strip .step.current');
-    positionIndicator(
-      document.getElementById('stripIndicator'),
-      stripWrap,
-      (stripWrap.style.display === 'none') ? null : activeStep
-    );
+    const visible = stripWrap.style.display === 'none' ? null : activeStep;
+    positionIndicator(document.getElementById('stripIndicator'), stripWrap, visible);
+    // só rola a faixa sozinha quando é navegação de verdade (showPage), não
+    // a cada tecla digitada durante a edição — isso ficaria incômodo
+    if(scrollIntoView && visible) visible.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
   }
 
   window.addEventListener('resize', () => { positionRoadIndicator(); positionStripIndicator(); });
