@@ -216,8 +216,8 @@
   .card h3{font-size:15px; color:var(--heading-ink); margin-bottom:12px; letter-spacing:.02em;}
   .card p{margin:0 0 12px; font-size:14.5px; line-height:1.65; color:var(--ink);}
   .card p:last-child{margin-bottom:0;}
-  .card ul, .card ol{margin:0 0 12px; padding-left:20px; font-size:14.5px; line-height:1.7; color:var(--ink);}
-  .card ul:last-child, .card ol:last-child{margin-bottom:0;}
+  .card ul{margin:0 0 12px; padding-left:20px; font-size:14.5px; line-height:1.7; color:var(--ink);}
+  .card ul:last-child{margin-bottom:0;}
   .card table{width:100%; border-collapse:collapse; font-size:13.5px; margin-top:6px;}
   .card table th{text-align:left; font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft); padding:8px 10px; border-bottom:1.5px solid var(--line);}
   .card table td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink);}
@@ -610,14 +610,12 @@
           <p class="page-sub" data-cid="guide-sub">Este manual segue o processo de garantia Ford do início ao fim, na ordem em que ele acontece de verdade na Concessionária. Use a barra lateral pra pular direto pra etapa que você precisa.</p>
           <div class="card">
             <h3 data-cid="guide-card1-h3">O que você vai encontrar em cada etapa</h3>
-            <div class="card-body" data-cid="guide-card1-body" data-rich="1">
-              <ul>
-                <li>Explicação da etapa com base no Manual de Garantia Ford (regras oficiais)</li>
-                <li>Prints das telas dos sistemas envolvidos</li>
-                <li>Vídeo narrado mostrando o passo a passo na prática</li>
-              </ul>
-              <p>As ferramentas Ford (Dealer, OWS, PTS, Agenda, Catálogo, Holmes) ganharão módulos próprios em breve.</p>
-            </div>
+            <ul>
+              <li data-cid="guide-card1-li1">Explicação da etapa com base no Manual de Garantia Ford (regras oficiais)</li>
+              <li data-cid="guide-card1-li2">Prints das telas dos sistemas envolvidos</li>
+              <li data-cid="guide-card1-li3">Vídeo narrado mostrando o passo a passo na prática</li>
+            </ul>
+            <p data-cid="guide-card1-p1">As ferramentas Ford (Dealer, OWS, PTS, Agenda, Catálogo, Holmes) ganharão módulos próprios em breve.</p>
           </div>
         </section>
 
@@ -636,43 +634,33 @@
 
           <div class="card">
             <h3 data-cid="step1-cadastro-h3">Cadastro do cliente e do veículo</h3>
-            <div class="card-body" data-cid="step1-cadastro-body" data-rich="1">
-              <p>Antes de tudo, confirme se o cliente já tem cadastro no Dealer Net e no Agenda Ford — se não tiver, cria na hora. O mesmo vale pro veículo: confirme os dados cadastrados no Dealer Net (data de venda, placa, cor, chassi).</p>
-              <p><b>De onde tirar cada dado:</b> data de venda, chassi e tipo de motor vêm do <b>PTS</b>; cor e acabamento vêm do <b>Catálogo Ford</b> (consulta por VIN — o Catálogo é onde se busca tudo sobre o chassi: motor, transmissão, peças).</p>
-            </div>
+            <p data-cid="step1-cadastro-p1">Antes de tudo, confirme se o cliente já tem cadastro no Dealer Net e no Agenda Ford — se não tiver, cria na hora. O mesmo vale pro veículo: confirme os dados cadastrados no Dealer Net (data de venda, placa, cor, chassi).</p>
+            <p data-cid="step1-cadastro-p2"><b>De onde tirar cada dado:</b> data de venda, chassi e tipo de motor vêm do <b>PTS</b>; cor e acabamento vêm do <b>Catálogo Ford</b> (consulta por VIN — o Catálogo é onde se busca tudo sobre o chassi: motor, transmissão, peças).</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step1-recebimento-h3">Recebimento de veículo novo</h3>
-            <div class="card-body" data-cid="step1-recebimento-body" data-rich="1">
-              <p>Ao receber um veículo novo, a Concessionária é obrigada a fazer uma inspeção visual completa pra verificar avarias de transporte. Se não houver registro formal de avaria no ato da recepção, a responsabilidade por qualquer problema encontrado depois passa a ser da própria Concessionária.</p>
-              <p>Veículos com avarias no fluxo logístico normalmente já são reparados no PDI Ford, sem ação da Concessionária. Em casos excepcionais, o veículo chega com um "Protocolo de Avaria" — nesse caso, o reembolso é solicitado no OWS usando o tipo de Solicitação 51, subcódigo TD2.</p>
-            </div>
+            <p data-cid="step1-recebimento-p1">Ao receber um veículo novo, a Concessionária é obrigada a fazer uma inspeção visual completa pra verificar avarias de transporte. Se não houver registro formal de avaria no ato da recepção, a responsabilidade por qualquer problema encontrado depois passa a ser da própria Concessionária.</p>
+            <p data-cid="step1-recebimento-p2">Veículos com avarias no fluxo logístico normalmente já são reparados no PDI Ford, sem ação da Concessionária. Em casos excepcionais, o veículo chega com um "Protocolo de Avaria" — nesse caso, o reembolso é solicitado no OWS usando o tipo de Solicitação 51, subcódigo TD2.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step1-falha-h3">Falha de fabricação (peça faltante ou divergência de catálogo)</h3>
-            <div class="card-body" data-cid="step1-falha-body" data-rich="1">
-              <ul>
-                <li>Peça de fácil visualização (retrovisor, calota): reparo até a preparação de entrega</li>
-                <li>Peça de difícil visualização (sensor, chicote): reparo até a primeira revisão</li>
-                <li>Solicitação no OWS: tipo 14, subcódigo MVC — código 39 pra peça faltante, código 38 pra divergência de catálogo</li>
-              </ul>
-            </div>
+            <ul>
+              <li data-cid="step1-falha-li1">Peça de fácil visualização (retrovisor, calota): reparo até a preparação de entrega</li>
+              <li data-cid="step1-falha-li2">Peça de difícil visualização (sensor, chicote): reparo até a primeira revisão</li>
+              <li data-cid="step1-falha-li3">Solicitação no OWS: tipo 14, subcódigo MVC — código 39 pra peça faltante, código 38 pra divergência de catálogo</li>
+            </ul>
           </div>
 
           <div class="card">
             <h3 data-cid="step1-0km-h3">Entrega ao cliente (veículo 0km)</h3>
-            <div class="card-body" data-cid="step1-0km-body" data-rich="1">
-              <p>Para casos de entrega de veículo novo (0km): antes da entrega, a bateria precisa ser testada no equipamento próprio — se reprovar, é trocada por uma nova. O comprovante dessa verificação deve ser guardado, porque a Ford pode exigi-lo se a bateria apresentar defeito depois.</p>
-            </div>
+            <p data-cid="step1-0km-p1">Para casos de entrega de veículo novo (0km): antes da entrega, a bateria precisa ser testada no equipamento próprio — se reprovar, é trocada por uma nova. O comprovante dessa verificação deve ser guardado, porque a Ford pode exigi-lo se a bateria apresentar defeito depois.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step1-posreparo-h3">Entrega ao cliente pós-reparo</h3>
-            <div class="card-body" data-cid="step1-posreparo-body" data-rich="1">
-              <p>Para casos de entrega após reparo em garantia, recall ou campanha: o que importa aqui é coletar a assinatura do cliente na OS de garantia (1ª via) — veja o detalhe completo na etapa 03.</p>
-            </div>
+            <p data-cid="step1-posreparo-p1">Para casos de entrega após reparo em garantia, recall ou campanha: o que importa aqui é coletar a assinatura do cliente na OS de garantia (1ª via) — veja o detalhe completo na etapa 03.</p>
           </div>
 
           <div class="gallery-section">
@@ -680,7 +668,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Prints de tela
             </div>
-            <div class="gallery-grid" data-gallery="1-prints">
+            <div class="gallery-grid">
               <div class="gallery-item" data-mid="step1-print-checklist"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step1-print-checklist-cap">Checklist de recepção</span></div></div>
               <div class="gallery-item" data-mid="step1-print-cadastro"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step1-print-cadastro-cap">Cadastro do veículo no Dealer Net</span></div></div>
               <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
@@ -692,7 +680,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               Vídeos
             </div>
-            <div class="gallery-grid" data-gallery="1-videos">
+            <div class="gallery-grid">
               <div class="gallery-item video" data-mid="step1-video-inspecao"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="step1-video-inspecao-cap">Inspeção de recepção e entrega ao cliente</span><span class="dur">com áudio</span></div></div>
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
@@ -707,36 +695,28 @@
 
           <div class="card">
             <h3 data-cid="step2-data-h3">Consultando a data de início da garantia</h3>
-            <div class="card-body" data-cid="step2-data-body" data-rich="1">
-              <p>A data de início da garantia contratual é a data de entrega do veículo novo ao primeiro proprietário. Essa consulta é feita no Sistema PTS, por chassi (VIN).</p>
-              <p><b>Atenção:</b> se houver divergência entre a data mostrada no PTS e a data do Sistema Agenda, vale a data do Agenda.</p>
-            </div>
+            <p data-cid="step2-data-p1">A data de início da garantia contratual é a data de entrega do veículo novo ao primeiro proprietário. Essa consulta é feita no Sistema PTS, por chassi (VIN).</p>
+            <p data-cid="step2-data-p2"><b>Atenção:</b> se houver divergência entre a data mostrada no PTS e a data do Sistema Agenda, vale a data do Agenda.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step2-recall-h3">Não esqueça de checar recall, campanha e programas de satisfação</h3>
-            <div class="card-body" data-cid="step2-recall-body" data-rich="1">
-              <p>Além do prazo de garantia, verifique se o chassi está na listagem de recall, campanha ou programa de satisfação (consulta no PTS). Se estiver na listagem, o atendimento segue direto como garantia — sem precisar reavaliar cobertura.</p>
-            </div>
+            <p data-cid="step2-recall-p1">Além do prazo de garantia, verifique se o chassi está na listagem de recall, campanha ou programa de satisfação (consulta no PTS). Se estiver na listagem, o atendimento segue direto como garantia — sem precisar reavaliar cobertura.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step2-naocobre-h3">O que a garantia contratual não cobre</h3>
-            <div class="card-body" data-cid="step2-naocobre-body" data-rich="1">
-              <ul>
-                <li>Mau uso do veículo</li>
-                <li>Danos por colisão ou acidente</li>
-                <li>Desgaste natural (peças de desgaste)</li>
-                <li>Problemas decorrentes de modificação feita pelo cliente (ex: blindagem, conversão pra gás) — perde a garantia só dos itens afetados pela modificação</li>
-              </ul>
-            </div>
+            <ul>
+              <li data-cid="step2-naocobre-li1">Mau uso do veículo</li>
+              <li data-cid="step2-naocobre-li2">Danos por colisão ou acidente</li>
+              <li data-cid="step2-naocobre-li3">Desgaste natural (peças de desgaste)</li>
+              <li data-cid="step2-naocobre-li4">Problemas decorrentes de modificação feita pelo cliente (ex: blindagem, conversão pra gás) — perde a garantia só dos itens afetados pela modificação</li>
+            </ul>
           </div>
 
           <div class="card">
             <h3 data-cid="step2-fim-h3">Veículo perto do fim da garantia</h3>
-            <div class="card-body" data-cid="step2-fim-body" data-rich="1">
-              <p>Se o defeito aparecer perto do vencimento e a peça não estiver disponível, mantenha a OS aberta e solicite a peça à Ford em até 5 dias corridos — isso garante que o reparo seja tratado como garantia mesmo que a instalação aconteça depois do vencimento.</p>
-            </div>
+            <p data-cid="step2-fim-p1">Se o defeito aparecer perto do vencimento e a peça não estiver disponível, mantenha a OS aberta e solicite a peça à Ford em até 5 dias corridos — isso garante que o reparo seja tratado como garantia mesmo que a instalação aconteça depois do vencimento.</p>
           </div>
 
           <div class="gallery-section">
@@ -744,7 +724,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Prints de tela
             </div>
-            <div class="gallery-grid" data-gallery="2-prints">
+            <div class="gallery-grid">
               <div class="gallery-item" data-mid="step2-print-pts"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step2-print-pts-cap">Consulta de garantia no PTS</span></div></div>
               <div class="gallery-item" data-mid="step2-print-recall"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step2-print-recall-cap">Listagem de recall e campanha</span></div></div>
               <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
@@ -756,7 +736,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               Vídeos
             </div>
-            <div class="gallery-grid" data-gallery="2-videos">
+            <div class="gallery-grid">
               <div class="gallery-item video" data-mid="step2-video-elegibilidade"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="step2-video-elegibilidade-cap">Conferindo elegibilidade no PTS</span><span class="dur">com áudio</span></div></div>
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
@@ -771,70 +751,58 @@
 
           <div class="card">
             <h3 data-cid="step3-oque-h3">O que acontece nesta etapa</h3>
-            <div class="card-body" data-cid="step3-oque-body" data-rich="1">
-              <p>A OS é o documento que formaliza o atendimento e serve de base pra toda a solicitação de garantia depois. Nenhum reparo pode ser executado sem uma OS aberta.</p>
-              <ul>
-                <li>Consultar o histórico do veículo antes de abrir a OS</li>
-                <li>Registrar a queixa exatamente como relatada pelo cliente</li>
-                <li>Confirmar o tempo de reparo na tabela de tempos do PTS</li>
-                <li>Emitir a OS de garantia separadamente quando houver outros reparos não cobertos</li>
-              </ul>
-            </div>
+            <p data-cid="step3-oque-p1">A OS é o documento que formaliza o atendimento e serve de base pra toda a solicitação de garantia depois. Nenhum reparo pode ser executado sem uma OS aberta.</p>
+            <ul>
+              <li data-cid="step3-oque-li1">Consultar o histórico do veículo antes de abrir a OS</li>
+              <li data-cid="step3-oque-li2">Registrar a queixa exatamente como relatada pelo cliente</li>
+              <li data-cid="step3-oque-li3">Confirmar o tempo de reparo na tabela de tempos do PTS</li>
+              <li data-cid="step3-oque-li4">Emitir a OS de garantia separadamente quando houver outros reparos não cobertos</li>
+            </ul>
           </div>
 
           <div class="card">
             <h3 data-cid="step3-queixa-h3">Como coletar a queixa do cliente com clareza</h3>
-            <div class="card-body" data-cid="step3-queixa-body" data-rich="1">
-              <p>Pra evidenciar a causa (e não só o sintoma), vale estruturar a conversa com o cliente em 4 perguntas antes de escrever a descrição do problema na OS:</p>
-              <ul>
-                <li><b>Qual</b> é o problema? (é algo que dá pra ver, sentir, cheirar ou ouvir?)</li>
-                <li><b>Quando</b> o problema ocorre? (ao acelerar, desacelerar, motor frio ou quente?)</li>
-                <li><b>Onde</b> o problema ocorre? (em determinada velocidade, carga ou circunstância?)</li>
-                <li>Qual é a <b>história</b> do problema? (quando começou, quem percebeu, já foi reparado antes?)</li>
-              </ul>
-            </div>
+            <p data-cid="step3-queixa-p1">Pra evidenciar a causa (e não só o sintoma), vale estruturar a conversa com o cliente em 4 perguntas antes de escrever a descrição do problema na OS:</p>
+            <ul>
+              <li data-cid="step3-queixa-li1"><b>Qual</b> é o problema? (é algo que dá pra ver, sentir, cheirar ou ouvir?)</li>
+              <li data-cid="step3-queixa-li2"><b>Quando</b> o problema ocorre? (ao acelerar, desacelerar, motor frio ou quente?)</li>
+              <li data-cid="step3-queixa-li3"><b>Onde</b> o problema ocorre? (em determinada velocidade, carga ou circunstância?)</li>
+              <li data-cid="step3-queixa-li4">Qual é a <b>história</b> do problema? (quando começou, quem percebeu, já foi reparado antes?)</li>
+            </ul>
           </div>
 
           <div class="card">
             <h3 data-cid="step3-tmo-h3">TMO / TPR — tempo de mão de obra</h3>
-            <div class="card-body" data-cid="step3-tmo-body" data-rich="1">
-              <p><b>TMO</b> (Tempo para Mão de Obra) e <b>TPR</b> (Tempo Padrão de Reparo) são o mesmo tipo de informação — só muda o nome de um sistema pro outro. É o tempo padrão que a Ford define pra cada reparo.</p>
-              <p>Esse dado é buscado <b>somente no PTS</b>, e só entra em jogo aqui, na abertura da OS — não faz parte do cadastro do veículo lá na Recepção.</p>
-            </div>
+            <p data-cid="step3-tmo-p1"><b>TMO</b> (Tempo para Mão de Obra) e <b>TPR</b> (Tempo Padrão de Reparo) são o mesmo tipo de informação — só muda o nome de um sistema pro outro. É o tempo padrão que a Ford define pra cada reparo.</p>
+            <p data-cid="step3-tmo-p2">Esse dado é buscado <b>somente no PTS</b>, e só entra em jogo aqui, na abertura da OS — não faz parte do cadastro do veículo lá na Recepção.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step3-boletim-h3">Antes de abrir: checar se já existe boletim (TSB/GSB/SSM)</h3>
-            <div class="card-body" data-cid="step3-boletim-body" data-rich="1">
-              <p>Antes de abrir a OS, vale a pena pesquisar no PTS (aba TSB/GSB/SSM) se já existe um boletim de serviço pro problema relatado. Se não tiver boletim, segue pra busca de tempo padrão (TPR) normalmente.</p>
-              <p>Pra recall ou campanha, a OS é aberta direto como <b>GSR/GSC</b>, usando o TPR e o CCC do PTS — e vale conferir a hora da própria loja antes de lançar o serviço.</p>
-            </div>
+            <p data-cid="step3-boletim-p1">Antes de abrir a OS, vale a pena pesquisar no PTS (aba TSB/GSB/SSM) se já existe um boletim de serviço pro problema relatado. Se não tiver boletim, segue pra busca de tempo padrão (TPR) normalmente.</p>
+            <p data-cid="step3-boletim-p2">Pra recall ou campanha, a OS é aberta direto como <b>GSR/GSC</b>, usando o TPR e o CCC do PTS — e vale conferir a hora da própria loja antes de lançar o serviço.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step3-recap-h3">Recap rápido antes de prosseguir</h3>
-            <div class="card-body" data-cid="step3-recap-body" data-rich="1">
-              <p>Antes de abrir a OS como garantia, o Consultor/Analista de Garantia reavalia rapidamente:</p>
-              <ul>
-                <li>Histórico do veículo</li>
-                <li>Data inicial da garantia</li>
-                <li>Evidências iniciais gravadas pelos técnicos — se serão aceitas pela montadora</li>
-                <li>Laudo técnico — se está compreensível pra quem não entende de mecânica</li>
-              </ul>
-            </div>
+            <p data-cid="step3-recap-p1">Antes de abrir a OS como garantia, o Consultor/Analista de Garantia reavalia rapidamente:</p>
+            <ul>
+              <li data-cid="step3-recap-li1">Histórico do veículo</li>
+              <li data-cid="step3-recap-li2">Data inicial da garantia</li>
+              <li data-cid="step3-recap-li3">Evidências iniciais gravadas pelos técnicos — se serão aceitas pela montadora</li>
+              <li data-cid="step3-recap-li4">Laudo técnico — se está compreensível pra quem não entende de mecânica</li>
+            </ul>
           </div>
 
           <div class="card">
             <h3 data-cid="step3-dados-h3">Dados obrigatórios na OS de garantia</h3>
-            <div class="card-body" data-cid="step3-dados-body" data-rich="1">
-              <ul>
-                <li>Número e data de abertura da OS</li>
-                <li>Dados do veículo (chassi, data de início de garantia, quilometragem)</li>
-                <li>Descrição detalhada da reclamação do cliente</li>
-                <li>Diagnóstico do técnico — evidenciando a causa, não o sintoma</li>
-                <li>ID Stars do técnico e data</li>
-              </ul>
-            </div>
+            <ul>
+              <li data-cid="step3-dados-li1">Número e data de abertura da OS</li>
+              <li data-cid="step3-dados-li2">Dados do veículo (chassi, data de início de garantia, quilometragem)</li>
+              <li data-cid="step3-dados-li3">Descrição detalhada da reclamação do cliente</li>
+              <li data-cid="step3-dados-li4">Diagnóstico do técnico — evidenciando a causa, não o sintoma</li>
+              <li data-cid="step3-dados-li5">ID Stars do técnico e data</li>
+            </ul>
           </div>
 
           <div class="gallery-section">
@@ -842,7 +810,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Prints de tela
             </div>
-            <div class="gallery-grid" data-gallery="3-prints">
+            <div class="gallery-grid">
               <div class="gallery-item" data-mid="step3-print-dealer"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step3-print-dealer-cap">Abertura de OS no Dealer</span></div></div>
               <div class="gallery-item" data-mid="step3-print-tpr"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step3-print-tpr-cap">Busca de TPR no PTS</span></div></div>
               <div class="gallery-item" data-mid="step3-print-boletim"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step3-print-boletim-cap">Consulta de boletim (TSB/GSB/SSM)</span></div></div>
@@ -855,18 +823,13 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               Vídeos
             </div>
-            <div class="gallery-grid" data-gallery="3-videos">
+            <div class="gallery-grid">
               <div class="gallery-item video" data-mid="step3-video-os"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="step3-video-os-cap">Abertura de OS no Dealer, passo a passo</span><span class="dur">com áudio</span></div></div>
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
           </div>
 
-          <div class="card">
-            <h3 data-cid="step3-atencao-h3">Atenção</h3>
-            <div class="card-body" data-cid="step3-atencao-body" data-rich="1">
-              <p>Erros de preenchimento nesta etapa costumam gerar estorno lá na frente, na Auditoria Ford.</p>
-            </div>
-          </div>
+          <div class="card"><h3 data-cid="step3-atencao-h3">Atenção</h3><p data-cid="step3-atencao-p1">Erros de preenchimento nesta etapa costumam gerar estorno lá na frente, na Auditoria Ford.</p></div>
         </section>
 
         <!-- PAGE 4 -->
@@ -877,59 +840,49 @@
 
           <div class="card">
             <h3 data-cid="step4-diag-h3">Diagnóstico</h3>
-            <div class="card-body" data-cid="step4-diag-body" data-rich="1">
-              <p>O diagnóstico precisa confirmar se a causa está relacionada a defeito de fabricação/material coberto pela garantia — desgaste natural, falta de manutenção, mau uso ou dano acidental não entram. Deve ser feito por técnico treinado e certificado Ford, usando ferramentas homologadas. Vale consultar o PTS pra conferir boletins (TSB/GSB/SSM) relacionados ao problema antes de seguir.</p>
-            </div>
+            <p data-cid="step4-diag-p1">O diagnóstico precisa confirmar se a causa está relacionada a defeito de fabricação/material coberto pela garantia — desgaste natural, falta de manutenção, mau uso ou dano acidental não entram. Deve ser feito por técnico treinado e certificado Ford, usando ferramentas homologadas. Vale consultar o PTS pra conferir boletins (TSB/GSB/SSM) relacionados ao problema antes de seguir.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step4-resp-h3">Responsabilidade do técnico</h3>
-            <div class="card-body" data-cid="step4-resp-body" data-rich="1">
-              <ul>
-                <li>Fazer o <b>orçamento</b> com todas as peças que serão necessárias pra substituição</li>
-                <li>Fazer um <b>laudo técnico</b> detalhado, com os testes realizados e o resultado de cada um</li>
-                <li>Fazer todas as evidências do processo</li>
-              </ul>
-              <p><b>Evidências obrigatórias:</b></p>
-              <ul>
-                <li>Evidência registrando a reclamação do cliente com clareza</li>
-                <li>Evidência de todos os testes realizados</li>
-                <li>Evidência do reparo</li>
-                <li>Evidência do defeito sanado</li>
-              </ul>
-              <p>Em todas elas, sempre mostrando <b>chassi, placa e odômetro</b> do veículo.</p>
-            </div>
+            <ul>
+              <li data-cid="step4-resp-li1">Fazer o <b>orçamento</b> com todas as peças que serão necessárias pra substituição</li>
+              <li data-cid="step4-resp-li2">Fazer um <b>laudo técnico</b> detalhado, com os testes realizados e o resultado de cada um</li>
+              <li data-cid="step4-resp-li3">Produzir todas as evidências do processo</li>
+            </ul>
+            <p data-cid="step4-resp-p1"><b>Evidências obrigatórias:</b></p>
+            <ul>
+              <li data-cid="step4-resp-li4">Evidência registrando a reclamação do cliente com clareza</li>
+              <li data-cid="step4-resp-li5">Evidência de todos os testes realizados</li>
+              <li data-cid="step4-resp-li6">Evidência do reparo</li>
+              <li data-cid="step4-resp-li7">Evidência do defeito sanado</li>
+            </ul>
+            <p data-cid="step4-resp-p2">Em todas elas, sempre mostrando <b>chassi, placa e odômetro</b> do veículo.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step4-estoque-h3">Se a peça não estiver em estoque</h3>
-            <div class="card-body" data-cid="step4-estoque-body" data-rich="1">
-              <p>Antes de iniciar o reparo, o mecânico registra as evidências, o laudo, cria o orçamento e a OS, pra análise do chefe de oficina. Com o processo aprovado, o pedido é autorizado — e assim que a peça chegar no estoque, o serviço começa.</p>
-            </div>
+            <p data-cid="step4-estoque-p1">Antes de iniciar o reparo, o mecânico registra as evidências, o laudo e a OS no <b>Holmes</b>, pra análise do chefe de oficina. Com o processo aprovado, a OS é transformada em garantia — e assim que a peça chegar no estoque, o serviço começa.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step4-check-h3">Checklist de apontamento</h3>
-            <div class="card-body" data-cid="step4-check-body" data-rich="1">
-              <ol>
-                <li>Faz o apontamento da OS com eficiência e em tempo real</li>
-                <li>Requisita a peça no TMO que está apontado</li>
-                <li>Ao finalizar o serviço: finaliza o apontamento, registra a evidência final mostrando o serviço feito, e a quilometragem do painel</li>
-              </ol>
-              <p>Lembrete: se tiver mais de um TPR, aponta um tempo de cada vez, requisitando cada peça no seu respectivo tempo. O apontamento do técnico tem que ser feito exatamente no momento em que ele de fato realizando o reparo no veículo, e seguir conforme foi programado ao veículo para ser entregue ao cliente no horário estimado a ele.</p>
-            </div>
+            <ol style="margin:0 0 12px; padding-left:20px; font-size:14.5px; line-height:1.7; color:var(--ink);">
+              <li data-cid="step4-check-li1">Faz o apontamento da OS</li>
+              <li data-cid="step4-check-li2">Requisita a peça no TPR que está apontado</li>
+              <li data-cid="step4-check-li3">Ao finalizar o serviço: finaliza o apontamento, registra a evidência final mostrando o serviço feito, e a quilometragem do painel</li>
+            </ol>
+            <p data-cid="step4-check-p1"><b>Lembrete:</b> se tiver mais de um TPR, aponta um tempo de cada vez, requisitando cada peça no seu respectivo tempo.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="step4-exec-h3">Execução do reparo</h3>
-            <div class="card-body" data-cid="step4-exec-body" data-rich="1">
-              <ul>
-                <li>Reparo gratuito pro cliente, mesmo em veículos vendidos por outra Concessionária</li>
-                <li>Só peças originais Ford; Motorcraft apenas quando não há peça Ford liberada</li>
-                <li>Seguir a literatura de serviço e usar ferramentas homologadas</li>
-                <li>Se a peça não estiver disponível na Concessionária nem na Ford, pode comprar de outra Concessionária primeiro, e só depois de um revendedor autorizado</li>
-              </ul>
-            </div>
+            <ul>
+              <li data-cid="step4-exec-li1">Reparo gratuito pro cliente, mesmo em veículos vendidos por outra Concessionária</li>
+              <li data-cid="step4-exec-li2">Só peças originais Ford; Motorcraft apenas quando não há peça Ford liberada</li>
+              <li data-cid="step4-exec-li3">Seguir a literatura de serviço e usar ferramentas homologadas</li>
+              <li data-cid="step4-exec-li4">Se a peça não estiver disponível na Concessionária nem na Ford, pode comprar de outra Concessionária primeiro, e só depois de um revendedor autorizado</li>
+            </ul>
           </div>
 
           <div class="gallery-section">
@@ -937,7 +890,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Prints de tela
             </div>
-            <div class="gallery-grid" data-gallery="4-prints">
+            <div class="gallery-grid">
               <div class="gallery-item" data-mid="step4-print-catalogo"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step4-print-catalogo-cap">Consulta de peça no Catálogo</span></div></div>
               <div class="gallery-item" data-mid="step4-print-holmes"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step4-print-holmes-cap">Registro de evidências no Holmes</span></div></div>
               <div class="gallery-item" data-mid="step4-print-evidencia"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="step4-print-evidencia-cap">Exemplo de evidência (chassi, placa e odômetro)</span></div></div>
@@ -950,7 +903,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               Vídeos
             </div>
-            <div class="gallery-grid" data-gallery="4-videos">
+            <div class="gallery-grid">
               <div class="gallery-item video" data-mid="step4-video-apontamento"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="step4-video-apontamento-cap">Apontamento da OS e requisição de peça</span><span class="dur">com áudio</span></div></div>
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
@@ -965,17 +918,13 @@
 
           <div class="card">
             <h3 data-cid="step5-resumo-h3">Resumo da etapa</h3>
-            <div class="card-body" data-cid="step5-resumo-body" data-rich="1">
-              <p>Antes de submeter, o Consultor Técnico colhe a assinatura do cliente na OS (1ª via) e na via já transformada em garantia. Esse processo é organizado direto no <b>Holmes</b>, que centraliza tudo até chegar no(a) Consultor(a) de Garantia — responsável por analisar, faturar e fazer a elaboração no OWS.</p>
-              <p>Cada tipo de garantia (normal, recall, campanha, revisão, leva e trás...) tem suas próprias regras de submissão e documentação exigida.</p>
-            </div>
+            <p data-cid="step5-resumo-p1">Antes de submeter, o Consultor Técnico colhe a assinatura do cliente na OS (1ª via) e na via já transformada em garantia. Esse processo é organizado direto no <b>Holmes</b>, que centraliza tudo até chegar no(a) Consultor(a) de Garantia — responsável por analisar, faturar e fazer a elaboração no OWS.</p>
+            <p data-cid="step5-resumo-p2">Cada tipo de garantia (normal, recall, campanha, revisão, leva e trás...) tem suas próprias regras de submissão e documentação exigida.</p>
           </div>
 
           <div class="card cta-card">
             <h3 data-cid="step5-cta-h3">Passo a passo por tipo de garantia</h3>
-            <div class="card-body" data-cid="step5-cta-body" data-rich="1">
-              <p>O detalhamento completo de como submeter cada tipo de garantia vai morar numa seção própria de referência rápida, com passo a passo específico pra cada caso.</p>
-            </div>
+            <p data-cid="step5-cta-p1">O detalhamento completo de como submeter cada tipo de garantia vai morar numa seção própria de referência rápida, com passo a passo específico pra cada caso.</p>
             <button class="cta-btn enabled" onclick="showPage('sub')">Ver Submissões de Tipos de Garantia →</button>
           </div>
         </section>
@@ -1036,7 +985,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Prints de tela
             </div>
-            <div class="gallery-grid" data-gallery="sub-basica-prints">
+            <div class="gallery-grid">
               <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
             </div>
           </div>
@@ -1046,7 +995,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               Vídeos
             </div>
-            <div class="gallery-grid" data-gallery="sub-basica-videos">
+            <div class="gallery-grid">
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
           </div>
@@ -1087,7 +1036,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Prints de tela
             </div>
-            <div class="gallery-grid" data-gallery="sub-levaetraz-prints">
+            <div class="gallery-grid">
               <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
             </div>
           </div>
@@ -1097,7 +1046,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               Vídeos
             </div>
-            <div class="gallery-grid" data-gallery="sub-levaetraz-videos">
+            <div class="gallery-grid">
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
           </div>
@@ -1128,7 +1077,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Prints de tela
             </div>
-            <div class="gallery-grid" data-gallery="sub-revisao-prints">
+            <div class="gallery-grid">
               <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
             </div>
           </div>
@@ -1138,7 +1087,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               Vídeos
             </div>
-            <div class="gallery-grid" data-gallery="sub-revisao-videos">
+            <div class="gallery-grid">
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
           </div>
@@ -1169,7 +1118,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Prints de tela
             </div>
-            <div class="gallery-grid" data-gallery="sub-recall-prints">
+            <div class="gallery-grid">
               <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
             </div>
           </div>
@@ -1179,7 +1128,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               Vídeos
             </div>
-            <div class="gallery-grid" data-gallery="sub-recall-videos">
+            <div class="gallery-grid">
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
           </div>
@@ -1193,16 +1142,12 @@
 
           <div class="card">
             <h3 data-cid="step6-resumo-h3">Resumo da etapa</h3>
-            <div class="card-body" data-cid="step6-resumo-body" data-rich="1">
-              <p>Quando a Ford solicita a peça de volta, ela precisa ser preparada, identificada e devolvida ao CRPG dentro do prazo (45 dias corridos a partir do status "Pago"), acompanhada da nota fiscal de remessa emitida no Dealer Net.</p>
-            </div>
+            <p data-cid="step6-resumo-p1">Quando a Ford solicita a peça de volta, ela precisa ser preparada, identificada e devolvida ao CRPG dentro do prazo (45 dias corridos a partir do status "Pago"), acompanhada da nota fiscal de remessa emitida no Dealer Net.</p>
           </div>
 
           <div class="card cta-card">
             <h3 data-cid="step6-cta-h3">Guia completo de devolução ao CRPG</h3>
-            <div class="card-body" data-cid="step6-cta-body" data-rich="1">
-              <p>O passo a passo completo — consulta de status, emissão da nota fiscal de remessa e o processo de devolução em si — vai morar numa seção própria de referência rápida.</p>
-            </div>
+            <p data-cid="step6-cta-p1">O passo a passo completo — consulta de status, emissão da nota fiscal de remessa e o processo de devolução em si — vai morar numa seção própria de referência rápida.</p>
             <button class="cta-btn" disabled>Ver guia de Devolução de Peça ao CRPG <span class="soon-tag">em breve</span></button>
           </div>
         </section>
@@ -1215,16 +1160,12 @@
 
           <div class="card">
             <h3 data-cid="step7-resumo-h3">Resumo da etapa</h3>
-            <div class="card-body" data-cid="step7-resumo-body" data-rich="1">
-              <p>Peças não requisitadas ou estornadas devem ser danificadas nas áreas funcionais da Concessionária antes de serem destruídas e sucateadas — elas não podem ser reaproveitadas em outros reparos. Em ocasiões especiais, a Ford pode pedir evidência do sucateamento (antes e depois), avisando com antecedência.</p>
-            </div>
+            <p data-cid="step7-resumo-p1">Peças não requisitadas ou estornadas devem ser danificadas nas áreas funcionais da Concessionária antes de serem destruídas e sucateadas — elas não podem ser reaproveitadas em outros reparos. Em ocasiões especiais, a Ford pode pedir evidência do sucateamento (antes e depois), avisando com antecedência.</p>
           </div>
 
           <div class="card cta-card">
             <h3 data-cid="step7-cta-h3">Guia completo de descarte</h3>
-            <div class="card-body" data-cid="step7-cta-body" data-rich="1">
-              <p>O passo a passo completo de como e quando descartar cada tipo de peça vai morar numa seção própria de referência rápida.</p>
-            </div>
+            <p data-cid="step7-cta-p1">O passo a passo completo de como e quando descartar cada tipo de peça vai morar numa seção própria de referência rápida.</p>
             <button class="cta-btn" disabled>Ver guia de Descarte de Peça <span class="soon-tag">em breve</span></button>
           </div>
         </section>
@@ -1237,14 +1178,12 @@
 
           <div class="card">
             <h3 data-cid="audit-como-h3">Como funciona</h3>
-            <div class="card-body" data-cid="audit-como-body" data-rich="1">
-              <ul>
-                <li>Pode ser a qualquer momento — por indicadores, informações do CRPG ou escolha aleatória</li>
-                <li>Período auditado: até 12 meses (24 meses se houver suspeita de irregularidade grave)</li>
-                <li>Concessionária é avisada antes e recebe a lista de solicitações a apresentar</li>
-                <li>Prazo pra enviar documentação: 3 dias úteis da notificação — não cumprir gera débito automático</li>
-              </ul>
-            </div>
+            <ul>
+              <li data-cid="audit-como-li1">Pode ser a qualquer momento — por indicadores, informações do CRPG ou escolha aleatória</li>
+              <li data-cid="audit-como-li2">Período auditado: até 12 meses (24 meses se houver suspeita de irregularidade grave)</li>
+              <li data-cid="audit-como-li3">Concessionária é avisada antes e recebe a lista de solicitações a apresentar</li>
+              <li data-cid="audit-como-li4">Prazo pra enviar documentação: 3 dias úteis da notificação — não cumprir gera débito automático</li>
+            </ul>
           </div>
 
           <div class="card">
@@ -1258,9 +1197,7 @@
 
           <div class="card">
             <h3 data-cid="audit-discordar-h3">Se você discordar do resultado</h3>
-            <div class="card-body" data-cid="audit-discordar-body" data-rich="1">
-              <p>Prazo de 30 dias corridos pra enviar carta de contestação. A Ford responde em até 15 dias úteis — se não responder, os argumentos da concessionária são aceitos integralmente. O débito mensal não pode passar de 25% do faturamento médio em garantia dos últimos 6 meses (exceto em casos de NOCIG ou irregularidade grave).</p>
-            </div>
+            <p data-cid="audit-discordar-p1">Prazo de 30 dias corridos pra enviar carta de contestação. A Ford responde em até 15 dias úteis — se não responder, os argumentos da concessionária são aceitos integralmente. O débito mensal não pode passar de 25% do faturamento médio em garantia dos últimos 6 meses (exceto em casos de NOCIG ou irregularidade grave).</p>
           </div>
         </section>
 
@@ -1272,24 +1209,20 @@
 
           <div class="card">
             <h3 data-cid="ows-acessar-h3">Como acessar</h3>
-            <div class="card-body" data-cid="ows-acessar-body" data-rich="1">
-              <p>Link oficial: <b>warrantyprocessing.dealerconnection.com</b>. Funciona melhor no <b>Google Chrome</b> (o Firefox e o Safari não têm suporte completo).</p>
-              <p><b>Login (SSO Ford/Microsoft):</b></p>
-              <ol>
-                <li>Acesse o link e clique em "Entrar"</li>
-                <li>Informe seu usuário no formato <code>usuario@b2bford.com</code></li>
-                <li>Informe sua senha e clique em "Acesso"</li>
-                <li>Aprove a solicitação de entrada no app <b>Microsoft Authenticator</b> (autenticação em duas etapas)</li>
-              </ol>
-              <p>Depois de logado, cai direto na página inicial do OWS, que mostra os ícones de tarefa (Abrir Solicitação, Solicitar Aprovação Prévia, relatórios etc.) e as mensagens do sistema.</p>
-            </div>
+            <p data-cid="ows-acessar-p1">Link oficial: <b>warrantyprocessing.dealerconnection.com</b>. Funciona melhor no <b>Google Chrome</b> (o Firefox e o Safari não têm suporte completo).</p>
+            <p data-cid="ows-acessar-p2"><b>Login (SSO Ford/Microsoft):</b></p>
+            <ol style="margin:0 0 12px; padding-left:20px; font-size:14.5px; line-height:1.7; color:var(--ink);">
+              <li data-cid="ows-acessar-li1">Acesse o link e clique em "Entrar"</li>
+              <li data-cid="ows-acessar-li2">Informe seu usuário no formato <code>usuario@b2bford.com</code></li>
+              <li data-cid="ows-acessar-li3">Informe sua senha e clique em "Acesso"</li>
+              <li data-cid="ows-acessar-li4">Aprove a solicitação de entrada no app <b>Microsoft Authenticator</b> (autenticação em duas etapas)</li>
+            </ol>
+            <p data-cid="ows-acessar-p3">Depois de logado, cai direto na página inicial do OWS, que mostra os ícones de tarefa (Abrir Solicitação, Solicitar Aprovação Prévia, relatórios etc.) e as mensagens do sistema.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="ows-home-h3">O que você encontra na página inicial do OWS</h3>
-            <div class="card-body" data-cid="ows-home-body" data-rich="1">
-              <p>Ao entrar, a tela mostra os ícones de tarefa direto na sua cara — é por ali que se faz tudo:</p>
-            </div>
+            <p data-cid="ows-home-p1">Ao entrar, a tela mostra os ícones de tarefa direto na sua cara — é por ali que se faz tudo:</p>
             <table>
               <tr><th data-cid="ows-home-th1">Ícone / Ação</th><th data-cid="ows-home-th2">Pra que serve</th></tr>
               <tr><td data-cid="ows-home-td1">Abrir uma Solicitação</td><td data-cid="ows-home-td2">Inserir, editar ou cancelar uma Solicitação de garantia</td></tr>
@@ -1305,23 +1238,19 @@
           <div class="card">
 
             <h3 data-cid="ows-abrir-h3">Abrindo uma Solicitação</h3>
-            <div class="card-body" data-cid="ows-abrir-body" data-rich="1">
-              <p>Pela página inicial, no botão "Abrir uma Solicitação". Os campos obrigatórios de partida são o <b>número da OS</b> e a <b>data de abertura da OS</b> — o resto muda de acordo com o tipo de Solicitação (normalmente pede VIN, ID Stars do consultor e quilometragem).</p>
-              <p>Depois de criada, dá pra editar quase tudo — exceto o número da OS e a data de abertura, que ficam travados.</p>
-            </div>
+            <p data-cid="ows-abrir-p1">Pela página inicial, no botão "Abrir uma Solicitação". Os campos obrigatórios de partida são o <b>número da OS</b> e a <b>data de abertura da OS</b> — o resto muda de acordo com o tipo de Solicitação (normalmente pede VIN, ID Stars do consultor e quilometragem).</p>
+            <p data-cid="ows-abrir-p2">Depois de criada, dá pra editar quase tudo — exceto o número da OS e a data de abertura, que ficam travados.</p>
           </div>
 
           <div class="card">
             <h3 data-cid="ows-rel-h3">Relatórios disponíveis</h3>
-            <div class="card-body" data-cid="ows-rel-body" data-rich="1">
-              <ul>
-                <li>Status da Aprovação Prévia</li>
-                <li>Status da Solicitação</li>
-                <li>Status de peças do CRPG</li>
-                <li>Lançamentos diários/mensais</li>
-              </ul>
-              <p>O acesso a cada relatório depende da função atribuída ao usuário.</p>
-            </div>
+            <ul>
+              <li data-cid="ows-rel-li1">Status da Aprovação Prévia</li>
+              <li data-cid="ows-rel-li2">Status da Solicitação</li>
+              <li data-cid="ows-rel-li3">Status de peças do CRPG</li>
+              <li data-cid="ows-rel-li4">Lançamentos diários/mensais</li>
+            </ul>
+            <p data-cid="ows-rel-p1">O acesso a cada relatório depende da função atribuída ao usuário.</p>
           </div>
 
           <div class="gallery-section">
@@ -1329,7 +1258,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Prints de tela
             </div>
-            <div class="gallery-grid" data-gallery="ows-prints">
+            <div class="gallery-grid">
               <div class="gallery-item" data-mid="ows-print-login"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="ows-print-login-cap">Tela de login (SSO Ford)</span></div></div>
               <div class="gallery-item" data-mid="ows-print-home"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="ows-print-home-cap">Página inicial (ícones de tarefa)</span></div></div>
               <div class="gallery-item" data-mid="ows-print-abertura"><div class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="caption"><span class="cap-text" data-cid="ows-print-abertura-cap">Abertura de Solicitação</span></div></div>
@@ -1344,7 +1273,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               Vídeos
             </div>
-            <div class="gallery-grid" data-gallery="ows-videos">
+            <div class="gallery-grid">
               <div class="gallery-item video" data-mid="ows-video-login"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="ows-video-login-cap">Como fazer login no OWS</span><span class="dur">com áudio</span></div></div>
               <div class="gallery-item video" data-mid="ows-video-solicitacao"><div class="thumb"><div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div></div><div class="caption"><span class="cap-text" data-cid="ows-video-solicitacao-cap">Abrindo e acompanhando uma Solicitação</span><span class="dur">com áudio</span></div></div>
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
@@ -1881,11 +1810,6 @@
     return 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
 
-  function galleryOf(item){
-    const grid = item.closest('.gallery-grid');
-    return grid ? grid.dataset.gallery : null;
-  }
-
   function extractYoutubeId(input){
     const m = input.match(/(?:youtu\.be\/|[?&]v=|embed\/)([A-Za-z0-9_-]{11})/);
     if(m) return m[1];
@@ -1922,7 +1846,7 @@
       if(!ytId){ alert('Não consegui identificar o ID do vídeo nesse link.'); return; }
       applyVideoToItem(item, ytId);
       if(!item.dataset.mid) item.dataset.mid = newMediaId();
-      if(window.__mediaSaveVideo) window.__mediaSaveVideo(item.dataset.mid, ytId, galleryOf(item)).catch(err => alert('Não consegui salvar o vídeo: ' + err.message));
+      if(window.__mediaSaveVideo) window.__mediaSaveVideo(item.dataset.mid, ytId).catch(err => alert('Não consegui salvar o vídeo: ' + err.message));
     } else {
       currentThumb = thumb;
       fileInputImg.click();
@@ -1954,7 +1878,7 @@
         const item = currentThumb.closest('.gallery-item');
         item.classList.add('has-media');
         if(!item.dataset.mid) item.dataset.mid = newMediaId();
-        if(window.__mediaSaveImage) window.__mediaSaveImage(item.dataset.mid, dataUrl, galleryOf(item)).catch(err => alert('Não consegui salvar a imagem: ' + err.message));
+        if(window.__mediaSaveImage) window.__mediaSaveImage(item.dataset.mid, dataUrl).catch(err => alert('Não consegui salvar a imagem: ' + err.message));
       };
       img.onerror = () => alert('Não consegui abrir essa imagem.');
       img.src = ev.target.result;
@@ -1964,34 +1888,19 @@
     input.value = '';
   }
 
-  function buildGalleryItem(mid, type, caption){
+  function addGalleryItem(addBtn, type){
+    if(!editMode) return;
+    const grid = addBtn.closest('.gallery-grid');
     const item = document.createElement('div');
     item.className = 'gallery-item' + (type === 'video' ? ' video' : '');
-    item.dataset.mid = mid;
+    item.dataset.mid = newMediaId();
+    const cid = item.dataset.mid + '-cap';
     const thumbInner = type === 'video'
       ? '<div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>'
       : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>';
     const durSpan = type === 'video' ? '<span class="dur">com áudio</span>' : '';
-    item.innerHTML = '<div class="thumb">'+thumbInner+'</div><div class="caption"><span class="cap-text" data-cid="'+mid+'-cap"></span>'+durSpan+'</div>';
-    item.querySelector('.cap-text').textContent = caption;
-    return item;
-  }
-
-  // Recria, na galeria certa, um item que existe no banco mas não no HTML —
-  // é assim que print/vídeo adicionado pelo modo de edição sobrevive ao F5.
-  window.__galleryRestore = (mid, type, gallery) => {
-    const grid = document.querySelector('.gallery-grid[data-gallery="' + CSS.escape(gallery) + '"]');
-    if(!grid) return null;
-    const item = buildGalleryItem(mid, type, type === 'video' ? 'Novo vídeo' : 'Novo print');
-    grid.insertBefore(item, grid.querySelector('.gallery-add'));
-    return item;
-  };
-
-  function addGalleryItem(addBtn, type){
-    if(!editMode) return;
-    const item = buildGalleryItem(newMediaId(), type, type === 'video' ? 'Novo vídeo' : 'Novo print');
-    item.querySelector('.cap-text').setAttribute('contenteditable', 'true');
-    addBtn.closest('.gallery-grid').insertBefore(item, addBtn);
+    item.innerHTML = '<div class="thumb">'+thumbInner+'</div><div class="caption"><span class="cap-text" data-cid="'+cid+'" contenteditable="true">'+(type === 'video' ? 'Novo vídeo' : 'Novo print')+'</span>'+durSpan+'</div>';
+    grid.insertBefore(item, addBtn);
   }
 
   // Sair da edição salva sozinho. Se o salvamento falhar, continua em modo de
@@ -2188,10 +2097,8 @@
     userBadge.innerHTML = '<b>' + (username || user.email.split('@')[0]) + '</b> · ' + roleLabel;
 
     try{
-      // mídia primeiro: ela recria itens de galeria que só existem no banco, e
-      // as legendas desses itens só entram se os elementos já estiverem no DOM.
-      await loadMediaOverrides();
       await loadContentOverrides();
+      await loadMediaOverrides();
     } catch(err){
       console.error('Falha ao carregar conteúdo salvo do Firestore:', err);
     }
@@ -2230,12 +2137,9 @@
   async function loadMediaOverrides(){
     const snap = await getDocs(collection(db, 'media'));
     snap.forEach(docSnap => {
-      const data = docSnap.data();
-      // item existe no HTML? senão, foi criado pelo modo de edição e só vive no
-      // banco — recria na galeria que ficou registrada junto com a mídia.
-      const item = document.querySelector('.gallery-item[data-mid="' + CSS.escape(docSnap.id) + '"]')
-        || (data.gallery ? window.__galleryRestore(docSnap.id, data.type, data.gallery) : null);
+      const item = document.querySelector('.gallery-item[data-mid="' + CSS.escape(docSnap.id) + '"]');
       if(!item) return;
+      const data = docSnap.data();
       const thumb = item.querySelector('.thumb');
       if(data.type === 'image' && data.dataUrl){
         thumb.innerHTML = '<img src="' + data.dataUrl + '" alt="">';
@@ -2259,16 +2163,14 @@
     pairs.forEach(p => { window.__contentOverrides[p.cid] = p.html !== undefined ? p.html : p.text; });
   };
 
-  // gallery = id da .gallery-grid onde a mídia vive; sem ele, um item criado no
-  // modo de edição não teria como ser recolocado na página depois do F5.
-  window.__mediaSaveImage = async (mid, dataUrl, gallery) => {
+  window.__mediaSaveImage = async (mid, dataUrl) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
-    await setDoc(doc(db, 'media', mid), { type: 'image', dataUrl, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid });
+    await setDoc(doc(db, 'media', mid), { type: 'image', dataUrl, updatedAt: serverTimestamp(), updatedBy: uid });
   };
 
-  window.__mediaSaveVideo = async (mid, youtubeId, gallery) => {
+  window.__mediaSaveVideo = async (mid, youtubeId) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
-    await setDoc(doc(db, 'media', mid), { type: 'video', youtubeId, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid });
+    await setDoc(doc(db, 'media', mid), { type: 'video', youtubeId, updatedAt: serverTimestamp(), updatedBy: uid });
   };
 </script>
 </body>
