@@ -280,6 +280,20 @@
   .edit-banner svg{flex-shrink:0;}
   .edit-toggle:disabled{opacity:.6; cursor:wait;}
 
+  /* BARRA DE FORMATAÇÃO (só no modo de edição, só dentro de região rica) */
+  .fmt-bar{display:none; position:sticky; top:var(--topbar-h); z-index:90; align-items:center; gap:6px; flex-wrap:wrap; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:7px 9px; margin-bottom:14px; box-shadow:0 4px 14px rgba(0,20,60,.07);}
+  body.edit-mode .fmt-bar{display:flex;}
+  .fmt-btn{display:inline-flex; align-items:center; justify-content:center; gap:5px; min-width:32px; height:30px; padding:0 9px; border:1px solid var(--line); border-radius:7px; background:transparent; color:var(--ink); font-family:inherit; font-size:13px; cursor:pointer; transition:background .13s, border-color .13s, color .13s, opacity .13s;}
+  .fmt-btn:hover:not(:disabled){border-color:var(--ford-blue); color:var(--ford-blue); background:var(--tint-blue-bg);}
+  .fmt-btn:disabled{opacity:.38; cursor:default;}
+  .fmt-btn.on{background:var(--ford-blue); border-color:var(--ford-blue); color:#fff;}
+  .fmt-btn.bold{font-weight:800;}
+  .fmt-btn.italic{font-style:italic; font-family:Georgia,serif;}
+  .fmt-sep{width:1px; height:20px; background:var(--line); margin:0 3px;}
+  .fmt-hint{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft); margin-left:auto; padding-left:8px;}
+  body.edit-mode [data-rich]{outline:1.5px dashed var(--tint-blue-border); outline-offset:6px; border-radius:4px; cursor:text;}
+  body.edit-mode [data-rich]:focus{outline:1.5px solid var(--ford-blue);}
+
   /* TOAST */
   .toast{position:fixed; bottom:26px; left:50%; transform:translate(-50%,14px); background:var(--ford-navy-deep); color:#fff; font-size:13.5px; font-weight:500; padding:12px 20px; border-radius:10px; box-shadow:0 10px 30px rgba(0,10,30,.3); opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:1200;}
   .toast.show{opacity:1; transform:translate(-50%,0);}
@@ -537,6 +551,18 @@
         <div class="edit-banner">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           Modo de edição ativo: clique no texto pra editar, ou numa miniatura pra trocar o print/vídeo. Ao clicar em <b>“Salvar e sair”</b> lá em cima, tudo é salvo automaticamente.
+        </div>
+
+        <div class="fmt-bar" id="fmtBar">
+          <button class="fmt-btn bold" type="button" data-fmt="bold" title="Negrito (Ctrl+B)" disabled>N</button>
+          <button class="fmt-btn italic" type="button" data-fmt="italic" title="Itálico (Ctrl+I)" disabled>I</button>
+          <button class="fmt-btn" type="button" data-fmt="insertUnorderedList" title="Lista com marcadores" disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="7" r="1.6" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="5" cy="17" r="1.6" fill="currentColor" stroke="none"/><line x1="10" y1="7" x2="20" y2="7"/><line x1="10" y1="12" x2="20" y2="12"/><line x1="10" y1="17" x2="20" y2="17"/></svg>
+          </button>
+          <span class="fmt-sep"></span>
+          <button class="fmt-btn" type="button" data-fmt="addBlock" title="Adicionar um parágrafo novo abaixo" disabled>+ bloco</button>
+          <button class="fmt-btn" type="button" data-fmt="removeBlock" title="Apagar o parágrafo/item onde o cursor está" disabled>− bloco</button>
+          <span class="fmt-hint" id="fmtHint">clique num texto pra formatar</span>
         </div>
 
         <div class="crumb" id="crumb"></div>
@@ -938,16 +964,40 @@
 
           <div class="card">
             <h3 data-cid="subbasica-quando-h3">Quando usar</h3>
-            <p data-cid="subbasica-quando-p1">Sempre que o reparo não se enquadra em nenhum dos outros tipos — é a solicitação padrão de garantia.</p>
+            <div class="card-body" data-cid="subbasica-quando-body" data-rich="1">
+              <p>Sempre que o reparo não se enquadra em nenhum dos outros tipos — é a solicitação padrão de garantia.</p>
+            </div>
           </div>
 
           <div class="card">
             <h3 data-cid="subbasica-lanc-h3">Como lançar no OWS</h3>
-            <ul>
-              <li data-cid="subbasica-lanc-li1">Tipo de Solicitação: Normal</li>
-              <li data-cid="subbasica-lanc-li2">Campos obrigatórios: número e data da OS, VIN, ID Stars do técnico, quilometragem</li>
-              <li data-cid="subbasica-lanc-li3">Anexar laudo técnico, evidências do reparo e a OS assinada pelo cliente</li>
-            </ul>
+            <div class="card-body" data-cid="subbasica-lanc-body" data-rich="1">
+              <ul>
+                <li>Tipo de Solicitação: Normal</li>
+                <li>Campos obrigatórios: número e data da OS, VIN, ID Stars do técnico, quilometragem</li>
+                <li>Anexar laudo técnico, evidências do reparo e a OS assinada pelo cliente</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
         </section>
 
@@ -959,20 +1009,46 @@
 
           <div class="card">
             <h3 data-cid="sublevaetraz-oque-h3">O que é</h3>
-            <p data-cid="sublevaetraz-oque-p1">Quando a Concessionária busca o veículo na casa do cliente, faz o reparo em garantia e devolve — sem custo extra pro cliente.</p>
+            <div class="card-body" data-cid="sublevaetraz-oque-body" data-rich="1">
+              <p>Quando a Concessionária busca o veículo na casa do cliente, faz o reparo em garantia e devolve — sem custo extra pro cliente.</p>
+            </div>
           </div>
 
           <div class="card">
             <h3 data-cid="sublevaetraz-doc-h3">Documentação extra</h3>
-            <ul>
-              <li data-cid="sublevaetraz-doc-li1">Termo de retirada assinado, com quilometragem e estado do veículo no momento da busca</li>
-              <li data-cid="sublevaetraz-doc-li2">Termo de devolução assinado, nas mesmas condições</li>
-            </ul>
+            <div class="card-body" data-cid="sublevaetraz-doc-body" data-rich="1">
+              <ul>
+                <li>Termo de retirada assinado, com quilometragem e estado do veículo no momento da busca</li>
+                <li>Termo de devolução assinado, nas mesmas condições</li>
+              </ul>
+            </div>
           </div>
 
           <div class="card">
             <h3 data-cid="sublevaetraz-lanc-h3">Como lançar no OWS</h3>
-            <p data-cid="sublevaetraz-lanc-p1">Mesma solicitação do tipo de garantia do reparo em si, indicando Leva e Traz na observação conforme orientação vigente da Ford.</p>
+            <div class="card-body" data-cid="sublevaetraz-lanc-body" data-rich="1">
+              <p>Mesma solicitação do tipo de garantia do reparo em si, indicando Leva e Traz na observação conforme orientação vigente da Ford.</p>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
         </section>
 
@@ -984,12 +1060,36 @@
 
           <div class="card">
             <h3 data-cid="subrevisao-oque-h3">O que é</h3>
-            <p data-cid="subrevisao-oque-p1">Defeito encontrado pelo técnico durante a execução de uma revisão programada — não é uma reclamação espontânea do cliente.</p>
+            <div class="card-body" data-cid="subrevisao-oque-body" data-rich="1">
+              <p>Defeito encontrado pelo técnico durante a execução de uma revisão programada — não é uma reclamação espontânea do cliente.</p>
+            </div>
           </div>
 
           <div class="card">
             <h3 data-cid="subrevisao-lanc-h3">Como lançar no OWS</h3>
-            <p data-cid="subrevisao-lanc-p1">Vincula o número da OS de revisão à solicitação de garantia, junto com o laudo do que foi encontrado na revisão.</p>
+            <div class="card-body" data-cid="subrevisao-lanc-body" data-rich="1">
+              <p>Vincula o número da OS de revisão à solicitação de garantia, junto com o laudo do que foi encontrado na revisão.</p>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
         </section>
 
@@ -1001,12 +1101,36 @@
 
           <div class="card">
             <h3 data-cid="subrecall-oque-h3">O que é</h3>
-            <p data-cid="subrecall-oque-p1">Consulte no PTS se o chassi está na listagem de recall ou campanha antes de seguir — se estiver, o atendimento já entra direto como garantia.</p>
+            <div class="card-body" data-cid="subrecall-oque-body" data-rich="1">
+              <p>Consulte no PTS se o chassi está na listagem de recall ou campanha antes de seguir — se estiver, o atendimento já entra direto como garantia.</p>
+            </div>
           </div>
 
           <div class="card">
             <h3 data-cid="subrecall-lanc-h3">Como lançar no OWS</h3>
-            <p data-cid="subrecall-lanc-p1">A OS é aberta direto como <b>GSR/GSC</b>, usando o TPR e o CCC do PTS — vale conferir a hora da própria loja antes de lançar o serviço.</p>
+            <div class="card-body" data-cid="subrecall-lanc-body" data-rich="1">
+              <p>A OS é aberta direto como <b>GSR/GSC</b>, usando o TPR e o CCC do PTS — vale conferir a hora da própria loja antes de lançar o serviço.</p>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
         </section>
 
@@ -1499,6 +1623,167 @@
     });
   }
 
+  /* ---------- TEXTO RICO: sanitização, barra de formatação, blocos ---------- */
+
+  // Campos [data-rich] guardam HTML de verdade (negrito/itálico/lista), então
+  // precisam ser higienizados: qualquer editor pode escrever nesses campos e o
+  // conteúdo volta pro DOM de todo mundo. Só a lista abaixo sobrevive, e nunca
+  // com atributo nenhum — sem atributo não existe onerror/onclick/href:javascript.
+  const RICH_KEEP = new Set(['B','STRONG','I','EM','U','UL','OL','LI','BR','P']);
+  const RICH_DROP = new Set(['SCRIPT','STYLE','NOSCRIPT','IFRAME','OBJECT','EMBED','TEMPLATE','SVG','MATH','LINK','META']);
+  const RICH_BLOCK_PARENT = new Set(['DIV','UL','OL']);
+
+  function sanitizeRichHtml(html){
+    const parsed = new DOMParser().parseFromString(html, 'text/html');
+    const out = document.createElement('div');
+    (function walk(src, dest){
+      src.childNodes.forEach(node => {
+        if(node.nodeType === 3){
+          // espaço de indentação entre blocos não é conteúdo — se sobrevivesse,
+          // o navegador o normalizaria na edição e todo save viraria "mudou".
+          if(RICH_BLOCK_PARENT.has(dest.tagName) && !node.nodeValue.trim()) return;
+          dest.appendChild(document.createTextNode(node.nodeValue));
+          return;
+        }
+        if(node.nodeType !== 1) return;
+        if(RICH_DROP.has(node.tagName)) return;
+        if(!RICH_KEEP.has(node.tagName)){
+          // tag desconhecida (span, font, div do contenteditable…): descarta a
+          // casca, mantém o conteúdo. div vira parágrafo quando não embrulha bloco.
+          const isDivWithoutBlocks = node.tagName === 'DIV' && !node.querySelector('p,ul,ol,li,div');
+          if(isDivWithoutBlocks){
+            const p = document.createElement('p');
+            dest.appendChild(p);
+            walk(node, p);
+          } else {
+            walk(node, dest);
+          }
+          return;
+        }
+        const clean = document.createElement(node.tagName.toLowerCase());
+        dest.appendChild(clean);
+        walk(node, clean);
+        // insertUnorderedList parte o bloco e deixa <p></p> de sobra dos dois
+        // lados; um bloco sem texto e sem <br> é resíduo, não parágrafo em branco.
+        const isBlock = clean.tagName === 'P' || clean.tagName === 'LI' || clean.tagName === 'UL' || clean.tagName === 'OL';
+        if(isBlock && !clean.textContent.trim() && !clean.querySelector('br')) clean.remove();
+      });
+    })(parsed.body, out);
+    return out.innerHTML;
+  }
+  window.__sanitizeRich = sanitizeRichHtml;
+
+  const fmtBar = document.getElementById('fmtBar');
+  const fmtHint = document.getElementById('fmtHint');
+  const fmtButtons = Array.from(fmtBar.querySelectorAll('.fmt-btn'));
+  let activeRich = null;
+
+  function richRegionOfSelection(){
+    const sel = window.getSelection();
+    if(!sel || !sel.rangeCount) return null;
+    let node = sel.anchorNode;
+    if(node && node.nodeType === 3) node = node.parentNode;
+    return node && node.closest ? node.closest('[data-rich]') : null;
+  }
+
+  function updateFmtBar(){
+    if(!editMode) return;
+    activeRich = richRegionOfSelection();
+    const on = !!activeRich;
+    fmtButtons.forEach(b => { b.disabled = !on; if(!on) b.classList.remove('on'); });
+    fmtHint.textContent = on ? 'formatando este bloco' : 'clique num texto pra formatar';
+    if(!on) return;
+    fmtButtons.forEach(b => {
+      const cmd = b.dataset.fmt;
+      if(cmd === 'addBlock' || cmd === 'removeBlock') return;
+      b.classList.toggle('on', document.queryCommandState(cmd));
+    });
+  }
+  document.addEventListener('selectionchange', updateFmtBar);
+
+  function placeCaret(el){
+    activeRich.focus();
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(true);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  function newEmptyBlock(tag){
+    const el = document.createElement(tag);
+    el.appendChild(document.createElement('br'));
+    return el;
+  }
+
+  // O "bloco" é o item de lista onde o cursor está ou, na falta dele, o filho
+  // direto da região rica — é essa a unidade que o + bloco / − bloco manipula.
+  function currentBlock(){
+    const sel = window.getSelection();
+    if(!activeRich || !sel.rangeCount) return null;
+    let node = sel.anchorNode;
+    if(node && node.nodeType === 3) node = node.parentNode;
+    if(!node || !activeRich.contains(node)) return null;
+    const li = node.closest('li');
+    if(li && activeRich.contains(li)) return li;
+    while(node && node.parentNode !== activeRich) node = node.parentNode;
+    return node;
+  }
+
+  function addBlock(){
+    const block = currentBlock();
+    const fresh = newEmptyBlock(block && block.tagName === 'LI' ? 'li' : 'p');
+    if(block) block.after(fresh); else activeRich.appendChild(fresh);
+    placeCaret(fresh);
+  }
+
+  function removeBlock(){
+    const block = currentBlock();
+    if(!block) return;
+    const list = block.tagName === 'LI' ? block.parentNode : null;
+    let neighbour = block.nextElementSibling || block.previousElementSibling;
+    block.remove();
+    if(list && !list.children.length){
+      neighbour = list.nextElementSibling || list.previousElementSibling;
+      list.remove();
+    }
+    if(!activeRich.children.length){
+      const p = newEmptyBlock('p');
+      activeRich.appendChild(p);
+      placeCaret(p);
+      return;
+    }
+    placeCaret(neighbour && activeRich.contains(neighbour) ? neighbour : activeRich.lastElementChild);
+  }
+
+  // mousedown no botão roubaria o foco do texto e apagaria a seleção antes do
+  // clique chegar — por isso o preventDefault.
+  fmtBar.addEventListener('mousedown', (e) => { if(e.target.closest('.fmt-btn')) e.preventDefault(); });
+
+  fmtBar.addEventListener('click', (e) => {
+    const btn = e.target.closest('.fmt-btn');
+    if(!btn || btn.disabled || !activeRich) return;
+    const cmd = btn.dataset.fmt;
+    if(cmd === 'addBlock') addBlock();
+    else if(cmd === 'removeBlock') removeBlock();
+    else document.execCommand(cmd);
+    updateFmtBar();
+  });
+
+  // Colar traz HTML arbitrário (Word, sites) direto pro DOM antes de qualquer
+  // higienização rodar. Forçamos texto puro pra que só o que a barra aplica
+  // vire formatação de verdade.
+  document.addEventListener('paste', (e) => {
+    if(!editMode) return;
+    let node = e.target;
+    if(node && node.nodeType === 3) node = node.parentNode;
+    if(!node || !node.closest || !node.closest('[data-cid]')) return;
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+    if(text) document.execCommand('insertText', false, text);
+  });
+
   /* ---------- MODO DE EDIÇÃO (texto + mídia), só pra role=editor ---------- */
   let editMode = false;
   const fileInputImg = document.createElement('input');
@@ -1513,6 +1798,11 @@
     document.body.classList.add('edit-mode');
     document.getElementById('editToggleLabel').textContent = 'Salvar e sair';
     document.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', 'true'));
+    // sem isso o negrito sai como <span style="font-weight:bold">, que a
+    // higienização descarta — a formatação sumiria sozinha ao salvar.
+    document.execCommand('styleWithCSS', false, false);
+    document.execCommand('defaultParagraphSeparator', false, 'p');
+    updateFmtBar();
     safetyRevealCurrentPage(); // garante que todo card já esteja visível antes de editar
   }
 
@@ -1621,12 +1911,23 @@
 
     const pairs = [];
     document.querySelectorAll('[data-cid]').forEach(el => {
-      const baseline = window.__contentBaseline ? window.__contentBaseline.get(el.dataset.cid) : undefined;
-      if(el.textContent !== baseline) pairs.push({ cid: el.dataset.cid, text: el.textContent });
+      const cid = el.dataset.cid;
+      const baseline = window.__contentBaseline ? window.__contentBaseline.get(cid) : undefined;
+      if(el.dataset.rich){
+        const html = sanitizeRichHtml(el.innerHTML);
+        if(html === baseline) return;
+        // devolve a versão já higienizada pro DOM: senão a tela ficaria com o
+        // markup cru do contenteditable e o próximo save veria diferença de novo.
+        el.innerHTML = html;
+        pairs.push({ cid, html });
+      } else if(el.textContent !== baseline){
+        pairs.push({ cid, text: el.textContent });
+      }
     });
 
     const leaveEditMode = () => {
       editMode = false;
+      activeRich = null;
       document.body.classList.remove('edit-mode');
       label.textContent = 'Editar conteúdo';
       toggle.disabled = false;
@@ -1643,7 +1944,7 @@
     toggle.disabled = true;
     label.textContent = 'Salvando…';
     window.__contentSaveAll(pairs).then(() => {
-      pairs.forEach(p => window.__contentBaseline && window.__contentBaseline.set(p.cid, p.text));
+      pairs.forEach(p => window.__contentBaseline && window.__contentBaseline.set(p.cid, p.html !== undefined ? p.html : p.text));
       leaveEditMode();
       showToast(pairs.length === 1 ? '1 alteração salva' : pairs.length + ' alterações salvas');
     }).catch(err => {
@@ -1813,15 +2114,24 @@
     // conseguir aplicar overrides em elementos que ainda nem existem no DOM.
     const overrides = {};
     snap.forEach(docSnap => {
-      const text = docSnap.data().text;
-      if(typeof text !== 'string') return;
-      overrides[docSnap.id] = text;
+      const data = docSnap.data();
       const el = document.querySelector('[data-cid="' + CSS.escape(docSnap.id) + '"]');
-      if(el) el.textContent = text;
+      // campo html = região rica (negrito/itálico/lista); campo text = linha
+      // simples, que continua entrando por textContent como sempre.
+      if(typeof data.html === 'string'){
+        overrides[docSnap.id] = data.html;
+        if(el) el.innerHTML = window.__sanitizeRich(data.html);
+        return;
+      }
+      if(typeof data.text !== 'string') return;
+      overrides[docSnap.id] = data.text;
+      if(el) el.textContent = data.text;
     });
     window.__contentOverrides = overrides;
     window.__contentBaseline = new Map();
-    document.querySelectorAll('[data-cid]').forEach(el => window.__contentBaseline.set(el.dataset.cid, el.textContent));
+    document.querySelectorAll('[data-cid]').forEach(el => {
+      window.__contentBaseline.set(el.dataset.cid, el.dataset.rich ? window.__sanitizeRich(el.innerHTML) : el.textContent);
+    });
   }
 
   async function loadMediaOverrides(){
@@ -1845,11 +2155,12 @@
 
   window.__contentSaveAll = async (pairs) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
-    await Promise.all(pairs.map(p =>
-      setDoc(doc(db, 'content', p.cid), { text: p.text, updatedAt: serverTimestamp(), updatedBy: uid })
-    ));
+    await Promise.all(pairs.map(p => {
+      const field = p.html !== undefined ? { html: p.html } : { text: p.text };
+      return setDoc(doc(db, 'content', p.cid), { ...field, updatedAt: serverTimestamp(), updatedBy: uid });
+    }));
     if(!window.__contentOverrides) window.__contentOverrides = {};
-    pairs.forEach(p => { window.__contentOverrides[p.cid] = p.text; });
+    pairs.forEach(p => { window.__contentOverrides[p.cid] = p.html !== undefined ? p.html : p.text; });
   };
 
   window.__mediaSaveImage = async (mid, dataUrl) => {
