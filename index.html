@@ -549,6 +549,19 @@
         </div>
       </div>
 
+      <div class="sidebar-zone" id="zone-crpg">
+        <button class="sidebar-back" onclick="showPage(6)"><span>←</span> Voltar</button>
+        <div class="sidebar-group">
+          <div class="sidebar-group-label" data-cid="nav-label-crpg">Remessa de Peça</div>
+          <div class="tool-list">
+            <div class="tool-item active-link" data-idx="crpg-status" role="button" tabindex="0" onclick="showPage('crpg-status')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('crpg-status');}"><span data-cid="nav-crpg-status">Status e Etiqueta</span></div>
+            <div class="tool-item active-link" data-idx="crpg-holmes-abrir" role="button" tabindex="0" onclick="showPage('crpg-holmes-abrir')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('crpg-holmes-abrir');}"><span data-cid="nav-crpg-abrir">Abrir no Holmes</span></div>
+            <div class="tool-item active-link" data-idx="crpg-nota" role="button" tabindex="0" onclick="showPage('crpg-nota')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('crpg-nota');}"><span data-cid="nav-crpg-nota">Nota de Remessa</span></div>
+            <div class="tool-item active-link" data-idx="crpg-holmes-finalizar" role="button" tabindex="0" onclick="showPage('crpg-holmes-finalizar')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('crpg-holmes-finalizar');}"><span data-cid="nav-crpg-finalizar">Finalizar no Holmes</span></div>
+          </div>
+        </div>
+      </div>
+
     </aside>
 
     <main class="content">
@@ -1210,7 +1223,213 @@
             <div class="card-body" data-cid="step6-cta-body" data-rich="1">
               <p>O passo a passo completo — consulta de status, emissão da nota fiscal de remessa e o processo de devolução em si — vai morar numa seção própria de referência rápida.</p>
             </div>
-            <button class="cta-btn" disabled>Ver guia de Devolução de Peça ao CRPG <span class="soon-tag">em breve</span></button>
+            <button class="cta-btn enabled" onclick="showPage('crpg')">Ver guia do Processo de Remessa →</button>
+          </div>
+        </section>
+
+        <!-- PAGE CRPG (landing) -->
+        <section class="page" id="page-crpg">
+          <div class="section-head"><div class="section-tag">→</div><h1 class="page-title" data-cid="title-crpg">Processo de Remessa</h1></div>
+          <p class="page-sub" data-cid="crpg-landing-sub">O caminho da peça requisitada pela Ford, do primeiro status até a remessa finalizada. Siga as quatro partes na ordem.</p>
+          <div class="card" style="padding:10px; display:flex; flex-direction:column; gap:2px;">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('crpg-status')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('crpg-status');}">
+              <span class="step-link-num">01</span>
+              <span class="step-link-text"><span class="step-link-title" data-cid="crpg-link-status">Status e Etiqueta</span><span class="step-link-sub" data-cid="crpg-linksub-status">Consultar o status das peças, emitir o relatório e a etiqueta</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('crpg-holmes-abrir')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('crpg-holmes-abrir');}">
+              <span class="step-link-num">02</span>
+              <span class="step-link-text"><span class="step-link-title" data-cid="crpg-link-abrir">Abrir no Holmes</span><span class="step-link-sub" data-cid="crpg-linksub-abrir">Abrir o processo interno de remessa</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('crpg-nota')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('crpg-nota');}">
+              <span class="step-link-num">03</span>
+              <span class="step-link-text"><span class="step-link-title" data-cid="crpg-link-nota">Nota de Remessa</span><span class="step-link-sub" data-cid="crpg-linksub-nota">Emitir a nota fiscal de remessa no Dealer Net</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('crpg-holmes-finalizar')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('crpg-holmes-finalizar');}">
+              <span class="step-link-num">04</span>
+              <span class="step-link-text"><span class="step-link-title" data-cid="crpg-link-finalizar">Finalizar no Holmes</span><span class="step-link-sub" data-cid="crpg-linksub-finalizar">Anexar a nota e encerrar o processo</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE CRPG-STATUS -->
+        <section class="page" id="page-crpg-status">
+          <div class="section-head"><div class="section-tag">01</div><h1 class="page-title" data-cid="title-crpg-status">Status e Etiqueta</h1></div>
+          <p class="page-sub" data-cid="crpgstatus-sub">Primeira parte: descobrir quais peças a Ford está pedindo de volta e preparar a identificação de cada uma.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge warn">Prazo de 45 dias</span></div>
+
+          <div class="card" data-card="crpgstatus-consulta">
+            <h3 data-cid="crpgstatus-consulta-h3">Consultar o status das peças</h3>
+            <div class="card-body" data-cid="crpgstatus-consulta-body" data-rich="1">
+              <p>No OWS, acompanhe a situação das peças das solicitações já pagas. São elas que entram na fila de remessa — o prazo de 45 dias corridos começa a contar do status <b>Pago</b>.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="crpgstatus-relatorio">
+            <h3 data-cid="crpgstatus-relatorio-h3">Emitir o relatório e a etiqueta</h3>
+            <div class="card-body" data-cid="crpgstatus-relatorio-body" data-rich="1">
+              <ul>
+                <li>Gere o relatório com a lista das peças requisitadas</li>
+                <li>Emita a etiqueta de identificação de cada peça</li>
+                <li>Cole a etiqueta na própria peça antes de embalar — peça sem identificação é recusada no CRPG</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="crpg-status-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="crpg-status-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE CRPG-HOLMES-ABRIR -->
+        <section class="page" id="page-crpg-holmes-abrir">
+          <div class="section-head"><div class="section-tag">02</div><h1 class="page-title" data-cid="title-crpg-abrir">Abrir no Holmes</h1></div>
+          <p class="page-sub" data-cid="crpgabrir-sub">Com as peças identificadas, abre-se o processo interno que vai acompanhar a remessa até o fim.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge holmes">Fluxo interno via Holmes</span></div>
+
+          <div class="card" data-card="crpgabrir-abertura">
+            <h3 data-cid="crpgabrir-abertura-h3">Abrir o processo de remessa</h3>
+            <div class="card-body" data-cid="crpgabrir-abertura-body" data-rich="1">
+              <p>Abra o processo de remessa no Holmes anexando o relatório de peças gerado na parte anterior. É esse processo que autoriza a emissão da nota fiscal.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="crpgabrir-oquevai">
+            <h3 data-cid="crpgabrir-oquevai-h3">O que anexar</h3>
+            <div class="card-body" data-cid="crpgabrir-oquevai-body" data-rich="1">
+              <ul>
+                <li>Relatório com a lista das peças requisitadas</li>
+                <li>Evidência das peças já etiquetadas e embaladas</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="crpg-holmes-abrir-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="crpg-holmes-abrir-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE CRPG-NOTA -->
+        <section class="page" id="page-crpg-nota">
+          <div class="section-head"><div class="section-tag">03</div><h1 class="page-title" data-cid="title-crpg-nota">Nota de Remessa</h1></div>
+          <p class="page-sub" data-cid="crpgnota-sub">A nota fiscal que acompanha as peças na viagem até o CRPG.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">Dealer</span></div>
+
+          <div class="card" data-card="crpgnota-emissao">
+            <h3 data-cid="crpgnota-emissao-h3">Emitir a nota no Dealer Net</h3>
+            <div class="card-body" data-cid="crpgnota-emissao-body" data-rich="1">
+              <p>Com o processo aberto no Holmes, emita a nota fiscal de remessa no Dealer Net, conferindo se as peças da nota batem exatamente com as do relatório.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="crpgnota-conferir">
+            <h3 data-cid="crpgnota-conferir-h3">Antes de despachar</h3>
+            <div class="card-body" data-cid="crpgnota-conferir-body" data-rich="1">
+              <ul>
+                <li>Confira se toda peça da nota está etiquetada</li>
+                <li>Guarde uma via da nota para anexar no Holmes na parte seguinte</li>
+                <li>Despache dentro do prazo de 45 dias contados do status Pago</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="crpg-nota-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="crpg-nota-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE CRPG-HOLMES-FINALIZAR -->
+        <section class="page" id="page-crpg-holmes-finalizar">
+          <div class="section-head"><div class="section-tag">04</div><h1 class="page-title" data-cid="title-crpg-finalizar">Finalizar no Holmes</h1></div>
+          <p class="page-sub" data-cid="crpgfinal-sub">Última parte: fechar o processo com a nota anexada, deixando o rastro completo para a auditoria.</p>
+          <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge holmes">Fluxo interno via Holmes</span></div>
+
+          <div class="card" data-card="crpgfinal-anexar">
+            <h3 data-cid="crpgfinal-anexar-h3">Anexar a nota e encerrar</h3>
+            <div class="card-body" data-cid="crpgfinal-anexar-body" data-rich="1">
+              <p>Volte ao processo aberto no Holmes, anexe a nota fiscal de remessa e finalize. Só depois disso o processo é considerado concluído.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="crpgfinal-porque">
+            <h3 data-cid="crpgfinal-porque-h3">Por que isso importa</h3>
+            <div class="card-body" data-cid="crpgfinal-porque-body" data-rich="1">
+              <p>Peça requisitada que não chega ao CRPG dentro do prazo vira estorno na Auditoria Ford — e o processo finalizado no Holmes é a prova de que a devolução foi feita.</p>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="crpg-holmes-finalizar-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="crpg-holmes-finalizar-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
           </div>
         </section>
 
@@ -1414,7 +1633,8 @@
 
   // nomes de exibição das mini-páginas dos sub-guias (usado no crumb)
   const subGuideNames = {
-    'sub-basica':'Garantia Básica', 'sub-levaetraz':'Leva e Traz', 'sub-revisao':'Revisão', 'sub-recall':'Recall/Campanha'
+    'sub-basica':'Garantia Básica', 'sub-levaetraz':'Leva e Traz', 'sub-revisao':'Revisão', 'sub-recall':'Recall/Campanha',
+    'crpg-status':'Status e Etiqueta', 'crpg-holmes-abrir':'Abrir no Holmes', 'crpg-nota':'Nota de Remessa', 'crpg-holmes-finalizar':'Finalizar no Holmes'
   };
 
   // Prefixo do id decide a "zona" — cada sub-guia (Submissão, Remessa, Descarte)
@@ -1547,6 +1767,15 @@
         '<button class="crumb-link" onclick="showPage(5)">Submissão da Solicitação</button>' + sep +
         '<button class="crumb-link" onclick="showPage(\'sub\')">Tipos de Garantia</button>' + sep +
         '<b>' + subGuideNames[id] + '</b>';
+    } else if(id === 'crpg'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(6)">Devolução de Peças (CRPG)</button>' + sep +
+        '<b>Processo de Remessa</b>';
+    } else if(getZoneForPage(id) === 'crpg'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(6)">Devolução de Peças (CRPG)</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(\'crpg\')">Processo de Remessa</button>' + sep +
+        '<b>' + subGuideNames[id] + '</b>';
     } else {
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
         '<button class="crumb-link" onclick="showPage(\'ov\')">O Caminho da Garantia</button>' + sep +
@@ -1586,7 +1815,8 @@
   let searchIndex = [];
   function buildSearchIndex(){
     searchIndex = [];
-    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','ows','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall'];
+    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','ows','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall',
+      'crpg','crpg-status','crpg-holmes-abrir','crpg-nota','crpg-holmes-finalizar'];
     pageIds.forEach(i => {
       const page = document.getElementById('page-'+i);
       if(!page) return;
