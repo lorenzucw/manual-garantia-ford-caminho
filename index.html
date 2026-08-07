@@ -166,7 +166,8 @@
   .tool-item.active-link:hover{transform:scale(1.035);}
   .tool-item.active-link:active{transform:scale(.97);}
   .tool-item.active-link:hover{background:rgba(255,255,255,.07); color:#fff;}
-  .tool-item.active-link.current{color:#fff; font-weight:600; background:rgba(255,255,255,.09);}
+  .tool-item.active-link.current{color:#fff; font-weight:600; background:rgba(255,255,255,.09); transition:background .25s ease;}
+  :root[data-theme="dark"] .tool-item.active-link.current{background:var(--ford-blue);}
   .tool-item.active-link .go{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.06em; color:var(--ford-accent); text-transform:uppercase;}
 
   /* CONTENT */
@@ -474,13 +475,6 @@
       </div>
 
       <div class="sidebar-group">
-        <div class="sidebar-group-label" data-cid="nav-label-overview">Visão Geral</div>
-        <div class="road">
-          <div class="road-step" data-idx="guide"><div role="button" tabindex="0" onclick="showPage('guide')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('guide');}"><span data-cid="nav-guide">Visão Geral</span></div></div>
-        </div>
-      </div>
-
-      <div class="sidebar-group">
         <div class="sidebar-group-label" role="button" tabindex="0" style="background:none;border:none;cursor:pointer;width:100%;text-align:left;" onclick="showPage('ov')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('ov');}"><span data-cid="nav-label-caminho">O Caminho da Garantia →</span></div>
         <div class="road" id="mainRoad">
           <div class="road-indicator" id="roadIndicator"></div>
@@ -496,8 +490,8 @@
 
       <div class="sidebar-group">
         <div class="sidebar-group-label" data-cid="nav-label-referencia">Referência</div>
-        <div class="road">
-          <div class="road-step" data-idx="audit"><div role="button" tabindex="0" onclick="showPage('audit')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('audit');}"><span data-cid="nav-audit">Auditoria Ford</span></div></div>
+        <div class="tool-list">
+          <div class="tool-item active-link" data-idx="audit" role="button" tabindex="0" onclick="showPage('audit')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('audit');}"><span data-cid="nav-audit">Auditoria Ford</span></div>
         </div>
       </div>
 
