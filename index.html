@@ -201,7 +201,12 @@
   h1.page-title{font-size:30px; color:var(--ink); font-weight:600; padding-top:6px;}
   .page-sub{color:var(--ink-soft); font-size:15px; margin:10px 0 32px; max-width:60ch; text-transform:none; letter-spacing:normal; font-family:'Inter',sans-serif;}
 
-  .card{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin-bottom:20px; transition:transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;}
+  .card{position:relative; background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin-bottom:20px; transition:transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;}
+  /* lixeira da seção — só no modo de edição, e só em card com data-card */
+  .card-del{display:none; position:absolute; top:10px; right:10px; width:30px; height:30px; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:background .13s, color .13s, border-color .13s;}
+  body.edit-mode .card[data-card] > .card-del{display:flex;}
+  body.edit-mode .card[data-card] > h3{padding-right:34px;}
+  .card-del:hover{background:#e8484822; border-color:#e04848; color:#e04848;}
   body:not(.edit-mode) .card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,30,70,.09);}
 
   /* aparecer ao rolar — o JS marca .revealed; sem JS/observer, .no-reveal-js
@@ -345,8 +350,9 @@
   .step-link:hover{background:var(--canvas);}
   .step-link .step-link-num{font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--ford-blue); background:var(--tint-blue-bg); width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
   .step-link .step-link-text{flex:1; min-width:0;}
-  .step-link .step-link-title{font-size:14.5px; font-weight:600; color:var(--ink);}
-  .step-link .step-link-sub{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+  /* block: como span inline o subtítulo colava no título na mesma linha */
+  .step-link .step-link-title{display:block; font-size:14.5px; font-weight:600; color:var(--ink);}
+  .step-link .step-link-sub{display:block; font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
   .step-link .step-link-arrow{color:var(--ink-soft); flex-shrink:0;}
   .ov-divider{border:none; border-top:1px solid var(--line); margin:0;}
 
@@ -560,6 +566,7 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="7" r="1.6" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="5" cy="17" r="1.6" fill="currentColor" stroke="none"/><line x1="10" y1="7" x2="20" y2="7"/><line x1="10" y1="12" x2="20" y2="12"/><line x1="10" y1="17" x2="20" y2="17"/></svg>
           </button>
           <span class="fmt-sep"></span>
+          <button class="fmt-btn" type="button" data-fmt="addCard" title="Adicionar uma seção nova (título + conteúdo) no fim da página">+ card</button>
           <button class="fmt-btn" type="button" data-fmt="addBlock" title="Adicionar um parágrafo novo abaixo" disabled>+ bloco</button>
           <button class="fmt-btn" type="button" data-fmt="removeBlock" title="Apagar o parágrafo/item onde o cursor está" disabled>− bloco</button>
           <span class="fmt-hint" id="fmtHint">clique num texto pra formatar</span>
@@ -608,7 +615,7 @@
             <h1 class="page-title" data-cid="title-guide">Visão Geral</h1>
           </div>
           <p class="page-sub" data-cid="guide-sub">Este manual segue o processo de garantia Ford do início ao fim, na ordem em que ele acontece de verdade na Concessionária. Use a barra lateral pra pular direto pra etapa que você precisa.</p>
-          <div class="card">
+          <div class="card" data-card="guide-card1">
             <h3 data-cid="guide-card1-h3">O que você vai encontrar em cada etapa</h3>
             <div class="card-body" data-cid="guide-card1-body" data-rich="1">
               <ul>
@@ -634,7 +641,7 @@
           <p class="page-sub" data-cid="step1-sub">Etapa que cobre desde a chegada do veículo novo na Concessionária até a entrega ao cliente — é aqui que muitos problemas de cobertura começam (ou são evitados).</p>
           <div class="badge-row"><span class="badge role">Responsável: Recepcionista e Consultor(a) Técnico(a)</span><span class="badge tool">Referência: Manual do Proprietário</span><span class="badge tool">PTS</span><span class="badge warn">Inspeção obrigatória</span></div>
 
-          <div class="card">
+          <div class="card" data-card="step1-cadastro">
             <h3 data-cid="step1-cadastro-h3">Cadastro do cliente e do veículo</h3>
             <div class="card-body" data-cid="step1-cadastro-body" data-rich="1">
               <p>Antes de tudo, confirme se o cliente já tem cadastro no Dealer Net e no Agenda Ford — se não tiver, cria na hora. O mesmo vale pro veículo: confirme os dados cadastrados no Dealer Net (data de venda, placa, cor, chassi).</p>
@@ -642,7 +649,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step1-recebimento">
             <h3 data-cid="step1-recebimento-h3">Recebimento de veículo novo</h3>
             <div class="card-body" data-cid="step1-recebimento-body" data-rich="1">
               <p>Ao receber um veículo novo, a Concessionária é obrigada a fazer uma inspeção visual completa pra verificar avarias de transporte. Se não houver registro formal de avaria no ato da recepção, a responsabilidade por qualquer problema encontrado depois passa a ser da própria Concessionária.</p>
@@ -650,7 +657,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step1-falha">
             <h3 data-cid="step1-falha-h3">Falha de fabricação (peça faltante ou divergência de catálogo)</h3>
             <div class="card-body" data-cid="step1-falha-body" data-rich="1">
               <ul>
@@ -661,14 +668,14 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step1-0km">
             <h3 data-cid="step1-0km-h3">Entrega ao cliente (veículo 0km)</h3>
             <div class="card-body" data-cid="step1-0km-body" data-rich="1">
               <p>Para casos de entrega de veículo novo (0km): antes da entrega, a bateria precisa ser testada no equipamento próprio — se reprovar, é trocada por uma nova. O comprovante dessa verificação deve ser guardado, porque a Ford pode exigi-lo se a bateria apresentar defeito depois.</p>
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step1-posreparo">
             <h3 data-cid="step1-posreparo-h3">Entrega ao cliente pós-reparo</h3>
             <div class="card-body" data-cid="step1-posreparo-body" data-rich="1">
               <p>Para casos de entrega após reparo em garantia, recall ou campanha: o que importa aqui é coletar a assinatura do cliente na OS de garantia (1ª via) — veja o detalhe completo na etapa 03.</p>
@@ -705,7 +712,7 @@
           <p class="page-sub" data-cid="step2-sub">Antes de qualquer reparo, é preciso confirmar se o veículo (ou a peça) ainda está dentro do prazo de garantia — e se o problema relatado é realmente coberto.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) Técnico(a)</span><span class="badge tool">PTS</span><span class="badge tool">Agenda</span></div>
 
-          <div class="card">
+          <div class="card" data-card="step2-data">
             <h3 data-cid="step2-data-h3">Consultando a data de início da garantia</h3>
             <div class="card-body" data-cid="step2-data-body" data-rich="1">
               <p>A data de início da garantia contratual é a data de entrega do veículo novo ao primeiro proprietário. Essa consulta é feita no Sistema PTS, por chassi (VIN).</p>
@@ -713,14 +720,14 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step2-recall">
             <h3 data-cid="step2-recall-h3">Não esqueça de checar recall, campanha e programas de satisfação</h3>
             <div class="card-body" data-cid="step2-recall-body" data-rich="1">
               <p>Além do prazo de garantia, verifique se o chassi está na listagem de recall, campanha ou programa de satisfação (consulta no PTS). Se estiver na listagem, o atendimento segue direto como garantia — sem precisar reavaliar cobertura.</p>
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step2-naocobre">
             <h3 data-cid="step2-naocobre-h3">O que a garantia contratual não cobre</h3>
             <div class="card-body" data-cid="step2-naocobre-body" data-rich="1">
               <ul>
@@ -732,7 +739,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step2-fim">
             <h3 data-cid="step2-fim-h3">Veículo perto do fim da garantia</h3>
             <div class="card-body" data-cid="step2-fim-body" data-rich="1">
               <p>Se o defeito aparecer perto do vencimento e a peça não estiver disponível, mantenha a OS aberta e solicite a peça à Ford em até 5 dias corridos — isso garante que o reparo seja tratado como garantia mesmo que a instalação aconteça depois do vencimento.</p>
@@ -769,7 +776,7 @@
           <p class="page-sub" data-cid="step3-sub">Depois de confirmada a elegibilidade da garantia, esta é a etapa em que a Concessionária formaliza o atendimento e dá início ao controle interno do reparo.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) Técnico(a) / Consultor(a) de Garantia</span><span class="badge tool">Dealer</span><span class="badge tool">PTS</span><span class="badge warn">Exige atenção ao prazo</span></div>
 
-          <div class="card">
+          <div class="card" data-card="step3-oque">
             <h3 data-cid="step3-oque-h3">O que acontece nesta etapa</h3>
             <div class="card-body" data-cid="step3-oque-body" data-rich="1">
               <p>A OS é o documento que formaliza o atendimento e serve de base pra toda a solicitação de garantia depois. Nenhum reparo pode ser executado sem uma OS aberta.</p>
@@ -782,7 +789,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step3-queixa">
             <h3 data-cid="step3-queixa-h3">Como coletar a queixa do cliente com clareza</h3>
             <div class="card-body" data-cid="step3-queixa-body" data-rich="1">
               <p>Pra evidenciar a causa (e não só o sintoma), vale estruturar a conversa com o cliente em 4 perguntas antes de escrever a descrição do problema na OS:</p>
@@ -795,7 +802,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step3-tmo">
             <h3 data-cid="step3-tmo-h3">TMO / TPR — tempo de mão de obra</h3>
             <div class="card-body" data-cid="step3-tmo-body" data-rich="1">
               <p><b>TMO</b> (Tempo para Mão de Obra) e <b>TPR</b> (Tempo Padrão de Reparo) são o mesmo tipo de informação — só muda o nome de um sistema pro outro. É o tempo padrão que a Ford define pra cada reparo.</p>
@@ -803,7 +810,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step3-boletim">
             <h3 data-cid="step3-boletim-h3">Antes de abrir: checar se já existe boletim (TSB/GSB/SSM)</h3>
             <div class="card-body" data-cid="step3-boletim-body" data-rich="1">
               <p>Antes de abrir a OS, vale a pena pesquisar no PTS (aba TSB/GSB/SSM) se já existe um boletim de serviço pro problema relatado. Se não tiver boletim, segue pra busca de tempo padrão (TPR) normalmente.</p>
@@ -811,7 +818,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step3-recap">
             <h3 data-cid="step3-recap-h3">Recap rápido antes de prosseguir</h3>
             <div class="card-body" data-cid="step3-recap-body" data-rich="1">
               <p>Antes de abrir a OS como garantia, o Consultor/Analista de Garantia reavalia rapidamente:</p>
@@ -824,7 +831,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step3-dados">
             <h3 data-cid="step3-dados-h3">Dados obrigatórios na OS de garantia</h3>
             <div class="card-body" data-cid="step3-dados-body" data-rich="1">
               <ul>
@@ -861,7 +868,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step3-atencao">
             <h3 data-cid="step3-atencao-h3">Atenção</h3>
             <div class="card-body" data-cid="step3-atencao-body" data-rich="1">
               <p>Erros de preenchimento nesta etapa costumam gerar estorno lá na frente, na Auditoria Ford.</p>
@@ -875,14 +882,14 @@
           <p class="page-sub" data-cid="step4-sub">Aqui o técnico faz o diagnóstico, o orçamento, o laudo e executa o reparo, seguindo os padrões Ford — com as evidências certas em cada parte do processo.</p>
           <div class="badge-row"><span class="badge role">Responsável: Produtivo (Mecânico)</span><span class="badge tool">Hotline</span><span class="badge tool">GTAC</span><span class="badge tool">PTS</span><span class="badge tool">Catálogo</span><span class="badge holmes">Fluxo interno via Holmes</span></div>
 
-          <div class="card">
+          <div class="card" data-card="step4-diag">
             <h3 data-cid="step4-diag-h3">Diagnóstico</h3>
             <div class="card-body" data-cid="step4-diag-body" data-rich="1">
               <p>O diagnóstico precisa confirmar se a causa está relacionada a defeito de fabricação/material coberto pela garantia — desgaste natural, falta de manutenção, mau uso ou dano acidental não entram. Deve ser feito por técnico treinado e certificado Ford, usando ferramentas homologadas. Vale consultar o PTS pra conferir boletins (TSB/GSB/SSM) relacionados ao problema antes de seguir.</p>
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step4-resp">
             <h3 data-cid="step4-resp-h3">Responsabilidade do técnico</h3>
             <div class="card-body" data-cid="step4-resp-body" data-rich="1">
               <ul>
@@ -901,14 +908,14 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step4-estoque">
             <h3 data-cid="step4-estoque-h3">Se a peça não estiver em estoque</h3>
             <div class="card-body" data-cid="step4-estoque-body" data-rich="1">
               <p>Antes de iniciar o reparo, o mecânico registra as evidências, o laudo, cria o orçamento e a OS, pra análise do chefe de oficina. Com o processo aprovado, o pedido é autorizado — e assim que a peça chegar no estoque, o serviço começa.</p>
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step4-check">
             <h3 data-cid="step4-check-h3">Checklist de apontamento</h3>
             <div class="card-body" data-cid="step4-check-body" data-rich="1">
               <ol>
@@ -920,7 +927,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="step4-exec">
             <h3 data-cid="step4-exec-h3">Execução do reparo</h3>
             <div class="card-body" data-cid="step4-exec-body" data-rich="1">
               <ul>
@@ -963,7 +970,7 @@
           <p class="page-sub" data-cid="step5-sub">Com a OS fechada, a solicitação de reembolso é enviada à Ford pelo OWS. É aqui que a qualidade das informações técnicas realmente conta.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) Técnico(a) → Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge holmes">Processo organizado no Holmes</span></div>
 
-          <div class="card">
+          <div class="card" data-card="step5-resumo">
             <h3 data-cid="step5-resumo-h3">Resumo da etapa</h3>
             <div class="card-body" data-cid="step5-resumo-body" data-rich="1">
               <p>Antes de submeter, o Consultor Técnico colhe a assinatura do cliente na OS (1ª via) e na via já transformada em garantia. Esse processo é organizado direto no <b>Holmes</b>, que centraliza tudo até chegar no(a) Consultor(a) de Garantia — responsável por analisar, faturar e fazer a elaboração no OWS.</p>
@@ -1013,14 +1020,14 @@
           <p class="page-sub" data-cid="subbasica-sub">O tipo mais comum de solicitação — reparo coberto pela garantia contratual, sem se enquadrar em recall, campanha, revisão ou leva e traz.</p>
           <div class="badge-row"><span class="badge tool">OWS</span></div>
 
-          <div class="card">
+          <div class="card" data-card="subbasica-quando">
             <h3 data-cid="subbasica-quando-h3">Quando usar</h3>
             <div class="card-body" data-cid="subbasica-quando-body" data-rich="1">
               <p>Sempre que o reparo não se enquadra em nenhum dos outros tipos — é a solicitação padrão de garantia.</p>
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="subbasica-lanc">
             <h3 data-cid="subbasica-lanc-h3">Como lançar no OWS</h3>
             <div class="card-body" data-cid="subbasica-lanc-body" data-rich="1">
               <ul>
@@ -1058,14 +1065,14 @@
           <p class="page-sub" data-cid="sublevaetraz-sub">Serviço de busca e entrega do veículo na casa do cliente pra realizar o reparo em garantia.</p>
           <div class="badge-row"><span class="badge tool">OWS</span></div>
 
-          <div class="card">
+          <div class="card" data-card="sublevaetraz-oque">
             <h3 data-cid="sublevaetraz-oque-h3">O que é</h3>
             <div class="card-body" data-cid="sublevaetraz-oque-body" data-rich="1">
               <p>Quando a Concessionária busca o veículo na casa do cliente, faz o reparo em garantia e devolve — sem custo extra pro cliente.</p>
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="sublevaetraz-doc">
             <h3 data-cid="sublevaetraz-doc-h3">Documentação extra</h3>
             <div class="card-body" data-cid="sublevaetraz-doc-body" data-rich="1">
               <ul>
@@ -1075,7 +1082,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="sublevaetraz-lanc">
             <h3 data-cid="sublevaetraz-lanc-h3">Como lançar no OWS</h3>
             <div class="card-body" data-cid="sublevaetraz-lanc-body" data-rich="1">
               <p>Mesma solicitação do tipo de garantia do reparo em si, indicando Leva e Traz na observação conforme orientação vigente da Ford.</p>
@@ -1109,14 +1116,14 @@
           <p class="page-sub" data-cid="subrevisao-sub">Cobre defeitos identificados durante uma revisão programada, dentro do prazo de garantia.</p>
           <div class="badge-row"><span class="badge tool">OWS</span><span class="badge tool">PTS</span></div>
 
-          <div class="card">
+          <div class="card" data-card="subrevisao-oque">
             <h3 data-cid="subrevisao-oque-h3">O que é</h3>
             <div class="card-body" data-cid="subrevisao-oque-body" data-rich="1">
               <p>Defeito encontrado pelo técnico durante a execução de uma revisão programada — não é uma reclamação espontânea do cliente.</p>
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="subrevisao-lanc">
             <h3 data-cid="subrevisao-lanc-h3">Como lançar no OWS</h3>
             <div class="card-body" data-cid="subrevisao-lanc-body" data-rich="1">
               <p>Vincula o número da OS de revisão à solicitação de garantia, junto com o laudo do que foi encontrado na revisão.</p>
@@ -1150,14 +1157,14 @@
           <p class="page-sub" data-cid="subrecall-sub">Ações determinadas pela Ford pro chassi específico — recall (segurança) ou campanha (qualidade). Lançam da mesma forma no OWS.</p>
           <div class="badge-row"><span class="badge tool">OWS</span><span class="badge tool">PTS</span></div>
 
-          <div class="card">
+          <div class="card" data-card="subrecall-oque">
             <h3 data-cid="subrecall-oque-h3">O que é</h3>
             <div class="card-body" data-cid="subrecall-oque-body" data-rich="1">
               <p>Consulte no PTS se o chassi está na listagem de recall ou campanha antes de seguir — se estiver, o atendimento já entra direto como garantia.</p>
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="subrecall-lanc">
             <h3 data-cid="subrecall-lanc-h3">Como lançar no OWS</h3>
             <div class="card-body" data-cid="subrecall-lanc-body" data-rich="1">
               <p>A OS é aberta direto como <b>GSR/GSC</b>, usando o TPR e o CCC do PTS — vale conferir a hora da própria loja antes de lançar o serviço.</p>
@@ -1191,7 +1198,7 @@
           <p class="page-sub" data-cid="step6-sub">Peças substituídas em garantia muitas vezes precisam voltar pro Centro de Retorno de Peças em Garantia (CRPG) pra análise técnica.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge tool">Dealer</span><span class="badge warn">Prazo de 45 dias</span></div>
 
-          <div class="card">
+          <div class="card" data-card="step6-resumo">
             <h3 data-cid="step6-resumo-h3">Resumo da etapa</h3>
             <div class="card-body" data-cid="step6-resumo-body" data-rich="1">
               <p>Quando a Ford solicita a peça de volta, ela precisa ser preparada, identificada e devolvida ao CRPG dentro do prazo (45 dias corridos a partir do status "Pago"), acompanhada da nota fiscal de remessa emitida no Dealer Net.</p>
@@ -1213,7 +1220,7 @@
           <p class="page-sub" data-cid="step7-sub">Peças não requisitadas pelo CRPG ou já estornadas precisam ser descartadas de forma correta, seguindo os padrões Ford.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">CRPG</span></div>
 
-          <div class="card">
+          <div class="card" data-card="step7-resumo">
             <h3 data-cid="step7-resumo-h3">Resumo da etapa</h3>
             <div class="card-body" data-cid="step7-resumo-body" data-rich="1">
               <p>Peças não requisitadas ou estornadas devem ser danificadas nas áreas funcionais da Concessionária antes de serem destruídas e sucateadas — elas não podem ser reaproveitadas em outros reparos. Em ocasiões especiais, a Ford pode pedir evidência do sucateamento (antes e depois), avisando com antecedência.</p>
@@ -1235,7 +1242,7 @@
           <p class="page-sub" data-cid="audit-sub">A Ford audita periodicamente os processos de garantia pra checar aderência às regras. Documentação completa em cada etapa do Caminho é o que te protege aqui.</p>
           <div class="badge-row"><span class="badge role">Responsável: Consultor(a) de Garantia</span><span class="badge tool">OWS</span><span class="badge tool">FMCDealer</span><span class="badge warn">Prazo de 3 dias úteis</span></div>
 
-          <div class="card">
+          <div class="card" data-card="audit-como">
             <h3 data-cid="audit-como-h3">Como funciona</h3>
             <div class="card-body" data-cid="audit-como-body" data-rich="1">
               <ul>
@@ -1247,7 +1254,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="audit-classif">
             <h3 data-cid="audit-classif-h3">Classificação das irregularidades</h3>
             <table>
               <tr><th data-cid="audit-classif-th1">Categoria</th><th data-cid="audit-classif-th2">Descrição</th></tr>
@@ -1256,7 +1263,7 @@
             </table>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="audit-discordar">
             <h3 data-cid="audit-discordar-h3">Se você discordar do resultado</h3>
             <div class="card-body" data-cid="audit-discordar-body" data-rich="1">
               <p>Prazo de 30 dias corridos pra enviar carta de contestação. A Ford responde em até 15 dias úteis — se não responder, os argumentos da concessionária são aceitos integralmente. O débito mensal não pode passar de 25% do faturamento médio em garantia dos últimos 6 meses (exceto em casos de NOCIG ou irregularidade grave).</p>
@@ -1270,7 +1277,7 @@
           <p class="page-sub" data-cid="ows-sub">É onde toda solicitação de garantia é enviada, analisada e paga pela Ford. Praticamente todo o processo, da abertura até a devolução de peça, passa por aqui em algum momento.</p>
           <div class="badge-row"><span class="badge role">Usado por: Consultor(a) de Garantia</span><span class="badge holmes">Login SSO Ford (2 etapas)</span></div>
 
-          <div class="card">
+          <div class="card" data-card="ows-acessar">
             <h3 data-cid="ows-acessar-h3">Como acessar</h3>
             <div class="card-body" data-cid="ows-acessar-body" data-rich="1">
               <p>Link oficial: <b>warrantyprocessing.dealerconnection.com</b>. Funciona melhor no <b>Google Chrome</b> (o Firefox e o Safari não têm suporte completo).</p>
@@ -1285,7 +1292,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="ows-home">
             <h3 data-cid="ows-home-h3">O que você encontra na página inicial do OWS</h3>
             <div class="card-body" data-cid="ows-home-body" data-rich="1">
               <p>Ao entrar, a tela mostra os ícones de tarefa direto na sua cara — é por ali que se faz tudo:</p>
@@ -1302,7 +1309,7 @@
             </table>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="ows-abrir">
 
             <h3 data-cid="ows-abrir-h3">Abrindo uma Solicitação</h3>
             <div class="card-body" data-cid="ows-abrir-body" data-rich="1">
@@ -1311,7 +1318,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-card="ows-rel">
             <h3 data-cid="ows-rel-h3">Relatórios disponíveis</h3>
             <div class="card-body" data-cid="ows-rel-body" data-rich="1">
               <ul>
@@ -1640,6 +1647,7 @@
   // chamado pelo módulo de autenticação — ver window.__initAppAfterAuth abaixo.
   window.__initAppAfterAuth = function(){
     buildOverview();
+    window.__ensureCardControls(); // lixeira em toda seção, inclusive as restauradas do banco
     buildSearchIndex(); // precisa rodar depois dos overrides de conteúdo já aplicados no DOM
     wireSearch(document.getElementById('searchInput'), document.getElementById('searchResults'));
     wireSearch(document.getElementById('searchInputMobile'), document.getElementById('searchResultsMobile'));
@@ -1761,12 +1769,17 @@
     if(!editMode) return;
     activeRich = richRegionOfSelection();
     const on = !!activeRich;
-    fmtButtons.forEach(b => { b.disabled = !on; if(!on) b.classList.remove('on'); });
+    // "+ card" age na página inteira, não no texto sob o cursor — vive sempre ativo
+    fmtButtons.forEach(b => {
+      if(b.dataset.fmt === 'addCard') return;
+      b.disabled = !on;
+      if(!on) b.classList.remove('on');
+    });
     fmtHint.textContent = on ? 'formatando este bloco' : 'clique num texto pra formatar';
     if(!on) return;
     fmtButtons.forEach(b => {
       const cmd = b.dataset.fmt;
-      if(cmd === 'addBlock' || cmd === 'removeBlock') return;
+      if(cmd === 'addBlock' || cmd === 'removeBlock' || cmd === 'addCard') return;
       b.classList.toggle('on', document.queryCommandState(cmd));
     });
   }
@@ -1834,12 +1847,109 @@
 
   fmtBar.addEventListener('click', (e) => {
     const btn = e.target.closest('.fmt-btn');
-    if(!btn || btn.disabled || !activeRich) return;
+    if(!btn || btn.disabled) return;
     const cmd = btn.dataset.fmt;
+    if(cmd === 'addCard'){ addCard(); return; }
+    if(!activeRich) return;
     if(cmd === 'addBlock') addBlock();
     else if(cmd === 'removeBlock') removeBlock();
     else document.execCommand(cmd);
     updateFmtBar();
+  });
+
+  /* ---------- SEÇÕES (cards) criadas e apagadas pelo editor ---------- */
+
+  const TRASH_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+
+  function newSectionId(){
+    return 'sec' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+
+  function buildCard(id, titulo){
+    const card = document.createElement('div');
+    card.className = 'card revealed';
+    card.dataset.card = id;
+    card.innerHTML =
+      '<button class="card-del" type="button" title="Apagar esta seção">'+TRASH_SVG+'</button>' +
+      '<h3 data-cid="'+id+'-h3"></h3>' +
+      '<div class="card-body" data-cid="'+id+'-body" data-rich="1"><p><br></p></div>';
+    card.querySelector('h3').textContent = titulo;
+    return card;
+  }
+
+  // Cards novos entram no fim do conteúdo, mas antes das galerias — assim
+  // prints e vídeos continuam sendo a última coisa da página, como em todas.
+  function insertCard(pageEl, card){
+    const galeria = pageEl.querySelector('.gallery-section');
+    if(galeria) pageEl.insertBefore(card, galeria); else pageEl.appendChild(card);
+  }
+
+  window.__cardRestore = (id, pageKey) => {
+    const pageEl = document.getElementById('page-' + pageKey);
+    if(!pageEl) return null;
+    const card = buildCard(id, 'Nova seção');
+    card.classList.remove('revealed'); // deixa o scroll-reveal cuidar, igual aos outros
+    insertCard(pageEl, card);
+    return card;
+  };
+
+  function addCard(){
+    const pageEl = document.querySelector('.page.active');
+    if(!pageEl) return;
+    const id = newSectionId();
+    const card = buildCard(id, 'Nova seção');
+    insertCard(pageEl, card);
+    card.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', 'true'));
+    if(window.__contentBaseline){
+      // baseline vazia: o texto que ele digitar agora conta como alteração
+      window.__contentBaseline.set(id + '-h3', 'Nova seção');
+      window.__contentBaseline.set(id + '-body', sanitizeRichHtml(card.querySelector('[data-rich]').innerHTML));
+    }
+    if(window.__sectionSave){
+      window.__sectionSave(id, pageEl.id.replace(/^page-/, ''), Date.now())
+        .catch(err => alert('Não consegui registrar a seção nova: ' + err.message));
+    }
+    card.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    placeCaretIn(card.querySelector('h3'));
+  }
+
+  function placeCaretIn(el){
+    el.focus();
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  function deleteCard(card){
+    const titulo = (card.querySelector('h3') || {}).textContent || 'esta seção';
+    if(!confirm('Apagar a seção “' + titulo.trim() + '”?\n\nO conteúdo dela some da página pra todo mundo.')) return;
+    const id = card.dataset.card;
+    card.remove();
+    if(activeRich && !document.contains(activeRich)){ activeRich = null; updateFmtBar(); }
+    if(window.__sectionDelete){
+      window.__sectionDelete(id).catch(err => alert('Não consegui registrar a exclusão: ' + err.message));
+    }
+  }
+
+  // Toda seção com data-card ganha a lixeira; o CSS só a mostra na edição.
+  window.__ensureCardControls = () => {
+    document.querySelectorAll('.card[data-card]').forEach(card => {
+      if(card.querySelector(':scope > .card-del')) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'card-del';
+      btn.title = 'Apagar esta seção';
+      btn.innerHTML = TRASH_SVG;
+      card.insertBefore(btn, card.firstChild);
+    });
+  };
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.card-del');
+    if(!btn || !editMode) return;
+    deleteCard(btn.closest('.card'));
   });
 
   // Colar traz HTML arbitrário (Word, sites) direto pro DOM antes de qualquer
@@ -2094,7 +2204,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDocs, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, deleteDoc, getDocs, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
   // Config web do Firebase — não é segredo (a segurança vem das regras do Firestore, não do apiKey).
   const firebaseConfig = {
@@ -2205,6 +2315,22 @@
     const snap = await getDocs(collection(db, 'content'));
     // mapa cru cid->texto, pra código que gera HTML depois (ex. buildOverview)
     // conseguir aplicar overrides em elementos que ainda nem existem no DOM.
+    // 1ª passada: estrutura. Seções criadas pelo editor não existem no HTML e
+    // seções apagadas ainda existem — as duas coisas moram aqui mesmo, na
+    // coleção content, pra não precisar de regra nova no Firestore.
+    const novas = [], apagadas = new Set();
+    snap.forEach(docSnap => {
+      const v = docSnap.data();
+      if(docSnap.id.startsWith('__sec:')) novas.push({ id: docSnap.id.slice(6), page: v.sectionPage, order: v.sectionOrder || 0 });
+      else if(docSnap.id.startsWith('__del:')) apagadas.add(docSnap.id.slice(6));
+    });
+    novas.sort((a, b) => a.order - b.order).forEach(s => window.__cardRestore(s.id, s.page));
+    apagadas.forEach(id => {
+      const card = document.querySelector('.card[data-card="' + CSS.escape(id) + '"]');
+      if(card) card.remove();
+    });
+
+    // 2ª passada: o texto de cada campo, já com as seções novas no lugar.
     const overrides = {};
     snap.forEach(docSnap => {
       const data = docSnap.data();
@@ -2257,6 +2383,32 @@
     }));
     if(!window.__contentOverrides) window.__contentOverrides = {};
     pairs.forEach(p => { window.__contentOverrides[p.cid] = p.html !== undefined ? p.html : p.text; });
+  };
+
+  // Seção nova: só registra que ela existe e onde. O título e o corpo entram
+  // pelo caminho normal de conteúdo, sob os cids <id>-h3 e <id>-body.
+  window.__sectionSave = async (id, page, order) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await setDoc(doc(db, 'content', '__sec:' + id), {
+      sectionPage: page, sectionOrder: order, updatedAt: serverTimestamp(), updatedBy: uid
+    });
+  };
+
+  // Seção nascida no editor some junto com o registro dela; seção que veio no
+  // HTML não dá pra remover do arquivo, então fica marcada como apagada.
+  window.__sectionDelete = async (id) => {
+    if(id.startsWith('sec')){
+      await deleteDoc(doc(db, 'content', '__sec:' + id));
+      await Promise.all([
+        deleteDoc(doc(db, 'content', id + '-h3')),
+        deleteDoc(doc(db, 'content', id + '-body'))
+      ]);
+      return;
+    }
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await setDoc(doc(db, 'content', '__del:' + id), {
+      sectionDeleted: true, updatedAt: serverTimestamp(), updatedBy: uid
+    });
   };
 
   // gallery = id da .gallery-grid onde a mídia vive; sem ele, um item criado no
