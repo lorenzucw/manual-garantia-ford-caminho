@@ -138,6 +138,10 @@
   .sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28); border-color:transparent;}
   .sidebar::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.42);}
   .sidebar-group{padding:0 22px; margin-bottom:6px;}
+  .sidebar-zone{display:none;}
+  .sidebar-zone.active{display:block;}
+  .sidebar-back{display:flex; align-items:center; gap:6px; width:100%; background:none; border:none; padding:8px 22px; margin-bottom:4px; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600; color:rgba(255,255,255,.6); cursor:pointer; text-align:left; transition:color .15s;}
+  .sidebar-back:hover{color:#fff;}
   .sidebar-group-label{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.45); margin:22px 0 10px; padding-left:26px;}
   .road{position:relative; padding-left:26px;}
   .road::before{content:''; position:absolute; left:9px; top:6px; bottom:6px; width:2px; background:rgba(255,255,255,.16);}
@@ -222,6 +226,9 @@
   .cta-card{background:var(--cta-gradient); border:1px solid var(--tint-blue-border);}
   .cta-card h3{color:var(--heading-ink);}
   .cta-btn{display:inline-flex; align-items:center; gap:8px; margin-top:6px; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; padding:11px 18px; border-radius:9px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:not-allowed; opacity:.75;}
+  .cta-btn.enabled{cursor:pointer; opacity:1; background:var(--ford-blue); color:#fff; border-color:var(--ford-blue); transition:background .15s, transform .18s cubic-bezier(.34,1.56,.64,1);}
+  .cta-btn.enabled:hover{background:var(--ford-navy-deep); transform:scale(1.03);}
+  .cta-btn.enabled:active{transform:scale(.96);}
   .cta-btn .soon-tag{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; background:#eee; color:var(--ink-soft); padding:2px 7px; border-radius:999px;}
 
   .hero{padding:36px 0 8px; text-align:center; max-width:600px; margin:0 auto;}
@@ -474,6 +481,7 @@
         </div>
       </div>
 
+      <div class="sidebar-zone active" id="zone-main">
       <div class="sidebar-group">
         <div class="sidebar-group-label" role="button" tabindex="0" style="background:none;border:none;cursor:pointer;width:100%;text-align:left;" onclick="showPage('ov')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('ov');}"><span data-cid="nav-label-caminho">O Caminho da Garantia →</span></div>
         <div class="road" id="mainRoad">
@@ -504,6 +512,20 @@
           <div class="tool-item"><span data-cid="nav-tool-agenda">Agenda</span> <span class="soon">em breve</span></div>
           <div class="tool-item"><span data-cid="nav-tool-catalogo">Catálogo</span> <span class="soon">em breve</span></div>
           <div class="tool-item"><span data-cid="nav-tool-holmes">Holmes</span> <span class="soon">em breve</span></div>
+        </div>
+      </div>
+      </div><!-- /#zone-main -->
+
+      <div class="sidebar-zone" id="zone-sub">
+        <button class="sidebar-back" onclick="showPage(5)"><span>←</span> Voltar</button>
+        <div class="sidebar-group">
+          <div class="sidebar-group-label" data-cid="nav-label-sub">Tipos de Garantia</div>
+          <div class="tool-list">
+            <div class="tool-item active-link" data-idx="sub-basica" role="button" tabindex="0" onclick="showPage('sub-basica')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-basica');}"><span data-cid="nav-sub-basica">Garantia Básica</span></div>
+            <div class="tool-item active-link" data-idx="sub-levaetraz" role="button" tabindex="0" onclick="showPage('sub-levaetraz')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-levaetraz');}"><span data-cid="nav-sub-levaetraz">Leva e Traz</span></div>
+            <div class="tool-item active-link" data-idx="sub-revisao" role="button" tabindex="0" onclick="showPage('sub-revisao')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-revisao');}"><span data-cid="nav-sub-revisao">Revisão</span></div>
+            <div class="tool-item active-link" data-idx="sub-recall" role="button" tabindex="0" onclick="showPage('sub-recall')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-recall');}"><span data-cid="nav-sub-recall">Recall/Campanha</span></div>
+          </div>
         </div>
       </div>
 
@@ -877,7 +899,114 @@
           <div class="card cta-card">
             <h3 data-cid="step5-cta-h3">Passo a passo por tipo de garantia</h3>
             <p data-cid="step5-cta-p1">O detalhamento completo de como submeter cada tipo de garantia vai morar numa seção própria de referência rápida, com passo a passo específico pra cada caso.</p>
-            <button class="cta-btn" disabled>Ver Submissões de Tipos de Garantia <span class="soon-tag">em breve</span></button>
+            <button class="cta-btn enabled" onclick="showPage('sub')">Ver Submissões de Tipos de Garantia →</button>
+          </div>
+        </section>
+
+        <!-- PAGE SUB (landing) -->
+        <section class="page" id="page-sub">
+          <div class="section-head"><div class="section-tag">→</div><h1 class="page-title" data-cid="title-sub">Tipos de Garantia</h1></div>
+          <p class="page-sub" data-cid="sub-landing-sub">Cada tipo de garantia tem sua própria forma de lançar no OWS. Escolha o tipo abaixo pra ver o passo a passo.</p>
+          <div class="card" style="padding:10px; display:flex; flex-direction:column; gap:2px;">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('sub-basica')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-basica');}">
+              <span class="step-link-text"><span class="step-link-title" data-cid="sub-link-basica">Garantia Básica</span><span class="step-link-sub" data-cid="sub-linksub-basica">O reparo padrão coberto pela garantia contratual</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('sub-levaetraz')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-levaetraz');}">
+              <span class="step-link-text"><span class="step-link-title" data-cid="sub-link-levaetraz">Leva e Traz</span><span class="step-link-sub" data-cid="sub-linksub-levaetraz">Busca e entrega do veículo na casa do cliente</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('sub-revisao')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-revisao');}">
+              <span class="step-link-text"><span class="step-link-title" data-cid="sub-link-revisao">Revisão</span><span class="step-link-sub" data-cid="sub-linksub-revisao">Defeito identificado numa revisão programada</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('sub-recall')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-recall');}">
+              <span class="step-link-text"><span class="step-link-title" data-cid="sub-link-recall">Recall/Campanha</span><span class="step-link-sub" data-cid="sub-linksub-recall">Ações determinadas pela Ford pro chassi</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE SUB-BASICA -->
+        <section class="page" id="page-sub-basica">
+          <div class="section-head"><div class="section-tag">→</div><h1 class="page-title" data-cid="title-sub-basica">Garantia Básica</h1></div>
+          <p class="page-sub" data-cid="subbasica-sub">O tipo mais comum de solicitação — reparo coberto pela garantia contratual, sem se enquadrar em recall, campanha, revisão ou leva e traz.</p>
+          <div class="badge-row"><span class="badge tool">OWS</span></div>
+
+          <div class="card">
+            <h3 data-cid="subbasica-quando-h3">Quando usar</h3>
+            <p data-cid="subbasica-quando-p1">Sempre que o reparo não se enquadra em nenhum dos outros tipos — é a solicitação padrão de garantia.</p>
+          </div>
+
+          <div class="card">
+            <h3 data-cid="subbasica-lanc-h3">Como lançar no OWS</h3>
+            <ul>
+              <li data-cid="subbasica-lanc-li1">Tipo de Solicitação: Normal</li>
+              <li data-cid="subbasica-lanc-li2">Campos obrigatórios: número e data da OS, VIN, ID Stars do técnico, quilometragem</li>
+              <li data-cid="subbasica-lanc-li3">Anexar laudo técnico, evidências do reparo e a OS assinada pelo cliente</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- PAGE SUB-LEVAETRAZ -->
+        <section class="page" id="page-sub-levaetraz">
+          <div class="section-head"><div class="section-tag">→</div><h1 class="page-title" data-cid="title-sub-levaetraz">Leva e Traz</h1></div>
+          <p class="page-sub" data-cid="sublevaetraz-sub">Serviço de busca e entrega do veículo na casa do cliente pra realizar o reparo em garantia.</p>
+          <div class="badge-row"><span class="badge tool">OWS</span></div>
+
+          <div class="card">
+            <h3 data-cid="sublevaetraz-oque-h3">O que é</h3>
+            <p data-cid="sublevaetraz-oque-p1">Quando a Concessionária busca o veículo na casa do cliente, faz o reparo em garantia e devolve — sem custo extra pro cliente.</p>
+          </div>
+
+          <div class="card">
+            <h3 data-cid="sublevaetraz-doc-h3">Documentação extra</h3>
+            <ul>
+              <li data-cid="sublevaetraz-doc-li1">Termo de retirada assinado, com quilometragem e estado do veículo no momento da busca</li>
+              <li data-cid="sublevaetraz-doc-li2">Termo de devolução assinado, nas mesmas condições</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3 data-cid="sublevaetraz-lanc-h3">Como lançar no OWS</h3>
+            <p data-cid="sublevaetraz-lanc-p1">Mesma solicitação do tipo de garantia do reparo em si, indicando Leva e Traz na observação conforme orientação vigente da Ford.</p>
+          </div>
+        </section>
+
+        <!-- PAGE SUB-REVISAO -->
+        <section class="page" id="page-sub-revisao">
+          <div class="section-head"><div class="section-tag">→</div><h1 class="page-title" data-cid="title-sub-revisao">Revisão</h1></div>
+          <p class="page-sub" data-cid="subrevisao-sub">Cobre defeitos identificados durante uma revisão programada, dentro do prazo de garantia.</p>
+          <div class="badge-row"><span class="badge tool">OWS</span><span class="badge tool">PTS</span></div>
+
+          <div class="card">
+            <h3 data-cid="subrevisao-oque-h3">O que é</h3>
+            <p data-cid="subrevisao-oque-p1">Defeito encontrado pelo técnico durante a execução de uma revisão programada — não é uma reclamação espontânea do cliente.</p>
+          </div>
+
+          <div class="card">
+            <h3 data-cid="subrevisao-lanc-h3">Como lançar no OWS</h3>
+            <p data-cid="subrevisao-lanc-p1">Vincula o número da OS de revisão à solicitação de garantia, junto com o laudo do que foi encontrado na revisão.</p>
+          </div>
+        </section>
+
+        <!-- PAGE SUB-RECALL -->
+        <section class="page" id="page-sub-recall">
+          <div class="section-head"><div class="section-tag">→</div><h1 class="page-title" data-cid="title-sub-recall">Recall/Campanha</h1></div>
+          <p class="page-sub" data-cid="subrecall-sub">Ações determinadas pela Ford pro chassi específico — recall (segurança) ou campanha (qualidade). Lançam da mesma forma no OWS.</p>
+          <div class="badge-row"><span class="badge tool">OWS</span><span class="badge tool">PTS</span></div>
+
+          <div class="card">
+            <h3 data-cid="subrecall-oque-h3">O que é</h3>
+            <p data-cid="subrecall-oque-p1">Consulte no PTS se o chassi está na listagem de recall ou campanha antes de seguir — se estiver, o atendimento já entra direto como garantia.</p>
+          </div>
+
+          <div class="card">
+            <h3 data-cid="subrecall-lanc-h3">Como lançar no OWS</h3>
+            <p data-cid="subrecall-lanc-p1">A OS é aberta direto como <b>GSR/GSC</b>, usando o TPR e o CCC do PTS — vale conferir a hora da própria loja antes de lançar o serviço.</p>
           </div>
         </section>
 
@@ -1081,6 +1210,29 @@
   const stepNames = {0:'Início',1:'Recepção do Veículo',2:'Elegibilidade',3:'Ordem de Serviço',4:'Diagnóstico e Reparo',5:'Submissão da Solicitação',6:'Devolução de Peças (CRPG)',7:'Descarte de Peça'};
   const stepSubs  = {1:'Recepcionista + Consultor Técnico · Inspeção e entrega do veículo novo',2:'Consultor Técnico · Confirmar prazo e cobertura',3:'Consultor Técnico/Garantia · Formalizar o atendimento',4:'Produtivo · Diagnóstico, laudo e reparo',5:'Consultor Técnico → Garantia · Enviar a solicitação à Ford',6:'Consultor de Garantia · Devolver peças ao CRPG',7:'Consultor de Garantia · Descartar peças não requisitadas/estornadas'};
 
+  // nomes de exibição das mini-páginas dos sub-guias (usado no crumb)
+  const subGuideNames = {
+    'sub-basica':'Garantia Básica', 'sub-levaetraz':'Leva e Traz', 'sub-revisao':'Revisão', 'sub-recall':'Recall/Campanha'
+  };
+
+  // Prefixo do id decide a "zona" — cada sub-guia (Submissão, Remessa, Descarte)
+  // tem sua própria barra lateral, que substitui a do Caminho da Garantia
+  // enquanto você está navegando dentro dele.
+  function getZoneForPage(id){
+    const s = String(id);
+    if(s.indexOf('sub') === 0) return 'sub';
+    if(s.indexOf('crpg') === 0) return 'crpg';
+    if(s.indexOf('descarte') === 0) return 'descarte';
+    return 'main';
+  }
+
+  function switchSidebarZone(id){
+    const zone = getZoneForPage(id);
+    document.querySelectorAll('.sidebar-zone').forEach(z => z.classList.remove('active'));
+    const zoneEl = document.getElementById('zone-' + zone);
+    if(zoneEl) zoneEl.classList.add('active');
+  }
+
   function showPage(id){
     // Em modo de edição, links de navegação viram só texto editável — não navegam.
     // Sai da edição (o que já salva sozinho) pra poder trocar de página de novo.
@@ -1098,6 +1250,8 @@
     document.querySelectorAll('.tool-item.active-link').forEach(s => s.classList.remove('current'));
     const toolEl = document.querySelector('.tool-item[data-idx="'+id+'"]');
     if(toolEl) toolEl.classList.add('current');
+
+    switchSidebarZone(id);
 
     document.querySelectorAll('.steps-strip .step').forEach(s => s.classList.remove('current'));
     const stripEl = document.querySelector('.steps-strip .step[data-strip="'+id+'"]');
@@ -1182,6 +1336,15 @@
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Auditoria Ford</b>';
     } else if(id === 'ows'){
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Ferramentas Ford</b>' + sep + '<b>OWS</b>';
+    } else if(id === 'sub'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(5)">Submissão da Solicitação</button>' + sep +
+        '<b>Tipos de Garantia</b>';
+    } else if(getZoneForPage(id) === 'sub'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(5)">Submissão da Solicitação</button>' + sep +
+        '<button class="crumb-link" onclick="showPage(\'sub\')">Tipos de Garantia</button>' + sep +
+        '<b>' + subGuideNames[id] + '</b>';
     } else {
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
         '<button class="crumb-link" onclick="showPage(\'ov\')">O Caminho da Garantia</button>' + sep +
@@ -1221,7 +1384,7 @@
   let searchIndex = [];
   function buildSearchIndex(){
     searchIndex = [];
-    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','ows'];
+    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','ows','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall'];
     pageIds.forEach(i => {
       const page = document.getElementById('page-'+i);
       if(!page) return;
