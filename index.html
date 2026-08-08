@@ -201,6 +201,9 @@
   h1.page-title{font-size:30px; color:var(--ink); font-weight:600; padding-top:6px;}
   .page-sub{color:var(--ink-soft); font-size:15px; margin:10px 0 32px; max-width:60ch; text-transform:none; letter-spacing:normal; font-family:'Inter',sans-serif;}
 
+  /* URL/código longo (ex. warrantyprocessing.dealerconnection.com) não tem
+     onde quebrar e vazava pra fora do card em tela estreita. */
+  .card-body{overflow-wrap:break-word;}
   .card{position:relative; background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin-bottom:20px; transition:transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;}
   /* lixeira da seção — só no modo de edição, e só em card com data-card */
   .card-del{display:none; position:absolute; top:10px; right:10px; width:30px; height:30px; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:background .13s, color .13s, border-color .13s;}
@@ -324,6 +327,11 @@
   body.edit-mode .gallery-item .thumb::after{content:'trocar imagem'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,52,120,.75); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em; opacity:0; transition:opacity .15s;}
   body.edit-mode .gallery-item.video .thumb::after{content:'trocar vídeo';}
   body.edit-mode .gallery-item .thumb:hover::after{opacity:1;}
+  /* Sem mouse não há hover, então a dica nunca aparecia no celular: vira uma
+     faixa fixa no rodapé da miniatura, que avisa sem cobrir a imagem. */
+  @media (hover:none){
+    body.edit-mode .gallery-item .thumb::after{opacity:1; inset:auto 0 0 0; height:24px;}
+  }
   body.edit-mode .gallery-item.has-media .thumb::after{content:'trocar';}
   .gallery-item .thumb img, .gallery-item .thumb video{width:100%; height:100%; object-fit:cover;}
   body.edit-mode .cap-text{outline:1.5px dashed var(--tint-blue-border); outline-offset:2px; border-radius:4px; cursor:text;}
@@ -401,6 +409,13 @@
 
   .user-badge{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); white-space:nowrap;}
   .user-badge b{color:var(--heading-ink);}
+
+  /* Conta + "Sair" dentro do menu lateral (só no celular — ver media query) */
+  .sidebar-user{display:none; padding:16px 22px 24px; margin-top:8px; border-top:1px solid rgba(255,255,255,.12);}
+  .sidebar-user-badge{display:block; font-family:'IBM Plex Mono',monospace; font-size:12px; color:rgba(255,255,255,.6); margin-bottom:10px;}
+  .sidebar-user-badge b{color:#fff;}
+  .sidebar-logout{width:100%; min-height:44px; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; padding:11px 14px; border-radius:9px; border:1.5px solid rgba(255,255,255,.22); background:rgba(255,255,255,.06); color:#fff; cursor:pointer;}
+  .sidebar-logout:active{background:rgba(255,255,255,.14);}
   .logout-btn{font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:9px 14px; border-radius:8px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:all .15s, transform .18s cubic-bezier(.34,1.56,.64,1);}
   .logout-btn:hover{transform:scale(1.045);}
   .logout-btn:active{transform:scale(.96);}
@@ -409,9 +424,27 @@
 
   @media (max-width:900px){
     .search-box{display:none;}
+    /* Esconder só a .search-box não bastava: o .search-wrap continuava
+       reservando os 260px dele e empurrava a conta e o "Sair" pra fora da
+       tela, deixando o logout inalcançável no celular. */
+    .topbar .search-wrap{display:none;}
+    /* Conta e "Sair" descem pro rodapé do menu lateral. Na topbar eles
+       consumiam ~160px e o título colapsava pra largura zero. */
+    .topbar .user-badge, .topbar .logout-btn{display:none;}
+    .sidebar-user{display:block;}
+    .topbar-title .eyebrow{display:none;}
     .menu-btn{display:flex;}
+    /* Fora da edição o botão é só o lápis; ao editar, o rótulo volta pra
+       deixar claro que é ali que se salva. */
     #editToggleLabel{display:none;}
+    body.edit-mode #editToggleLabel{display:inline;}
     .edit-toggle{padding:9px 10px;}
+    /* Safari no iOS dá zoom sozinho ao focar campo com fonte < 16px — e a
+       página fica torta depois. 16px desliga esse comportamento. */
+    input, textarea, select, .search-box input, .auth-input{font-size:16px;}
+    /* Alvos de toque: 29–33px de altura é pouco pro dedo. */
+    .tool-item{padding:11px 10px;}
+    .road-step [role="button"]{padding-top:11px; padding-bottom:11px;}
     .sidebar{transform:translateX(-100%); transition:transform .25s ease; width:82%; max-width:340px; z-index:200; box-shadow:8px 0 24px rgba(0,0,0,.25);}
     .sidebar.open{transform:translateX(0);}
     .content{margin-left:0; padding:28px 18px 60px;}
@@ -420,7 +453,12 @@
     h1.page-title{font-size:24px;}
     .hero-title{font-size:32px;}
     .hero{padding-top:14px;}
-    .topbar-title .title{font-size:14.5px;}
+    /* Recupera largura pro título, que sem isso é o primeiro a ser espremido
+       (é o único item da topbar que encolhe). */
+    .topbar{padding:0 14px;}
+    .brand-link{gap:9px;}
+    .logo-mark{height:32px;}
+    .topbar-title .title{font-size:13.5px;}
     .card{padding:20px 18px;}
     .card table{font-size:12.5px;}
     .sidebar-search{display:block; padding:0 22px 18px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,.12);}
@@ -573,6 +611,14 @@
             <div class="tool-item active-link" data-idx="descarte-holmes-finalizar" role="button" tabindex="0" onclick="showPage('descarte-holmes-finalizar')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('descarte-holmes-finalizar');}"><span data-cid="nav-descarte-finalizar">Finalizar no Holmes</span></div>
           </div>
         </div>
+      </div>
+
+      <!-- Rodapé do menu — só aparece no celular. A conta e o "Sair" moram
+           aqui porque na topbar estreita eles espremiam o título até ele
+           sumir; aqui ainda sobra espaço pra um alvo de toque decente. -->
+      <div class="sidebar-user">
+        <span class="sidebar-user-badge" id="userBadgeMobile"></span>
+        <button class="sidebar-logout" id="logoutBtnMobile">Sair</button>
       </div>
 
     </aside>
@@ -2690,6 +2736,9 @@
   const authSubmit = document.getElementById('authSubmit');
   const userBadge = document.getElementById('userBadge');
   const logoutBtn = document.getElementById('logoutBtn');
+  // Cópias do menu lateral: no celular são elas que ficam visíveis.
+  const userBadgeMobile = document.getElementById('userBadgeMobile');
+  const logoutBtnMobile = document.getElementById('logoutBtnMobile');
 
   function showError(msg){ authError.textContent = msg; authError.classList.add('show'); }
   function clearError(){ authError.textContent = ''; authError.classList.remove('show'); }
@@ -2720,6 +2769,7 @@
   });
 
   logoutBtn.addEventListener('click', () => signOut(auth));
+  logoutBtnMobile.addEventListener('click', () => signOut(auth));
 
   onAuthStateChanged(auth, async (user) => {
     resetSubmit();
@@ -2755,7 +2805,9 @@
     document.body.classList.toggle('role-editor', canEdit);
     document.body.classList.toggle('role-viewer', role === 'viewer');
     const roleLabel = role === 'owner' ? 'dono' : (role === 'editor' ? 'editor' : 'visualizador');
-    userBadge.innerHTML = '<b>' + (username || user.email.split('@')[0]) + '</b> · ' + roleLabel;
+    const badgeHtml = '<b>' + (username || user.email.split('@')[0]) + '</b> · ' + roleLabel;
+    userBadge.innerHTML = badgeHtml;
+    userBadgeMobile.innerHTML = badgeHtml;
 
     try{
       // mídia primeiro: ela recria itens de galeria que só existem no banco, e
