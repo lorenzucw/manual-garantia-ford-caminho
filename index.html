@@ -267,7 +267,11 @@
   .gallery-section{margin:22px 0;}
   .gallery-section-title{display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;}
   .gallery-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:12px;}
-  .gallery-item{border:1.5px dashed var(--line); border-radius:10px; background:var(--tint-media-bg); overflow:hidden; cursor:pointer; transition:border-color .15s,box-shadow .15s,transform .18s cubic-bezier(.34,1.56,.64,1);}
+  .gallery-item{position:relative; border:1.5px dashed var(--line); border-radius:10px; background:var(--tint-media-bg); overflow:hidden; cursor:pointer; transition:border-color .15s,box-shadow .15s,transform .18s cubic-bezier(.34,1.56,.64,1);}
+  /* lixeira do item de galeria — sobre o canto do thumb, só no modo de edição */
+  .gallery-del{display:none; position:absolute; top:6px; right:6px; z-index:2; width:24px; height:24px; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.5); border-radius:6px; background:rgba(20,22,26,.6); color:#fff; cursor:pointer; transition:background .13s, border-color .13s;}
+  body.edit-mode .gallery-item > .gallery-del{display:flex;}
+  .gallery-del:hover{background:#e04848; border-color:#e04848;}
   .gallery-item:hover{border-color:var(--ford-blue); box-shadow:0 4px 14px rgba(0,52,120,.10); transform:scale(1.025);}
   .gallery-item:active{transform:scale(.98);}
   .gallery-item .thumb{aspect-ratio:16/10; display:flex; align-items:center; justify-content:center; background:var(--tint-thumb-bg); color:var(--ink-soft); position:relative;}
@@ -2154,6 +2158,7 @@
   window.__initAppAfterAuth = function(){
     buildOverview();
     window.__ensureCardControls(); // lixeira em toda seção, inclusive as restauradas do banco
+    window.__ensureGalleryControls(); // lixeira em todo print/vídeo, inclusive os restaurados do banco
     buildSearchIndex(); // precisa rodar depois dos overrides de conteúdo já aplicados no DOM
     wireSearch(document.getElementById('searchInput'), document.getElementById('searchResults'));
     wireSearch(document.getElementById('searchInputMobile'), document.getElementById('searchResultsMobile'));
@@ -2588,10 +2593,44 @@
       ? '<div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>'
       : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>';
     const durSpan = type === 'video' ? '<span class="dur">com áudio</span>' : '';
-    item.innerHTML = '<div class="thumb">'+thumbInner+'</div><div class="caption"><span class="cap-text" data-cid="'+mid+'-cap"></span>'+durSpan+'</div>';
+    item.innerHTML = '<div class="thumb">'+thumbInner+'</div>' +
+      '<button class="gallery-del" type="button" title="Apagar este item">'+TRASH_SVG+'</button>' +
+      '<div class="caption"><span class="cap-text" data-cid="'+mid+'-cap"></span>'+durSpan+'</div>';
     item.querySelector('.cap-text').textContent = caption;
     return item;
   }
+
+  // Todo .gallery-item ganha a lixeira, inclusive os fixos no HTML original —
+  // o CSS só a mostra em modo de edição.
+  window.__ensureGalleryControls = () => {
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      if(item.querySelector(':scope > .gallery-del')) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'gallery-del';
+      btn.title = 'Apagar este item';
+      btn.innerHTML = TRASH_SVG;
+      const thumb = item.querySelector(':scope > .thumb');
+      if(thumb) thumb.insertAdjacentElement('afterend', btn); else item.appendChild(btn);
+    });
+  };
+
+  function deleteGalleryItem(item){
+    const mid = item.dataset.mid;
+    const cap = (item.querySelector('.cap-text') || {}).textContent || '';
+    const tipo = item.classList.contains('video') ? 'vídeo' : 'print';
+    if(!confirm('Apagar ' + (cap.trim() ? 'o ' + tipo + ' "' + cap.trim() + '"' : 'este ' + tipo) + '?')) return;
+    item.remove();
+    if(window.__mediaDelete && mid){
+      window.__mediaDelete(mid).catch(err => alert('Não consegui registrar a exclusão: ' + err.message));
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.gallery-del');
+    if(!btn || !editMode) return;
+    deleteGalleryItem(btn.closest('.gallery-item'));
+  });
 
   // Recria, na galeria certa, um item que existe no banco mas não no HTML —
   // é assim que print/vídeo adicionado pelo modo de edição sobrevive ao F5.
@@ -2830,16 +2869,23 @@
     // 1ª passada: estrutura. Seções criadas pelo editor não existem no HTML e
     // seções apagadas ainda existem — as duas coisas moram aqui mesmo, na
     // coleção content, pra não precisar de regra nova no Firestore.
-    const novas = [], apagadas = new Set();
+    const novas = [], apagadas = new Set(), midsApagados = new Set();
     snap.forEach(docSnap => {
       const v = docSnap.data();
       if(docSnap.id.startsWith('__sec:')) novas.push({ id: docSnap.id.slice(6), page: v.sectionPage, order: v.sectionOrder || 0 });
       else if(docSnap.id.startsWith('__del:')) apagadas.add(docSnap.id.slice(6));
+      else if(docSnap.id.startsWith('__delmedia:')) midsApagados.add(docSnap.id.slice(11));
     });
     novas.sort((a, b) => a.order - b.order).forEach(s => window.__cardRestore(s.id, s.page));
     apagadas.forEach(id => {
       const card = document.querySelector('.card[data-card="' + CSS.escape(id) + '"]');
       if(card) card.remove();
+    });
+    // itens de galeria fixos no HTML que o editor apagou — os criados no editor
+    // já sumiram sozinhos (o media doc foi excluído, loadMediaOverrides nem os vê).
+    midsApagados.forEach(mid => {
+      const item = document.querySelector('.gallery-item[data-mid="' + CSS.escape(mid) + '"]');
+      if(item) item.remove();
     });
 
     // 2ª passada: o texto de cada campo, já com as seções novas no lugar.
@@ -2928,6 +2974,16 @@
   window.__mediaSaveImage = async (mid, dataUrl, gallery) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
     await setDoc(doc(db, 'media', mid), { type: 'image', dataUrl, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid });
+  };
+
+  // Some da tela e do banco; se o item vier fixo no HTML (não criado no editor)
+  // ele continuaria reaparecendo vazio no F5 sem essa marca, igual __del: faz
+  // pras seções que vêm no arquivo original.
+  window.__mediaDelete = async (mid) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await deleteDoc(doc(db, 'media', mid));
+    await deleteDoc(doc(db, 'content', mid + '-cap')).catch(() => {});
+    await setDoc(doc(db, 'content', '__delmedia:' + mid), { mediaDeleted: true, updatedAt: serverTimestamp(), updatedBy: uid });
   };
 
   window.__mediaSaveVideo = async (mid, youtubeId, gallery) => {
