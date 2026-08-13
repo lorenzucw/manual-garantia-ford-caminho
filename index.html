@@ -210,6 +210,20 @@
   body.edit-mode .card[data-card] > .card-del{display:flex;}
   body.edit-mode .card[data-card] > h3{padding-right:34px;}
   .card-del:hover{background:#e8484822; border-color:#e04848; color:#e04848;}
+
+  /* ---------- LISTA DE ARQUIVOS PRA BAIXAR (Materiais de Apoio) ---------- */
+  .file-list{display:flex; flex-direction:column; gap:8px;}
+  .file-item{display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--tint-media-bg); text-decoration:none; color:inherit; transition:border-color .15s, background .15s, transform .18s cubic-bezier(.34,1.56,.64,1);}
+  .file-item:hover{border-color:var(--ford-blue); background:var(--tint-blue-bg); transform:translateX(2px);}
+  .file-icon{flex-shrink:0; width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:.02em; color:#fff;}
+  .file-icon.pdf{background:#c8433a;}
+  .file-icon.xlsx{background:#1f7a45;}
+  .file-icon.docx{background:#2b5797;}
+  .file-icon.link{background:var(--ford-blue);}
+  .file-text{flex:1; min-width:0;}
+  .file-name{display:block; font-size:14px; font-weight:600; color:var(--ink);}
+  .file-desc{display:block; font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+  .file-go{flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ford-blue);}
   body:not(.edit-mode) .card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,30,70,.09);}
 
   /* aparecer ao rolar — o JS marca .revealed; sem JS/observer, .no-reveal-js
@@ -390,6 +404,78 @@
   .auth-submit:disabled{opacity:.6; cursor:not-allowed;}
   .auth-hint{margin-top:18px; font-size:11.5px; color:var(--ink-soft); text-align:center;}
 
+  /* ---------- ANIMAÇÕES DE ENTRADA E SAÍDA DO LOGIN ---------- */
+  /* O card e seus itens começam invisíveis: enquanto o Firebase não responde,
+     a tela mostra só o fundo da marca em vez de piscar um formulário inteiro. */
+  .auth-gate{transition:opacity .32s ease, transform .32s cubic-bezier(.4,0,.6,1);}
+  .auth-gate.leaving{opacity:0; transform:translateY(-16px); pointer-events:none;}
+
+  .auth-card{opacity:0; transform:translateY(10px);}
+  .auth-gate.gate-in .auth-card{opacity:1; transform:none; transition:opacity .34s ease, transform .34s cubic-bezier(.22,.61,.36,1);}
+
+  .auth-card > *:not(.auth-form), .auth-form > *{opacity:0; transform:translateY(8px);}
+  .auth-gate.gate-in .auth-card > *:not(.auth-form),
+  .auth-gate.gate-in .auth-form > *{
+    opacity:1; transform:none;
+    transition:opacity .34s ease, transform .34s cubic-bezier(.22,.61,.36,1);
+    transition-delay:calc(90ms + var(--i,0) * 55ms);
+  }
+  /* Marca entra passando do ponto e voltando — o "estufado" da opção B.
+     Os seletores precisam ter a mesma força da regra da cascata acima; com
+     .auth-eyebrow sozinho ela perdia e o efeito não acontecia. */
+  .auth-card > .auth-eyebrow, .auth-card > .auth-title{transform:translateY(8px) scale(.92);}
+  .auth-gate.gate-in .auth-card > .auth-eyebrow,
+  .auth-gate.gate-in .auth-card > .auth-title{
+    transform:none;
+    transition:opacity .5s ease, transform .52s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  /* brilho azul respirando atrás do card */
+  .auth-glow{
+    position:absolute; width:min(440px,90vw); aspect-ratio:1; border-radius:50%; pointer-events:none;
+    background:radial-gradient(circle, rgba(47,127,224,.5) 0%, rgba(47,127,224,0) 68%);
+    filter:blur(16px); opacity:0;
+  }
+  .auth-gate.gate-in .auth-glow{animation:authBreathe 7s ease-in-out infinite;}
+  @keyframes authBreathe{
+    0%,100%{opacity:.22; transform:scale(.94);}
+    50%{opacity:.48; transform:scale(1.06);}
+  }
+
+  /* botão: rótulo → rodinha → confirmação */
+  .auth-submit{display:flex; align-items:center; justify-content:center; gap:8px;}
+  .auth-spinner{display:none; width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:authSpin .6s linear infinite;}
+  @keyframes authSpin{to{transform:rotate(360deg);}}
+  .auth-check{display:none; font-size:15px; line-height:1;}
+  .auth-submit.loading .auth-btn-label, .auth-submit.ok .auth-btn-label{display:none;}
+  .auth-submit.loading .auth-spinner{display:block;}
+  .auth-submit.ok .auth-check{display:block; animation:authPop .3s cubic-bezier(.34,1.56,.64,1);}
+  .auth-submit.ok{opacity:1;}
+  @keyframes authPop{from{transform:scale(.4); opacity:0;} to{transform:scale(1); opacity:1;}}
+
+  /* erro: tremida curta e campos marcados */
+  .auth-gate.shake .auth-card{animation:authShake .38s cubic-bezier(.36,.07,.19,.97);}
+  @keyframes authShake{
+    10%,90%{transform:translateX(-2px);} 20%,80%{transform:translateX(4px);}
+    30%,50%,70%{transform:translateX(-6px);} 40%,60%{transform:translateX(6px);}
+  }
+  .auth-gate.errored .auth-input{border-color:var(--tint-error-border);}
+
+  /* app entrando: opacidade no shell (transform nele quebraria topbar/sidebar
+     fixas) e o deslize só no conteúdo */
+  #appShell.app-enter{animation:appEnter .42s ease both;}
+  #appShell.app-enter .content-inner{animation:appEnterInner .46s cubic-bezier(.22,.61,.36,1) both;}
+  @keyframes appEnter{from{opacity:0;} to{opacity:1;}}
+  @keyframes appEnterInner{from{transform:translateX(12px) scale(.99);} to{transform:none;}}
+
+  @media (prefers-reduced-motion: reduce){
+    .auth-gate, .auth-card, .auth-card > *, .auth-form > *{transition:none !important;}
+    .auth-eyebrow, .auth-title, .auth-card{transform:none !important;}
+    .auth-glow{animation:none !important;}
+    .auth-gate.shake .auth-card, .auth-submit.ok .auth-check,
+    #appShell.app-enter, #appShell.app-enter .content-inner{animation:none !important;}
+  }
+
   .theme-toggle{position:relative; display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:8px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; flex-shrink:0; transition:all .15s, transform .18s cubic-bezier(.34,1.56,.64,1);}
   .theme-toggle:hover{border-color:var(--ford-blue); color:var(--ford-blue); transform:scale(1.06);}
   .theme-toggle:active{transform:scale(.94);}
@@ -474,17 +560,22 @@
 <body>
 
   <div class="auth-gate" id="authGate">
+    <div class="auth-glow" aria-hidden="true"></div>
     <div class="auth-card">
-      <div class="auth-eyebrow">Rede Ford Caminho</div>
-      <h1 class="auth-title">Guia de Garantia</h1>
-      <p class="auth-sub">Acesso restrito à equipe. Entre com seu usuário e senha.</p>
+      <div class="auth-eyebrow" style="--i:0">Rede Ford Caminho</div>
+      <h1 class="auth-title" style="--i:1">Guia de Garantia</h1>
+      <p class="auth-sub" style="--i:2">Acesso restrito à equipe. Entre com seu usuário e senha.</p>
       <form class="auth-form" id="loginForm">
-        <label class="auth-label" for="loginUsername">Usuário</label>
-        <input type="text" id="loginUsername" class="auth-input" autocomplete="username" required>
-        <label class="auth-label" for="loginPassword">Senha</label>
-        <input type="password" id="loginPassword" class="auth-input" autocomplete="current-password" required>
-        <div class="auth-error" id="authError"></div>
-        <button type="submit" class="auth-submit" id="authSubmit">Entrar</button>
+        <label class="auth-label" for="loginUsername" style="--i:3">Usuário</label>
+        <input type="text" id="loginUsername" class="auth-input" autocomplete="username" required style="--i:3">
+        <label class="auth-label" for="loginPassword" style="--i:4">Senha</label>
+        <input type="password" id="loginPassword" class="auth-input" autocomplete="current-password" required style="--i:4">
+        <div class="auth-error" id="authError" style="--i:5"></div>
+        <button type="submit" class="auth-submit" id="authSubmit" style="--i:5">
+          <span class="auth-btn-label">Entrar</span>
+          <span class="auth-spinner" aria-hidden="true"></span>
+          <span class="auth-check" aria-hidden="true">✓</span>
+        </button>
       </form>
     </div>
   </div>
@@ -562,6 +653,7 @@
         <div class="sidebar-group-label" data-cid="nav-label-referencia">Referência</div>
         <div class="tool-list">
           <div class="tool-item active-link" data-idx="audit" role="button" tabindex="0" onclick="showPage('audit')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('audit');}"><span data-cid="nav-audit">Auditoria Ford</span></div>
+          <div class="tool-item active-link" data-idx="materiais" role="button" tabindex="0" onclick="showPage('materiais')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('materiais');}"><span data-cid="nav-materiais">Materiais de Apoio</span></div>
         </div>
       </div>
 
@@ -1759,6 +1851,90 @@
           </div>
         </section>
 
+        <!-- PAGE MATERIAIS DE APOIO (referência, fora do Caminho) -->
+        <section class="page" id="page-materiais">
+          <div class="section-head"><div class="section-tag">↓</div><h1 class="page-title" data-cid="title-materiais">Materiais de Apoio</h1></div>
+          <p class="page-sub" data-cid="materiais-sub">Os arquivos que a equipe usa no dia a dia, sempre na versão mais recente. Clique em qualquer item pra baixar.</p>
+          <div class="badge-row"><span class="badge role">Uso interno da Concessionária</span><span class="badge tool">PDF</span><span class="badge tool">Excel</span></div>
+
+          <div class="card" data-card="materiais-caminho">
+            <h3 data-cid="materiais-caminho-h3">Materiais internos — Caminho</h3>
+            <div class="card-body" data-cid="materiais-caminho-body" data-rich="1">
+              <p>Documentos produzidos pela própria Concessionária, usados no dia a dia da garantia.</p>
+            </div>
+            <div class="file-list">
+              <a class="file-item" href="materiais/caminho/laudo-universal.xlsx" download>
+                <span class="file-icon xlsx">XLSX</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-laudo-nome">Laudo Universal</span><span class="file-desc" data-cid="mat-laudo-desc">Modelo de laudo técnico usado em qualquer tipo de reparo</span></span>
+                <span class="file-go">baixar ↓</span>
+              </a>
+              <a class="file-item" href="materiais/caminho/tabela-manutencao.pdf" download>
+                <span class="file-icon pdf">PDF</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-tabmanut-nome">Tabela de Manutenção</span><span class="file-desc" data-cid="mat-tabmanut-desc">Planos de revisão por modelo, em alta resolução</span></span>
+                <span class="file-go">baixar ↓</span>
+              </a>
+              <a class="file-item" href="materiais/caminho/codigos-stars-equipe-claro.pdf" download>
+                <span class="file-icon pdf">PDF</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-starsclaro-nome">Códigos STARS da equipe — versão clara</span><span class="file-desc" data-cid="mat-starsclaro-desc">Para imprimir ou consultar em tela clara</span></span>
+                <span class="file-go">baixar ↓</span>
+              </a>
+              <a class="file-item" href="materiais/caminho/codigos-stars-equipe-escuro.pdf" download>
+                <span class="file-icon pdf">PDF</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-starsescuro-nome">Códigos STARS da equipe — versão escura</span><span class="file-desc" data-cid="mat-starsescuro-desc">Mesma tabela, otimizada pra tela escura</span></span>
+                <span class="file-go">baixar ↓</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-card="materiais-ford">
+            <h3 data-cid="materiais-ford-h3">Materiais oficiais Ford</h3>
+            <div class="card-body" data-cid="materiais-ford-body" data-rich="1">
+              <p>Manuais e tabelas oficiais da Ford. Confira sempre a data no nome do arquivo antes de usar como referência.</p>
+            </div>
+            <div class="file-list">
+              <a class="file-item" href="materiais/ford/manual-garantia-brasil.docx" download>
+                <span class="file-icon docx">DOCX</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-manualgar-nome">Manual de Garantia Brasil</span><span class="file-desc" data-cid="mat-manualgar-desc">As regras oficiais que sustentam todo o Caminho da Garantia (Março/26)</span></span>
+                <span class="file-go">baixar ↓</span>
+              </a>
+              <a class="file-item" href="materiais/ford/ows-manual-usuario.pdf" download>
+                <span class="file-icon pdf">PDF</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-owsuser-nome">OWS — Manual do Usuário</span><span class="file-desc" data-cid="mat-owsuser-desc">Guia completo do sistema, para automóveis (Outubro/25)</span></span>
+                <span class="file-go">baixar ↓</span>
+              </a>
+              <a class="file-item" href="materiais/ford/ows-manual-acesso.pdf" download>
+                <span class="file-icon pdf">PDF</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-owsacesso-nome">OWS — Manual de Acesso</span><span class="file-desc" data-cid="mat-owsacesso-desc">Como solicitar e configurar o acesso ao OWS (Maio/23)</span></span>
+                <span class="file-go">baixar ↓</span>
+              </a>
+              <a class="file-item" href="materiais/ford/reparacao-sg-padrao.xlsx" download>
+                <span class="file-icon xlsx">XLSX</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-sgpadrao-nome">Reparação Pré-Definida (SG Padrão)</span><span class="file-desc" data-cid="mat-sgpadrao-desc">Códigos de solução já configurados pela Ford (Julho/26)</span></span>
+                <span class="file-go">baixar ↓</span>
+              </a>
+              <a class="file-item" href="materiais/ford/margem-foc.xlsx" download>
+                <span class="file-icon xlsx">XLSX</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-margem-nome">Margem FoC</span><span class="file-desc" data-cid="mat-margem-desc">Tabela de margem atualizada (05/08/26)</span></span>
+                <span class="file-go">baixar ↓</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-card="materiais-mapa">
+            <h3 data-cid="materiais-mapa-h3">Mapa de acompanhamento</h3>
+            <div class="card-body" data-cid="materiais-mapa-body" data-rich="1">
+              <p>Planilha viva de acompanhamento — abre direto na versão online, sempre atualizada.</p>
+            </div>
+            <div class="file-list">
+              <a class="file-item" href="https://grupocaminho.sharepoint.com/:u:/r/sites/dep.garantia/Documentos%20Compartilhados/FORD/MAPA%20ACOMPANHAMENTO%20-%20FORD.url?d=w6d6ac3f3900f4c71a37d8b70c8114f1f&amp;csf=1&amp;web=1&amp;e=GWlqn2" target="_blank" rel="noopener noreferrer">
+                <span class="file-icon link">LINK</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-mapa-nome">Mapa de Acompanhamento</span><span class="file-desc" data-cid="mat-mapa-desc">Abre no SharePoint da Caminho — é preciso estar logado na conta da empresa</span></span>
+                <span class="file-go">abrir ↗</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
         <!-- PAGE OWS -->
         <section class="page" id="page-ows">
           <div class="section-head"><div class="section-tag">OWS</div><h1 class="page-title" data-cid="title-ows">OWS — Sistema Global de Garantia</h1></div>
@@ -2026,6 +2202,8 @@
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>O Caminho da Garantia</b>';
     } else if(id === 'audit'){
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Auditoria Ford</b>';
+    } else if(id === 'materiais'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Materiais de Apoio</b>';
     } else if(id === 'ows'){
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Ferramentas Ford</b>' + sep + '<b>OWS</b>';
     } else if(id === 'sub'){
@@ -2094,7 +2272,7 @@
   let searchIndex = [];
   function buildSearchIndex(){
     searchIndex = [];
-    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','ows','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall',
+    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','materiais','ows','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall',
       'crpg','crpg-status','crpg-holmes-abrir','crpg-nota','crpg-holmes-finalizar',
       'descarte','descarte-status','descarte-holmes-abrir','descarte-nota','descarte-holmes-finalizar'];
     pageIds.forEach(i => {
@@ -2779,9 +2957,53 @@
   const userBadgeMobile = document.getElementById('userBadgeMobile');
   const logoutBtnMobile = document.getElementById('logoutBtnMobile');
 
-  function showError(msg){ authError.textContent = msg; authError.classList.add('show'); }
-  function clearError(){ authError.textContent = ''; authError.classList.remove('show'); }
-  function resetSubmit(){ authSubmit.disabled = false; authSubmit.textContent = 'Entrar'; }
+  function showError(msg){
+    authError.textContent = msg;
+    authError.classList.add('show');
+    authGate.classList.add('errored');
+    // reinicia a tremida mesmo se o erro anterior ainda estiver na tela
+    authGate.classList.remove('shake');
+    void authGate.offsetWidth;
+    authGate.classList.add('shake');
+  }
+  function clearError(){
+    authError.textContent = '';
+    authError.classList.remove('show');
+    authGate.classList.remove('errored', 'shake');
+  }
+  function resetSubmit(){ authSubmit.disabled = false; authSubmit.classList.remove('loading', 'ok'); }
+
+  const ESPERA_SAIDA = 340; // tem que acompanhar a transição de .auth-gate.leaving
+
+  // Entrada do login: reinicia a cascata do card toda vez que a tela reaparece.
+  function animarEntradaLogin(){
+    authGate.classList.remove('gate-in');
+    void authGate.offsetWidth;
+    authGate.classList.add('gate-in');
+  }
+
+  function mostrarLogin(){
+    appShell.classList.remove('app-enter');
+    appShell.style.display = 'none';
+    authGate.classList.remove('hidden', 'leaving');
+    clearError(); // senão o erro da sessão anterior reaparece ao deslogar
+    animarEntradaLogin();
+  }
+
+  // A saída do login e a entrada do app se cruzam de propósito — o app já está
+  // aparecendo enquanto o card ainda sobe, o que evita o corte seco no meio.
+  function mostrarApp(){
+    authGate.classList.add('leaving');
+    appShell.style.display = 'block';
+    appShell.classList.remove('app-enter');
+    void appShell.offsetWidth;
+    appShell.classList.add('app-enter');
+    setTimeout(() => {
+      authGate.classList.add('hidden');
+      authGate.classList.remove('leaving', 'gate-in');
+      resetSubmit();
+    }, ESPERA_SAIDA);
+  }
 
   let justSignedIn = false;
 
@@ -2792,7 +3014,7 @@
     const password = document.getElementById('loginPassword').value;
     if(!username || !password) return;
     authSubmit.disabled = true;
-    authSubmit.textContent = 'Entrando…';
+    authSubmit.classList.add('loading');
     justSignedIn = true;
     signInWithEmailAndPassword(auth, username + EMAIL_SUFFIX, password).catch(err => {
       justSignedIn = false;
@@ -2811,13 +3033,14 @@
   logoutBtnMobile.addEventListener('click', () => signOut(auth));
 
   onAuthStateChanged(auth, async (user) => {
-    resetSubmit();
+    // sessão já existia (F5 com login válido) não mostra o ✓ — não houve clique
+    const veioDoFormulario = justSignedIn;
 
     if(!user){
+      resetSubmit();
       window.__isEditor = false;
       document.body.classList.remove('role-editor', 'role-viewer', 'edit-mode');
-      authGate.classList.remove('hidden');
-      appShell.style.display = 'none';
+      mostrarLogin();
       return;
     }
 
@@ -2857,8 +3080,12 @@
       console.error('Falha ao carregar conteúdo salvo do Firestore:', err);
     }
 
-    authGate.classList.add('hidden');
-    appShell.style.display = 'block';
+    if(veioDoFormulario){
+      authSubmit.classList.remove('loading');
+      authSubmit.classList.add('ok');
+      await new Promise(r => setTimeout(r, 260)); // deixa o ✓ ser visto
+    }
+    mostrarApp();
     if(window.__initAppAfterAuth) window.__initAppAfterAuth();
   });
 
