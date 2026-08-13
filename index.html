@@ -665,7 +665,7 @@
           <div class="tool-item"><span data-cid="nav-tool-pts">PTS</span> <span class="soon">em breve</span></div>
           <div class="tool-item"><span data-cid="nav-tool-agenda">Agenda</span> <span class="soon">em breve</span></div>
           <div class="tool-item"><span data-cid="nav-tool-catalogo">Catálogo</span> <span class="soon">em breve</span></div>
-          <div class="tool-item"><span data-cid="nav-tool-holmes">Holmes</span> <span class="soon">em breve</span></div>
+          <div class="tool-item active-link" data-idx="holmes" role="button" tabindex="0" onclick="showPage('holmes')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('holmes');}"><span data-cid="nav-tool-holmes">Holmes</span> <span class="go">abrir →</span></div>
         </div>
       </div>
       </div><!-- /#zone-main -->
@@ -791,7 +791,7 @@
                 <li>Prints das telas dos sistemas envolvidos</li>
                 <li>Vídeo narrado mostrando o passo a passo na prática</li>
               </ul>
-              <p>As ferramentas Ford (Dealer, OWS, PTS, Agenda, Catálogo, Holmes) ganharão módulos próprios em breve.</p>
+              <p>O <b>OWS</b> e o <b>Holmes</b> já têm módulos próprios na barra lateral. Dealer, PTS, Agenda e Catálogo entram em breve.</p>
             </div>
           </div>
         </section>
@@ -2023,6 +2023,120 @@
           </div>
         </section>
 
+        <!-- PAGE HOLMES -->
+        <section class="page" id="page-holmes">
+          <div class="section-head"><div class="section-tag">HOL</div><h1 class="page-title" data-cid="title-holmes">Holmes — Processos e Tarefas</h1></div>
+          <p class="page-sub" data-cid="holmes-sub">É onde o processo de garantia é organizado internamente na Concessionária. O OWS fala com a Ford; o Holmes controla quem faz o quê aqui dentro, com prazo e responsável em cada passo.</p>
+          <div class="badge-row"><span class="badge role">Usado por: Consultor(a) Técnico(a), Garantista e Analista de Garantia</span><span class="badge holmes">Login por e-mail corporativo</span></div>
+
+          <div class="card" data-card="holmes-acessar">
+            <h3 data-cid="holmes-acessar-h3">Como acessar</h3>
+            <div class="card-body" data-cid="holmes-acessar-body" data-rich="1">
+              <p>Link oficial: <b>app.holmesdoc.io</b></p>
+              <ol>
+                <li>Informe seu e-mail corporativo, no formato <code>nome.sobrenome@caminhoveiculos.com.br</code></li>
+                <li>Clique em <b>Prosseguir</b> — a senha é pedida na tela seguinte</li>
+              </ol>
+              <p>Problema de acesso é com o suporte do próprio Holmes: <b>suporte@holmes.app</b></p>
+            </div>
+          </div>
+
+          <div class="card" data-card="holmes-home">
+            <h3 data-cid="holmes-home-h3">A tela inicial</h3>
+            <div class="card-body" data-cid="holmes-home-body" data-rich="1">
+              <p>Ao entrar, o bloco <b>Minhas informações relevantes</b> mostra quatro números que resumem sua situação no momento — é por eles que se começa o dia:</p>
+              <ul>
+                <li><b>Tarefas Atrasadas</b> — passaram do prazo; aparecem marcadas como "Atenção"</li>
+                <li><b>Notificações de chat não lidas</b> — mensagens dentro dos processos</li>
+                <li><b>Processos parados há +7 dias</b> — nada andou neles na última semana</li>
+                <li><b>Tarefas sem Responsável</b> — estão abertas e ninguém assumiu</li>
+              </ul>
+              <p>O botão <b>Definir página inicial</b> permite trocar a tela que abre no login — quem vive nas tarefas costuma deixar a lista de tarefas como inicial.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="holmes-menu">
+            <h3 data-cid="holmes-menu-h3">O menu lateral</h3>
+            <div class="card-body" data-cid="holmes-menu-body" data-rich="1">
+              <p>A faixa estreita à esquerda é a navegação principal do sistema:</p>
+            </div>
+            <table>
+              <tr><th data-cid="holmes-menu-th1">Ícone</th><th data-cid="holmes-menu-th2">Pra que serve</th></tr>
+              <tr><td data-cid="holmes-menu-td1">Início</td><td data-cid="holmes-menu-td2">Volta pro painel com os indicadores</td></tr>
+              <tr><td data-cid="holmes-menu-td3">Tarefas</td><td data-cid="holmes-menu-td4">O que precisa ser feito — suas e as sem responsável</td></tr>
+              <tr><td data-cid="holmes-menu-td5">Processos</td><td data-cid="holmes-menu-td6">Os processos em si: abertos, cancelados e concluídos</td></tr>
+              <tr><td data-cid="holmes-menu-td7">Buscar</td><td data-cid="holmes-menu-td8">Central de Buscas — procura em documentos, processos, tarefas e tabelas</td></tr>
+              <tr><td data-cid="holmes-menu-td9">+ (mais)</td><td data-cid="holmes-menu-td10">Abre um processo novo</td></tr>
+            </table>
+          </div>
+
+          <div class="card" data-card="holmes-tarefas">
+            <h3 data-cid="holmes-tarefas-h3">Tarefas</h3>
+            <div class="card-body" data-cid="holmes-tarefas-body" data-rich="1">
+              <p>A tela de <b>Tarefas abertas</b> tem filtros rápidos no topo: <b>Comigo</b>, <b>Sem responsável</b>, <b>Todas</b>, <b>Atrasadas</b>, <b>Hoje</b> e <b>Esta semana</b>.</p>
+              <p>Cada tarefa da lista mostra três linhas que dizem tudo:</p>
+              <ul>
+                <li><b>Fluxo</b> — a qual dos processos ela pertence (Garantia, Envio de remessa ou Scrap)</li>
+                <li><b>Tarefa</b> — o que fazer e de quem é a vez, ex.: <i>[Garantista] Validação da documentação</i></li>
+                <li><b>Processo</b> — loja, tipo de O.S. e número da O.S., pra identificar o veículo</li>
+              </ul>
+              <p>A aba <b>Sem responsável</b> é a mais importante do dia a dia: são tarefas que já existem e estão paradas esperando alguém assumir.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="holmes-processos">
+            <h3 data-cid="holmes-processos-h3">Processos</h3>
+            <div class="card-body" data-cid="holmes-processos-body" data-rich="1">
+              <p>Enquanto a tela de tarefas mostra passos soltos, a de <b>Processos</b> mostra o caso inteiro, separado em <b>Abertos</b>, <b>Cancelados</b> e <b>Concluídos</b>.</p>
+              <p>Também é aqui que ficam as <b>Aberturas em lote</b> (vários processos de uma vez) e os <b>Filtros</b> salvos, pra montar uma visão sua e reaproveitar depois.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="holmes-fluxos">
+            <h3 data-cid="holmes-fluxos-h3">Abrir um processo: os três fluxos</h3>
+            <div class="card-body" data-cid="holmes-fluxos-body" data-rich="1">
+              <p>No botão <b>+</b> você escolhe o fluxo. São três, e cada um corresponde a uma etapa do Caminho da Garantia:</p>
+            </div>
+            <table>
+              <tr><th data-cid="holmes-fluxos-th1">Fluxo no Holmes</th><th data-cid="holmes-fluxos-th2">Corresponde a</th></tr>
+              <tr><td data-cid="holmes-fluxos-td1">[GAR]: Garantia</td><td data-cid="holmes-fluxos-td2">O reparo em garantia, da abertura da OS até a submissão</td></tr>
+              <tr><td data-cid="holmes-fluxos-td3">[GAR]: Envio de remessa</td><td data-cid="holmes-fluxos-td4">A devolução de peça ao CRPG (etapa 06)</td></tr>
+              <tr><td data-cid="holmes-fluxos-td5">[GAR]: Scrap</td><td data-cid="holmes-fluxos-td6">O descarte de peça (etapa 07)</td></tr>
+            </table>
+            <div class="card-body" data-cid="holmes-fluxos-nota" data-rich="1">
+              <p>Também existe <b>Abrir em lote</b>, pra quando vários processos do mesmo tipo precisam ser criados de uma vez.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="holmes-busca">
+            <h3 data-cid="holmes-busca-h3">Central de Buscas</h3>
+            <div class="card-body" data-cid="holmes-busca-body" data-rich="1">
+              <p>A lupa abre a Central de Buscas, que procura em quatro lugares separadamente: <b>Documentos</b>, <b>Processos</b>, <b>Tarefas</b> e <b>Tabelas</b>.</p>
+              <p>No mesmo menu ficam <b>Links externos</b>, <b>Exportações</b>, <b>Meus uploads</b>, a <b>Lixeira</b> e os <b>Favoritos</b> — útil quando você sabe que anexou um documento mas não lembra em qual processo.</p>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="holmes-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="holmes-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
       </div>
     </main>
   </div>
@@ -2206,6 +2320,8 @@
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Materiais de Apoio</b>';
     } else if(id === 'ows'){
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Ferramentas Ford</b>' + sep + '<b>OWS</b>';
+    } else if(id === 'holmes'){
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Ferramentas Ford</b>' + sep + '<b>Holmes</b>';
     } else if(id === 'sub'){
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
         '<button class="crumb-link" onclick="showPage(5)">Submissão da Solicitação</button>' + sep +
@@ -2272,7 +2388,7 @@
   let searchIndex = [];
   function buildSearchIndex(){
     searchIndex = [];
-    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','materiais','ows','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall',
+    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','materiais','ows','holmes','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall',
       'crpg','crpg-status','crpg-holmes-abrir','crpg-nota','crpg-holmes-finalizar',
       'descarte','descarte-status','descarte-holmes-abrir','descarte-nota','descarte-holmes-finalizar'];
     pageIds.forEach(i => {
