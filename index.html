@@ -2768,6 +2768,13 @@
     return regiao ? Array.from(regiao.querySelectorAll('li')) : [];
   }
 
+  // A marca é guardada pelo texto do item, não pela posição: assim adicionar ou
+  // apagar um item da lista não faz as marcas escorregarem pros itens errados.
+  // Reescrever um item limpa só a marca dele, que é o comportamento esperado.
+  function chaveDoItem(li){
+    return li.textContent.replace(/\s+/g, ' ').trim().slice(0, 120);
+  }
+
   function lerMarcados(cardId){
     try{ return new Set(JSON.parse(localStorage.getItem(CHAVE_CHECK + cardId) || '[]')); }
     catch(e){ return new Set(); }
@@ -2785,8 +2792,13 @@
   function pintarChecks(escopo){
     (escopo || document).querySelectorAll('.card[data-check]').forEach(card => {
       const marcados = lerMarcados(card.dataset.card);
-      itensDoCheck(card).forEach((li, i) => li.classList.toggle('marcado', marcados.has(i)));
-      card.classList.toggle('tem-marca', marcados.size > 0);
+      let visiveis = 0;
+      itensDoCheck(card).forEach(li => {
+        const marcado = marcados.has(chaveDoItem(li));
+        li.classList.toggle('marcado', marcado);
+        if(marcado) visiveis++;
+      });
+      card.classList.toggle('tem-marca', visiveis > 0);
     });
   }
 
@@ -2819,11 +2831,10 @@
     const li = e.target.closest('.card[data-check] [data-rich] li');
     if(!li) return;
     const card = li.closest('.card[data-check]');
-    const itens = itensDoCheck(card);
-    const i = itens.indexOf(li);
-    if(i < 0) return;
+    const chave = chaveDoItem(li);
+    if(!chave) return;
     const marcados = lerMarcados(card.dataset.card);
-    if(marcados.has(i)) marcados.delete(i); else marcados.add(i);
+    if(marcados.has(chave)) marcados.delete(chave); else marcados.add(chave);
     gravarMarcados(card.dataset.card, marcados);
     pintarChecks(card.parentElement);
   });
