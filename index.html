@@ -208,7 +208,12 @@
   /* lixeira da seção — só no modo de edição, e só em card com data-card */
   .card-del{display:none; position:absolute; top:10px; right:10px; width:30px; height:30px; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:background .13s, color .13s, border-color .13s;}
   body.edit-mode .card[data-card] > .card-del{display:flex;}
-  body.edit-mode .card[data-card] > h3{padding-right:34px;}
+  body.edit-mode .card[data-card] > h3{padding-right:74px;}
+  /* alterna o formato de checklist da seção; fica ao lado da lixeira */
+  .card-check{display:none; position:absolute; top:10px; right:46px; width:30px; height:30px; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:background .13s, color .13s, border-color .13s;}
+  body.edit-mode .card[data-card] > .card-check{display:flex;}
+  .card-check:hover{border-color:var(--ford-blue); color:var(--ford-blue);}
+  .card-check.on{background:var(--ford-blue); border-color:var(--ford-blue); color:#fff;}
   .card-del:hover{background:#e8484822; border-color:#e04848; color:#e04848;}
 
   /* ---------- CHECKLISTS MARCÁVEIS ----------
@@ -774,6 +779,7 @@
           </button>
           <span class="fmt-sep"></span>
           <button class="fmt-btn" type="button" data-fmt="addCard" title="Adicionar uma seção nova (título + conteúdo) no fim da página">+ card</button>
+          <button class="fmt-btn" type="button" data-fmt="addChecklist" title="Adicionar uma seção nova já no formato de checklist">+ checklist</button>
           <button class="fmt-btn" type="button" data-fmt="addBlock" title="Adicionar um parágrafo novo abaixo" disabled>+ bloco</button>
           <button class="fmt-btn" type="button" data-fmt="removeBlock" title="Apagar o parágrafo/item onde o cursor está" disabled>− bloco</button>
           <span class="fmt-hint" id="fmtHint">clique num texto pra formatar</span>
@@ -3201,7 +3207,7 @@
     const on = !!activeRich;
     // "+ card" age na página inteira, não no texto sob o cursor — vive sempre ativo
     fmtButtons.forEach(b => {
-      if(b.dataset.fmt === 'addCard') return;
+      if(b.dataset.fmt === 'addCard' || b.dataset.fmt === 'addChecklist') return;
       b.disabled = !on;
       if(!on) b.classList.remove('on');
     });
@@ -3209,7 +3215,7 @@
     if(!on) return;
     fmtButtons.forEach(b => {
       const cmd = b.dataset.fmt;
-      if(cmd === 'addBlock' || cmd === 'removeBlock' || cmd === 'addCard') return;
+      if(cmd === 'addBlock' || cmd === 'removeBlock' || cmd === 'addCard' || cmd === 'addChecklist') return;
       b.classList.toggle('on', document.queryCommandState(cmd));
     });
   }
@@ -3247,6 +3253,17 @@
 
   function addBlock(){
     const block = currentBlock();
+    const emChecklist = !!activeRich.closest('.card[data-check]');
+    // num card de checklist o bloco novo nasce como item marcável; se ainda não
+    // houver lista onde o cursor está, cria uma pra receber o item.
+    if(emChecklist && (!block || block.tagName !== 'LI')){
+      const lista = document.createElement('ul');
+      const item = newEmptyBlock('li');
+      lista.appendChild(item);
+      if(block) block.after(lista); else activeRich.appendChild(lista);
+      placeCaret(item);
+      return;
+    }
     const fresh = newEmptyBlock(block && block.tagName === 'LI' ? 'li' : 'p');
     if(block) block.after(fresh); else activeRich.appendChild(fresh);
     placeCaret(fresh);
@@ -3279,7 +3296,8 @@
     const btn = e.target.closest('.fmt-btn');
     if(!btn || btn.disabled) return;
     const cmd = btn.dataset.fmt;
-    if(cmd === 'addCard'){ addCard(); return; }
+    if(cmd === 'addCard'){ addCard(false); return; }
+    if(cmd === 'addChecklist'){ addCard(true); return; }
     if(!activeRich) return;
     if(cmd === 'addBlock') addBlock();
     else if(cmd === 'removeBlock') removeBlock();
@@ -3323,24 +3341,73 @@
     return card;
   };
 
-  function addCard(){
+  function addCard(comoChecklist){
     const pageEl = document.querySelector('.page.active');
     if(!pageEl) return;
     const id = newSectionId();
-    const card = buildCard(id, 'Nova seção');
+    const card = buildCard(id, comoChecklist ? 'Novo checklist' : 'Nova seção');
+    if(comoChecklist){
+      card.dataset.check = '1';
+      // já nasce com um item, pra ficar claro que é lista de marcar
+      card.querySelector('[data-rich]').innerHTML = '<ul><li>Primeiro item</li></ul>';
+    }
     insertCard(pageEl, card);
     card.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', 'true'));
     if(window.__contentBaseline){
       // baseline vazia: o texto que ele digitar agora conta como alteração
-      window.__contentBaseline.set(id + '-h3', 'Nova seção');
+      window.__contentBaseline.set(id + '-h3', card.querySelector('h3').textContent);
       window.__contentBaseline.set(id + '-body', sanitizeRichHtml(card.querySelector('[data-rich]').innerHTML));
     }
     if(window.__sectionSave){
       window.__sectionSave(id, pageEl.id.replace(/^page-/, ''), Date.now())
         .catch(err => alert('Não consegui registrar a seção nova: ' + err.message));
     }
+    if(comoChecklist && window.__cardChecklistSave){
+      window.__cardChecklistSave(id, true).catch(() => {});
+    }
+    window.__ensureCardControls();
+    window.__prepararChecks();
     card.scrollIntoView({ block: 'center', behavior: 'smooth' });
     placeCaretIn(card.querySelector('h3'));
+  }
+
+  // Liga/desliga o formato de checklist em qualquer seção — inclusive nas que
+  // já vinham no site. Guardado por card, então vale pra todo mundo que abrir.
+  function alternarChecklist(card){
+    const virou = !card.hasAttribute('data-check');
+    if(virou){
+      card.dataset.check = '1';
+      const regiao = card.querySelector('[data-rich]');
+      // sem lista nenhuma não haveria o que marcar: converte os parágrafos
+      if(regiao && !regiao.querySelector('li')){
+        const lista = document.createElement('ul');
+        Array.from(regiao.children).forEach(bloco => {
+          const li = document.createElement('li');
+          li.innerHTML = bloco.innerHTML;
+          lista.appendChild(li);
+        });
+        regiao.innerHTML = '';
+        regiao.appendChild(lista);
+      }
+    } else {
+      card.removeAttribute('data-check');
+      card.classList.remove('tem-marca');
+      card.querySelectorAll('[data-rich] li.marcado').forEach(li => li.classList.remove('marcado'));
+    }
+    if(window.__cardChecklistSave){
+      window.__cardChecklistSave(card.dataset.card, virou)
+        .catch(err => alert('Não consegui salvar o formato da seção: ' + err.message));
+    }
+    window.__prepararChecks();
+    atualizarBotaoChecklist(card);
+  }
+
+  function atualizarBotaoChecklist(card){
+    const btn = card.querySelector(':scope > .card-check');
+    if(!btn) return;
+    const ativo = card.hasAttribute('data-check');
+    btn.classList.toggle('on', ativo);
+    btn.title = ativo ? 'Voltar a ser texto normal' : 'Transformar em checklist';
   }
 
   function placeCaretIn(el){
@@ -3364,22 +3431,35 @@
   }
 
   // Toda seção com data-card ganha a lixeira; o CSS só a mostra na edição.
+  const CHECK_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 7 5 9 9 5"/><polyline points="3 17 5 19 9 15"/><line x1="13" y1="7" x2="21" y2="7"/><line x1="13" y1="17" x2="21" y2="17"/></svg>';
+
   window.__ensureCardControls = () => {
     document.querySelectorAll('.card[data-card]').forEach(card => {
-      if(card.querySelector(':scope > .card-del')) return;
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'card-del';
-      btn.title = 'Apagar esta seção';
-      btn.innerHTML = TRASH_SVG;
-      card.insertBefore(btn, card.firstChild);
+      if(!card.querySelector(':scope > .card-del')){
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'card-del';
+        btn.title = 'Apagar esta seção';
+        btn.innerHTML = TRASH_SVG;
+        card.insertBefore(btn, card.firstChild);
+      }
+      if(!card.querySelector(':scope > .card-check')){
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'card-check';
+        btn.innerHTML = CHECK_SVG;
+        card.insertBefore(btn, card.firstChild);
+      }
+      atualizarBotaoChecklist(card);
     });
   };
 
   document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.card-del');
-    if(!btn || !editMode) return;
-    deleteCard(btn.closest('.card'));
+    if(!editMode) return;
+    const del = e.target.closest('.card-del');
+    if(del){ deleteCard(del.closest('.card')); return; }
+    const chk = e.target.closest('.card-check');
+    if(chk){ alternarChecklist(chk.closest('.card')); }
   });
 
   // Colar traz HTML arbitrário (Word, sites) direto pro DOM antes de qualquer
@@ -3868,12 +3948,13 @@
     // 1ª passada: estrutura. Seções criadas pelo editor não existem no HTML e
     // seções apagadas ainda existem — as duas coisas moram aqui mesmo, na
     // coleção content, pra não precisar de regra nova no Firestore.
-    const novas = [], apagadas = new Set(), midsApagados = new Set();
+    const novas = [], apagadas = new Set(), midsApagados = new Set(), formatoChecklist = new Map();
     snap.forEach(docSnap => {
       const v = docSnap.data();
       if(docSnap.id.startsWith('__sec:')) novas.push({ id: docSnap.id.slice(6), page: v.sectionPage, order: v.sectionOrder || 0 });
       else if(docSnap.id.startsWith('__del:')) apagadas.add(docSnap.id.slice(6));
       else if(docSnap.id.startsWith('__delmedia:')) midsApagados.add(docSnap.id.slice(11));
+      else if(docSnap.id.startsWith('__chk:')) formatoChecklist.set(docSnap.id.slice(6), !!v.cardChecklist);
     });
     novas.sort((a, b) => a.order - b.order).forEach(s => window.__cardRestore(s.id, s.page));
     apagadas.forEach(id => {
@@ -3883,6 +3964,14 @@
     // itens de galeria fixos no HTML que o editor apagou. A lista também vai pro
     // carregador sob demanda: sem isso, um item apagado voltaria assim que a
     // página dele fosse aberta.
+    // formato de checklist: vale pra seção nova e pra que já vinha no HTML,
+    // por isso pode tanto ligar quanto desligar o que o arquivo trazia
+    formatoChecklist.forEach((ehChecklist, cardId) => {
+      const card = document.querySelector('.card[data-card="' + CSS.escape(cardId) + '"]');
+      if(!card) return;
+      if(ehChecklist) card.dataset.check = '1'; else card.removeAttribute('data-check');
+    });
+
     window.__midsApagados = midsApagados;
     midsApagados.forEach(mid => {
       const item = document.querySelector('.gallery-item[data-mid="' + CSS.escape(mid) + '"]');
@@ -4003,6 +4092,16 @@
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
     await setDoc(doc(db, 'content', '__sec:' + id), {
       sectionPage: page, sectionOrder: order, updatedAt: serverTimestamp(), updatedBy: uid
+    });
+  };
+
+  // Formato de checklist da seção. Guarda o valor explícito (e não só a
+  // presença do doc) porque as seções que já vêm no HTML precisam poder ser
+  // desligadas também, não só ligadas.
+  window.__cardChecklistSave = async (cardId, ehChecklist) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await setDoc(doc(db, 'content', '__chk:' + cardId), {
+      cardChecklist: !!ehChecklist, updatedAt: serverTimestamp(), updatedBy: uid
     });
   };
 
