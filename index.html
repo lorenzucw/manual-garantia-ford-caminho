@@ -2727,6 +2727,43 @@
     document.querySelector('.content').scrollTo(0,0);
     window.scrollTo(0,0);
     setTimeout(safetyRevealCurrentPage, 700);
+    registrarNaUrl(id);
+  }
+
+  /* ---------- ENDEREÇO DA PÁGINA (link direto e botão voltar) ---------- */
+  // A hash guarda a página aberta: dá pra mandar o endereço de uma etapa pra
+  // alguém, e o botão voltar do navegador anda entre as páginas visitadas.
+  let voltandoPeloHistorico = false;
+
+  function idDaHash(){
+    const bruto = decodeURIComponent((location.hash || '').replace(/^#\/?/, '')).trim();
+    if(!bruto) return null;
+    const id = /^\d+$/.test(bruto) ? Number(bruto) : bruto;   // etapas são numéricas
+    return document.getElementById('page-' + id) ? id : null;
+  }
+
+  function registrarNaUrl(id){
+    if(voltandoPeloHistorico) return;   // quem mudou foi o histórico, não um clique
+    const alvo = '#/' + id;
+    if(location.hash === alvo) return;
+    // a primeira página não vira item de histórico, senão o primeiro "voltar"
+    // sairia do site em vez de andar entre as páginas
+    if(location.hash) history.pushState(null, '', alvo);
+    else history.replaceState(null, '', alvo);
+  }
+
+  window.addEventListener('popstate', () => {
+    const id = idDaHash();
+    if(id === null || editMode) return;
+    voltandoPeloHistorico = true;
+    showPage(id);
+    voltandoPeloHistorico = false;
+  });
+
+  // Abre direto a página do endereço, se houver uma válida.
+  function abrirPaginaInicial(){
+    const id = idDaHash();
+    showPage(id === null ? 0 : id);
   }
 
   // Move os indicadores deslizantes (barra lateral + faixa de etapas) até o
@@ -2935,7 +2972,7 @@
     wireSearch(document.getElementById('searchInput'), document.getElementById('searchResults'));
     wireSearch(document.getElementById('searchInputMobile'), document.getElementById('searchResultsMobile'));
     setupCardReveal();
-    showPage(0);
+    abrirPaginaInicial();
   };
 
   /* ---------- CARDS APARECENDO AO ROLAR ---------- */
