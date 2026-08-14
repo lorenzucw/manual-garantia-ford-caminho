@@ -224,6 +224,11 @@
   .file-name{display:block; font-size:14px; font-weight:600; color:var(--ink);}
   .file-desc{display:block; font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
   .file-go{flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ford-blue);}
+  /* linha = abrir (visualizar) + botão separado pra baixar e poder editar */
+  .file-row{display:flex; gap:8px; align-items:stretch;}
+  .file-row .file-item{flex:1; min-width:0;}
+  .file-dl{flex-shrink:0; width:46px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:10px; background:var(--tint-media-bg); color:var(--ink-soft); text-decoration:none; transition:border-color .15s, color .15s, background .15s;}
+  .file-dl:hover{border-color:var(--ford-blue); color:var(--ford-blue); background:var(--tint-blue-bg);}
   body:not(.edit-mode) .card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,30,70,.09);}
 
   /* aparecer ao rolar — o JS marca .revealed; sem JS/observer, .no-reveal-js
@@ -1950,7 +1955,7 @@
         <!-- PAGE MATERIAIS DE APOIO (referência, fora do Caminho) -->
         <section class="page" id="page-materiais">
           <div class="section-head"><div class="section-tag">↓</div><h1 class="page-title" data-cid="title-materiais">Materiais de Apoio</h1></div>
-          <p class="page-sub" data-cid="materiais-sub">Os arquivos que a equipe usa no dia a dia, sempre na versão mais recente. Os PDFs abrem numa aba nova; os de Excel e Word baixam, porque o navegador não consegue exibir esses formatos.</p>
+          <p class="page-sub" data-cid="materiais-sub">Os arquivos que a equipe usa no dia a dia, sempre na versão mais recente. Clique no nome pra abrir numa aba nova, ou na seta ao lado pra baixar e poder editar.</p>
           <div class="badge-row"><span class="badge role" data-cid="badge-materiais-1">Uso interno da Concessionária</span><span class="badge tool" data-cid="badge-materiais-2">PDF</span><span class="badge tool" data-cid="badge-materiais-3">Excel</span></div>
 
           <div class="card" data-card="materiais-caminho">
@@ -1959,26 +1964,38 @@
               <p>Documentos produzidos pela própria Concessionária, usados no dia a dia da garantia.</p>
             </div>
             <div class="file-list">
-              <a class="file-item" href="materiais/caminho/laudo-universal.xlsx" target="_blank" rel="noopener noreferrer">
+              <div class="file-row">
+                <a class="file-item" href="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Florenzucw.github.io%2Fmanual-garantia-ford-caminho%2Fmateriais%2Fcaminho%2Flaudo-universal.xlsx" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon xlsx">XLSX</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-laudo-nome">Laudo Universal</span><span class="file-desc" data-cid="mat-laudo-desc">Modelo de laudo técnico usado em qualquer tipo de reparo</span></span>
-                <span class="file-go">baixar ↓</span>
+                <span class="file-go">abrir ↗</span>
               </a>
-              <a class="file-item" href="materiais/caminho/tabela-manutencao.pdf" target="_blank" rel="noopener noreferrer">
+                <a class="file-dl" href="materiais/caminho/laudo-universal.xlsx" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
+              </div>
+              <div class="file-row">
+                <a class="file-item" href="materiais/caminho/tabela-manutencao.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-tabmanut-nome">Tabela de Manutenção</span><span class="file-desc" data-cid="mat-tabmanut-desc">Planos de revisão por modelo, em alta resolução</span></span>
                 <span class="file-go">abrir ↗</span>
               </a>
-              <a class="file-item" href="materiais/caminho/codigos-stars-equipe-claro.pdf" target="_blank" rel="noopener noreferrer">
+                <a class="file-dl" href="materiais/caminho/tabela-manutencao.pdf" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
+              </div>
+              <div class="file-row">
+                <a class="file-item" href="materiais/caminho/codigos-stars-equipe-claro.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-starsclaro-nome">Códigos STARS da equipe — versão clara</span><span class="file-desc" data-cid="mat-starsclaro-desc">Para imprimir ou consultar em tela clara</span></span>
                 <span class="file-go">abrir ↗</span>
               </a>
-              <a class="file-item" href="materiais/caminho/codigos-stars-equipe-escuro.pdf" target="_blank" rel="noopener noreferrer">
+                <a class="file-dl" href="materiais/caminho/codigos-stars-equipe-claro.pdf" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
+              </div>
+              <div class="file-row">
+                <a class="file-item" href="materiais/caminho/codigos-stars-equipe-escuro.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-starsescuro-nome">Códigos STARS da equipe — versão escura</span><span class="file-desc" data-cid="mat-starsescuro-desc">Mesma tabela, otimizada pra tela escura</span></span>
                 <span class="file-go">abrir ↗</span>
               </a>
+                <a class="file-dl" href="materiais/caminho/codigos-stars-equipe-escuro.pdf" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
+              </div>
             </div>
           </div>
 
@@ -1988,31 +2005,46 @@
               <p>Manuais e tabelas oficiais da Ford. Confira sempre a data no nome do arquivo antes de usar como referência.</p>
             </div>
             <div class="file-list">
-              <a class="file-item" href="materiais/ford/manual-garantia-brasil.docx" target="_blank" rel="noopener noreferrer">
+              <div class="file-row">
+                <a class="file-item" href="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Florenzucw.github.io%2Fmanual-garantia-ford-caminho%2Fmateriais%2Fford%2Fmanual-garantia-brasil.docx" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon docx">DOCX</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-manualgar-nome">Manual de Garantia Brasil</span><span class="file-desc" data-cid="mat-manualgar-desc">As regras oficiais que sustentam todo o Caminho da Garantia (Março/26)</span></span>
-                <span class="file-go">baixar ↓</span>
+                <span class="file-go">abrir ↗</span>
               </a>
-              <a class="file-item" href="materiais/ford/ows-manual-usuario.pdf" target="_blank" rel="noopener noreferrer">
+                <a class="file-dl" href="materiais/ford/manual-garantia-brasil.docx" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
+              </div>
+              <div class="file-row">
+                <a class="file-item" href="materiais/ford/ows-manual-usuario.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-owsuser-nome">OWS — Manual do Usuário</span><span class="file-desc" data-cid="mat-owsuser-desc">Guia completo do sistema, para automóveis (Outubro/25)</span></span>
                 <span class="file-go">abrir ↗</span>
               </a>
-              <a class="file-item" href="materiais/ford/ows-manual-acesso.pdf" target="_blank" rel="noopener noreferrer">
+                <a class="file-dl" href="materiais/ford/ows-manual-usuario.pdf" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
+              </div>
+              <div class="file-row">
+                <a class="file-item" href="materiais/ford/ows-manual-acesso.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-owsacesso-nome">OWS — Manual de Acesso</span><span class="file-desc" data-cid="mat-owsacesso-desc">Como solicitar e configurar o acesso ao OWS (Maio/23)</span></span>
                 <span class="file-go">abrir ↗</span>
               </a>
-              <a class="file-item" href="materiais/ford/reparacao-sg-padrao.xlsx" target="_blank" rel="noopener noreferrer">
+                <a class="file-dl" href="materiais/ford/ows-manual-acesso.pdf" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
+              </div>
+              <div class="file-row">
+                <a class="file-item" href="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Florenzucw.github.io%2Fmanual-garantia-ford-caminho%2Fmateriais%2Fford%2Freparacao-sg-padrao.xlsx" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon xlsx">XLSX</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-sgpadrao-nome">Reparação Pré-Definida (SG Padrão)</span><span class="file-desc" data-cid="mat-sgpadrao-desc">Códigos de solução já configurados pela Ford (Julho/26)</span></span>
-                <span class="file-go">baixar ↓</span>
+                <span class="file-go">abrir ↗</span>
               </a>
-              <a class="file-item" href="materiais/ford/margem-foc.xlsx" target="_blank" rel="noopener noreferrer">
+                <a class="file-dl" href="materiais/ford/reparacao-sg-padrao.xlsx" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
+              </div>
+              <div class="file-row">
+                <a class="file-item" href="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Florenzucw.github.io%2Fmanual-garantia-ford-caminho%2Fmateriais%2Fford%2Fmargem-foc.xlsx" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon xlsx">XLSX</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-margem-nome">Margem FoC</span><span class="file-desc" data-cid="mat-margem-desc">Tabela de margem atualizada (05/08/26)</span></span>
-                <span class="file-go">baixar ↓</span>
+                <span class="file-go">abrir ↗</span>
               </a>
+                <a class="file-dl" href="materiais/ford/margem-foc.xlsx" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
+              </div>
             </div>
           </div>
 
@@ -2022,9 +2054,9 @@
               <p>Planilha viva de acompanhamento — abre direto na versão online, sempre atualizada.</p>
             </div>
             <div class="file-list">
-              <a class="file-item" href="https://grupocaminho.sharepoint.com/:u:/r/sites/dep.garantia/Documentos%20Compartilhados/FORD/MAPA%20ACOMPANHAMENTO%20-%20FORD.url?d=w6d6ac3f3900f4c71a37d8b70c8114f1f&amp;csf=1&amp;web=1&amp;e=GWlqn2" target="_blank" rel="noopener noreferrer">
-                <span class="file-icon link">LINK</span>
-                <span class="file-text"><span class="file-name" data-cid="mat-mapa-nome">Mapa de Acompanhamento</span><span class="file-desc" data-cid="mat-mapa-desc">Abre no SharePoint da Caminho — é preciso estar logado na conta da empresa</span></span>
+              <a class="file-item" href="https://grupocaminho-my.sharepoint.com/:x:/r/personal/andre_cunha_caminhoveiculos_com_br/Documents/%C3%81rea%20de%20Trabalho/GARANTIA/MAPA%20DE%20ACOMPANHAMENTO%20-%20FORD.xlsx?d=wfbe2f516a4bc42718069a848f0d59446&amp;csf=1&amp;web=1&amp;e=ABVWWd" target="_blank" rel="noopener noreferrer">
+                <span class="file-icon xlsx">XLSX</span>
+                <span class="file-text"><span class="file-name" data-cid="mat-mapa-nome">Mapa de Acompanhamento</span><span class="file-desc" data-cid="mat-mapa-desc">Está no OneDrive do André — se pedir permissão, solicite o acesso por lá</span></span>
                 <span class="file-go">abrir ↗</span>
               </a>
             </div>
