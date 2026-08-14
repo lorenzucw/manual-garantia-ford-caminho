@@ -211,6 +211,34 @@
   body.edit-mode .card[data-card] > h3{padding-right:34px;}
   .card-del:hover{background:#e8484822; border-color:#e04848; color:#e04848;}
 
+  /* ---------- CHECKLISTS MARCÁVEIS ----------
+     A marcação fica no .card (data-check), nunca dentro da região editável: o
+     sanitizador recria os elementos e apagaria qualquer classe ou atributo. */
+  .card[data-check] [data-rich] ul, .card[data-check] [data-rich] ol{list-style:none; padding-left:0;}
+  .card[data-check] [data-rich] li{position:relative; padding-left:30px;}
+  body:not(.edit-mode) .card[data-check] [data-rich] li{cursor:pointer;}
+  .card[data-check] [data-rich] li::before{
+    content:''; position:absolute; left:0; top:.28em; width:17px; height:17px;
+    border:1.5px solid var(--line); border-radius:5px; background:var(--paper);
+    transition:background .13s, border-color .13s;
+  }
+  body:not(.edit-mode) .card[data-check] [data-rich] li:hover::before{border-color:var(--ford-blue);}
+  .card[data-check] [data-rich] li.marcado::before{background:var(--ford-blue); border-color:var(--ford-blue);}
+  .card[data-check] [data-rich] li.marcado::after{
+    content:''; position:absolute; left:5.5px; top:.5em; width:5px; height:9px;
+    border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);
+  }
+  .card[data-check] [data-rich] li.marcado{color:var(--ink-soft); text-decoration:line-through; text-decoration-color:var(--line);}
+  .check-clear{
+    position:absolute; top:12px; right:12px; display:none; align-items:center; gap:5px;
+    font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em;
+    padding:5px 9px; border:1px solid var(--line); border-radius:7px;
+    background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:color .13s, border-color .13s;
+  }
+  body:not(.edit-mode) .card[data-check].tem-marca .check-clear{display:flex;}
+  .check-clear:hover{color:var(--ford-blue); border-color:var(--ford-blue);}
+  .card[data-check] > h3{padding-right:104px;}
+
   /* ---------- LISTA DE ARQUIVOS PRA BAIXAR (Materiais de Apoio) ---------- */
   .file-list{display:flex; flex-direction:column; gap:8px;}
   .file-item{display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--tint-media-bg); text-decoration:none; color:inherit; transition:border-color .15s, background .15s, transform .18s cubic-bezier(.34,1.56,.64,1);}
@@ -1011,7 +1039,7 @@
             </div>
           </div>
 
-          <div class="card" data-card="step3-dados">
+          <div class="card" data-card="step3-dados" data-check="1">
             <h3 data-cid="step3-dados-h3">Dados obrigatórios na OS de garantia</h3>
             <div class="card-body" data-cid="step3-dados-body" data-rich="1">
               <ul>
@@ -1069,7 +1097,7 @@
             </div>
           </div>
 
-          <div class="card" data-card="step4-resp">
+          <div class="card" data-card="step4-resp" data-check="1">
             <h3 data-cid="step4-resp-h3">Responsabilidade do técnico</h3>
             <div class="card-body" data-cid="step4-resp-body" data-rich="1">
               <ul>
@@ -1095,7 +1123,7 @@
             </div>
           </div>
 
-          <div class="card" data-card="step4-check">
+          <div class="card" data-card="step4-check" data-check="1">
             <h3 data-cid="step4-check-h3">Checklist de apontamento</h3>
             <div class="card-body" data-cid="step4-check-body" data-rich="1">
               <ol>
@@ -1534,7 +1562,7 @@
             </div>
           </div>
 
-          <div class="card" data-card="crpgabrir-oquevai">
+          <div class="card" data-card="crpgabrir-oquevai" data-check="1">
             <h3 data-cid="crpgabrir-oquevai-h3">O que anexar</h3>
             <div class="card-body" data-cid="crpgabrir-oquevai-body" data-rich="1">
               <ul>
@@ -1804,7 +1832,7 @@
             </div>
           </div>
 
-          <div class="card" data-card="descarteabrir-oquevai">
+          <div class="card" data-card="descarteabrir-oquevai" data-check="1">
             <h3 data-cid="descarteabrir-oquevai-h3">O que anexar</h3>
             <div class="card-body" data-cid="descarteabrir-oquevai-body" data-rich="1">
               <ul>
@@ -2730,6 +2758,76 @@
     registrarNaUrl(id);
   }
 
+  /* ---------- CHECKLISTS MARCÁVEIS ----------
+     A marcação é do aparelho de quem usa (localStorage), não do conteúdo do
+     site: cada um vai marcando o seu carro sem mexer no que os outros veem. */
+  const CHAVE_CHECK = 'check:';
+
+  function itensDoCheck(card){
+    const regiao = card.querySelector('[data-rich]');
+    return regiao ? Array.from(regiao.querySelectorAll('li')) : [];
+  }
+
+  function lerMarcados(cardId){
+    try{ return new Set(JSON.parse(localStorage.getItem(CHAVE_CHECK + cardId) || '[]')); }
+    catch(e){ return new Set(); }
+  }
+
+  function gravarMarcados(cardId, conjunto){
+    try{
+      if(conjunto.size) localStorage.setItem(CHAVE_CHECK + cardId, JSON.stringify([...conjunto]));
+      else localStorage.removeItem(CHAVE_CHECK + cardId);
+    }catch(e){ /* aba anônima ou armazenamento cheio: segue sem persistir */ }
+  }
+
+  // Reaplica as marcas na tela. Precisa rodar de novo depois de salvar uma
+  // edição, porque o sanitizador devolve o HTML limpo, sem as classes.
+  function pintarChecks(escopo){
+    (escopo || document).querySelectorAll('.card[data-check]').forEach(card => {
+      const marcados = lerMarcados(card.dataset.card);
+      itensDoCheck(card).forEach((li, i) => li.classList.toggle('marcado', marcados.has(i)));
+      card.classList.toggle('tem-marca', marcados.size > 0);
+    });
+  }
+
+  window.__pintarChecks = pintarChecks;
+
+  window.__prepararChecks = () => {
+    document.querySelectorAll('.card[data-check]').forEach(card => {
+      if(card.querySelector(':scope > .check-clear')) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'check-clear';
+      btn.textContent = 'limpar';
+      btn.title = 'Desmarcar tudo — use ao começar outro veículo';
+      card.appendChild(btn);
+    });
+    pintarChecks();
+  };
+
+  document.addEventListener('click', (e) => {
+    if(editMode) return;   // na edição o clique é pra escrever, não pra marcar
+
+    const limpar = e.target.closest('.check-clear');
+    if(limpar){
+      const card = limpar.closest('.card[data-check]');
+      gravarMarcados(card.dataset.card, new Set());
+      pintarChecks(card.parentElement);
+      return;
+    }
+
+    const li = e.target.closest('.card[data-check] [data-rich] li');
+    if(!li) return;
+    const card = li.closest('.card[data-check]');
+    const itens = itensDoCheck(card);
+    const i = itens.indexOf(li);
+    if(i < 0) return;
+    const marcados = lerMarcados(card.dataset.card);
+    if(marcados.has(i)) marcados.delete(i); else marcados.add(i);
+    gravarMarcados(card.dataset.card, marcados);
+    pintarChecks(card.parentElement);
+  });
+
   /* ---------- ENDEREÇO DA PÁGINA (link direto e botão voltar) ---------- */
   // A hash guarda a página aberta: dá pra mandar o endereço de uma etapa pra
   // alguém, e o botão voltar do navegador anda entre as páginas visitadas.
@@ -2968,6 +3066,7 @@
     buildOverview();
     window.__ensureCardControls(); // lixeira em toda seção, inclusive as restauradas do banco
     window.__ensureGalleryControls(); // lixeira em todo print/vídeo, inclusive os restaurados do banco
+    window.__prepararChecks(); // botão limpar + marcas guardadas no aparelho
     buildSearchIndex(); // precisa rodar depois dos overrides de conteúdo já aplicados no DOM
     wireSearch(document.getElementById('searchInput'), document.getElementById('searchResults'));
     wireSearch(document.getElementById('searchInputMobile'), document.getElementById('searchResultsMobile'));
@@ -3517,6 +3616,8 @@
       label.textContent = 'Editar conteúdo';
       toggle.disabled = false;
       document.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', 'false'));
+      // o texto pode ter voltado limpo do sanitizador, levando junto as marcas
+      if(window.__pintarChecks) window.__pintarChecks();
     };
 
     if(pairs.length === 0){ leaveEditMode(); return; }
