@@ -2694,6 +2694,8 @@
     const activePageEl = document.getElementById('page-'+id);
     activePageEl.classList.add('active');
     observeCardsInPage(activePageEl);
+    // busca as imagens desta página (uma vez por galeria, por sessão)
+    if(window.__carregarMidiaDaPagina) window.__carregarMidiaDaPagina(activePageEl);
 
     document.querySelectorAll('.road-step').forEach(s => s.classList.remove('active'));
     const roadEl = document.querySelector('.road-step[data-idx="'+id+'"]');
@@ -3404,6 +3406,9 @@
     const grid = document.querySelector('.gallery-grid[data-gallery="' + CSS.escape(gallery) + '"]');
     if(!grid) return null;
     const item = buildGalleryItem(mid, type, type === 'video' ? 'Novo vídeo' : 'Novo print');
+    // a mídia chega depois do login; se a edição já estiver ligada, a legenda
+    // do item recém-criado precisa nascer editável junto com as outras
+    if(editMode) item.querySelector('.cap-text').setAttribute('contenteditable', 'true');
     grid.insertBefore(item, grid.querySelector('.gallery-add'));
     return item;
   };
@@ -3515,7 +3520,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, deleteDoc, getDocs, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, deleteDoc, getDoc, getDocs, collection, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
   // Config web do Firebase — não é segredo (a segurança vem das regras do Firestore, não do apiKey).
   const firebaseConfig = {
@@ -3660,9 +3665,8 @@
     userBadgeMobile.innerHTML = badgeHtml;
 
     try{
-      // mídia primeiro: ela recria itens de galeria que só existem no banco, e
-      // as legendas desses itens só entram se os elementos já estiverem no DOM.
-      await loadMediaOverrides();
+      // só o conteúdo entra no login; as imagens (base64, pesadas) ficam pro
+      // momento em que a página delas for aberta.
       await loadContentOverrides();
     } catch(err){
       console.error('Falha ao carregar conteúdo salvo do Firestore:', err);
@@ -3696,8 +3700,10 @@
       const card = document.querySelector('.card[data-card="' + CSS.escape(id) + '"]');
       if(card) card.remove();
     });
-    // itens de galeria fixos no HTML que o editor apagou — os criados no editor
-    // já sumiram sozinhos (o media doc foi excluído, loadMediaOverrides nem os vê).
+    // itens de galeria fixos no HTML que o editor apagou. A lista também vai pro
+    // carregador sob demanda: sem isso, um item apagado voltaria assim que a
+    // página dele fosse aberta.
+    window.__midsApagados = midsApagados;
     midsApagados.forEach(mid => {
       const item = document.querySelector('.gallery-item[data-mid="' + CSS.escape(mid) + '"]');
       if(item) item.remove();
@@ -3726,27 +3732,74 @@
     });
   }
 
-  async function loadMediaOverrides(){
-    const snap = await getDocs(collection(db, 'media'));
-    snap.forEach(docSnap => {
-      const data = docSnap.data();
-      // item existe no HTML? senão, foi criado pelo modo de edição e só vive no
-      // banco — recria na galeria que ficou registrada junto com a mídia.
-      const item = document.querySelector('.gallery-item[data-mid="' + CSS.escape(docSnap.id) + '"]')
-        || (data.gallery ? window.__galleryRestore(docSnap.id, data.type, data.gallery) : null);
-      if(!item) return;
-      const thumb = item.querySelector('.thumb');
-      if(data.type === 'image' && data.dataUrl){
-        thumb.innerHTML = '<img src="' + data.dataUrl + '" alt="">';
-        item.classList.add('has-media');
-      } else if(data.type === 'video' && data.youtubeId){
-        item.dataset.yt = data.youtubeId;
-        thumb.innerHTML = '<img src="https://img.youtube.com/vi/' + data.youtubeId + '/hqdefault.jpg" alt="">' +
-          '<div class="play-mini overlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>';
-        item.classList.add('has-media');
-      }
-    });
+  // As imagens vivem no Firestore como base64, então baixar a coleção inteira no
+  // login custa caro e piora a cada print novo. Aqui a mídia é buscada só quando
+  // a página dela abre, e cada galeria é buscada uma única vez por sessão.
+  const galeriasCarregadas = new Set();
+
+  function aplicarMidia(item, data){
+    const thumb = item.querySelector('.thumb');
+    if(!thumb) return;
+    if(data.type === 'image' && data.dataUrl){
+      thumb.innerHTML = '<img src="' + data.dataUrl + '" alt="" loading="lazy">';
+      item.classList.add('has-media');
+    } else if(data.type === 'video' && data.youtubeId){
+      item.dataset.yt = data.youtubeId;
+      thumb.innerHTML = '<img src="https://img.youtube.com/vi/' + data.youtubeId + '/hqdefault.jpg" alt="" loading="lazy">' +
+        '<div class="play-mini overlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>';
+      item.classList.add('has-media');
+    }
   }
+
+  // Item recriado agora não passou pelo loadContentOverrides, então a legenda
+  // salva precisa ser aplicada aqui — e registrada na baseline, senão sair da
+  // edição acharia que ela mudou.
+  function aplicarLegendaSalva(mid){
+    const cid = mid + '-cap';
+    const salvo = window.__contentOverrides ? window.__contentOverrides[cid] : undefined;
+    const el = document.querySelector('[data-cid="' + CSS.escape(cid) + '"]');
+    if(!el) return;
+    if(typeof salvo === 'string') el.textContent = salvo;
+    if(window.__contentBaseline) window.__contentBaseline.set(cid, el.textContent);
+  }
+
+  window.__carregarMidiaDaPagina = async (pageEl) => {
+    if(!pageEl) return;
+    const grids = Array.from(pageEl.querySelectorAll('.gallery-grid[data-gallery]'))
+      .filter(g => !galeriasCarregadas.has(g.dataset.gallery));
+    if(!grids.length) return;
+    const idsGaleria = grids.map(g => g.dataset.gallery);
+    idsGaleria.forEach(g => galeriasCarregadas.add(g));
+
+    // itens fixos no HTML: busca cada doc pelo id
+    const fixos = grids.flatMap(g => Array.from(g.querySelectorAll('.gallery-item[data-mid]')).map(i => i.dataset.mid));
+    // itens criados no editor: só existem no banco, achados pelo id da galeria
+    const consultas = [
+      ...fixos.map(mid => getDoc(doc(db, 'media', mid)).then(s => s.exists() ? [{ id: mid, data: s.data() }] : []).catch(() => [])),
+      idsGaleria.length
+        ? getDocs(query(collection(db, 'media'), where('gallery', 'in', idsGaleria.slice(0, 30))))
+            .then(s => s.docs.map(d => ({ id: d.id, data: d.data() }))).catch(() => [])
+        : Promise.resolve([])
+    ];
+
+    const vistos = new Set();
+    for(const lote of await Promise.all(consultas)){
+      for(const { id, data } of lote){
+        if(vistos.has(id) || (window.__midsApagados && window.__midsApagados.has(id))) continue;
+        vistos.add(id);
+        let item = document.querySelector('.gallery-item[data-mid="' + CSS.escape(id) + '"]');
+        if(!item && data.gallery){
+          item = window.__galleryRestore(id, data.type, data.gallery);
+          if(item) aplicarLegendaSalva(id);
+        }
+        if(item) aplicarMidia(item, data);
+      }
+    }
+  };
+
+  // Seções apagadas continuam valendo pra galeria: um item marcado como apagado
+  // não pode voltar quando a página dele for aberta.
+  window.__midsApagados = new Set();
 
   window.__contentSaveAll = async (pairs) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
