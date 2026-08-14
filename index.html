@@ -660,10 +660,10 @@
       <div class="sidebar-group">
         <div class="sidebar-group-label" data-cid="nav-label-ferramentas">Ferramentas Ford</div>
         <div class="tool-list">
-          <div class="tool-item"><span data-cid="nav-tool-dealer">Dealer</span> <span class="soon">em breve</span></div>
+          <div class="tool-item active-link" data-idx="dealer" role="button" tabindex="0" onclick="showPage('dealer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('dealer');}"><span data-cid="nav-tool-dealer">Dealer</span> <span class="go">abrir →</span></div>
           <div class="tool-item active-link" data-idx="ows" role="button" tabindex="0" onclick="showPage('ows')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('ows');}"><span data-cid="nav-tool-ows">OWS</span> <span class="go">abrir →</span></div>
-          <div class="tool-item"><span data-cid="nav-tool-pts">PTS</span> <span class="soon">em breve</span></div>
-          <div class="tool-item"><span data-cid="nav-tool-agenda">Agenda</span> <span class="soon">em breve</span></div>
+          <div class="tool-item active-link" data-idx="pts" role="button" tabindex="0" onclick="showPage('pts')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('pts');}"><span data-cid="nav-tool-pts">PTS</span> <span class="go">abrir →</span></div>
+          <div class="tool-item active-link" data-idx="agenda" role="button" tabindex="0" onclick="showPage('agenda')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('agenda');}"><span data-cid="nav-tool-agenda">Agenda</span> <span class="go">abrir →</span></div>
           <div class="tool-item"><span data-cid="nav-tool-catalogo">Catálogo</span> <span class="soon">em breve</span></div>
           <div class="tool-item active-link" data-idx="holmes" role="button" tabindex="0" onclick="showPage('holmes')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('holmes');}"><span data-cid="nav-tool-holmes">Holmes</span> <span class="go">abrir →</span></div>
         </div>
@@ -792,7 +792,7 @@
                 <li>Prints das telas dos sistemas envolvidos</li>
                 <li>Vídeo narrado mostrando o passo a passo na prática</li>
               </ul>
-              <p>O <b>OWS</b> e o <b>Holmes</b> já têm módulos próprios na barra lateral. Dealer, PTS, Agenda e Catálogo entram em breve.</p>
+              <p>Dealer, OWS, PTS, Agenda e Holmes já têm módulos próprios na barra lateral. O Catálogo entra em breve.</p>
             </div>
           </div>
         </section>
@@ -2189,6 +2189,220 @@
           </div>
         </section>
 
+        <!-- PAGE DEALER -->
+        <section class="page" id="page-dealer">
+          <div class="section-head"><div class="section-tag">DN</div><h1 class="page-title" data-cid="title-dealer">Dealer Net — Sistema da Concessionária</h1></div>
+          <p class="page-sub" data-cid="dealer-sub">O sistema de gestão da Caminho. É onde nasce a Ordem de Serviço, onde o técnico aponta o tempo e onde saem as notas fiscais — inclusive as de remessa e descarte de peça.</p>
+          <div class="badge-row"><span class="badge role">Usado por: toda a Oficina</span><span class="badge tool">DMS da Concessionária</span></div>
+
+          <div class="card" data-card="dealer-acessar">
+            <h3 data-cid="dealer-acessar-h3">Como acessar</h3>
+            <div class="card-body" data-cid="dealer-acessar-body" data-rich="1">
+              <p>Endereço: <b>caminhoveiculos.dealernetworkflow.com.br</b></p>
+              <p>Entra com o usuário da Concessionária (o mesmo do seu nome de rede). A loja em que você está logado aparece no rodapé, à direita — confira antes de abrir qualquer OS.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="dealer-menu">
+            <h3 data-cid="dealer-menu-h3">Os menus do topo</h3>
+            <div class="card-body" data-cid="dealer-menu-body" data-rich="1">
+              <p>A barra superior divide o sistema por área: <b>Administração</b>, <b>Cadastro</b>, <b>Veículo</b>, <b>Financeiro</b>, <b>Oficina</b>, <b>Produtos</b>, <b>Integração</b>, <b>Meus Relatórios</b> e <b>CRM</b>. Pra garantia, os que interessam são <b>Oficina</b> e <b>Cadastro</b>.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="dealer-oficina">
+            <h3 data-cid="dealer-oficina-h3">Menu Oficina — o que se usa na garantia</h3>
+            <div class="card-body" data-cid="dealer-oficina-body" data-rich="1">
+              <p>É o menu do dia a dia da garantia:</p>
+            </div>
+            <table>
+              <tr><th data-cid="dealer-oficina-th1">Item</th><th data-cid="dealer-oficina-th2">Pra que serve</th></tr>
+              <tr><td data-cid="dealer-oficina-td1">Ordem de Serviço/Orçamento</td><td data-cid="dealer-oficina-td2">Abrir e editar a OS — o ponto de partida da etapa 03</td></tr>
+              <tr><td data-cid="dealer-oficina-td3">Marcação de Tempo da OS</td><td data-cid="dealer-oficina-td4">O apontamento do técnico, manual ou via leitor</td></tr>
+              <tr><td data-cid="dealer-oficina-td5">Garantia</td><td data-cid="dealer-oficina-td6">Consultas e lançamentos ligados à garantia</td></tr>
+              <tr><td data-cid="dealer-oficina-td7">Nota Fiscal</td><td data-cid="dealer-oficina-td8">Emissão das notas — inclui a de remessa e a de descarte</td></tr>
+              <tr><td data-cid="dealer-oficina-td9">Requisitar Produto da OS</td><td data-cid="dealer-oficina-td10">Requisição de peça vinculada ao tempo apontado</td></tr>
+              <tr><td data-cid="dealer-oficina-td11">Reclamação de Cliente</td><td data-cid="dealer-oficina-td12">Registro da queixa do cliente</td></tr>
+              <tr><td data-cid="dealer-oficina-td13">Agendamento</td><td data-cid="dealer-oficina-td14">Agenda da oficina dentro do próprio Dealer</td></tr>
+            </table>
+          </div>
+
+          <div class="card" data-card="dealer-tempo">
+            <h3 data-cid="dealer-tempo-h3">Marcação de tempo</h3>
+            <div class="card-body" data-cid="dealer-tempo-body" data-rich="1">
+              <p>Em <b>Oficina → Marcação de Tempo da OS</b> existem duas formas: <b>Marcação de Tempo Manual</b> e <b>Marcação de Tempo via Leitor</b>.</p>
+              <p>Na tela manual você busca pelo número da OS e enxerga os serviços por <b>TMO</b>, podendo filtrar entre autorizados e não autorizados. É esse apontamento que sustenta o pagamento da mão de obra na garantia — veja o checklist na etapa 04.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="dealer-cadastro">
+            <h3 data-cid="dealer-cadastro-h3">Cadastro → Oficina → Garantia</h3>
+            <div class="card-body" data-cid="dealer-cadastro-body" data-rich="1">
+              <p>É onde ficam as tabelas que alimentam a garantia no sistema:</p>
+              <ul>
+                <li><b>SG Padrão</b> — os códigos de solução pré-definidos pela Ford</li>
+                <li><b>Defeito</b>, <b>Dano</b> e <b>Posição</b> — a codificação do problema</li>
+                <li><b>Status Garantia</b> e <b>Estorno</b> — acompanhamento e devoluções</li>
+                <li><b>Reclamação do Cliente</b> e <b>Dados de Terceiro Garantia</b></li>
+              </ul>
+              <p>No mesmo menu Cadastro fica o <b>T.M.O.</b>, com os tempos por referência de peça.</p>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="dealer-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="dealer-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE PTS -->
+        <section class="page" id="page-pts">
+          <div class="section-head"><div class="section-tag">PTS</div><h1 class="page-title" data-cid="title-pts">PTS — Professional Technician Society</h1></div>
+          <p class="page-sub" data-cid="pts-sub">O sistema técnico da Ford. É onde se consulta a cobertura de garantia do chassi, os boletins técnicos e os tempos de reparo — a fonte que sustenta o diagnóstico e o orçamento.</p>
+          <div class="badge-row"><span class="badge role">Usado por: Técnico e Consultor(a) de Garantia</span><span class="badge holmes">Login SSO Ford (2 etapas)</span></div>
+
+          <div class="card" data-card="pts-acessar">
+            <h3 data-cid="pts-acessar-h3">Como acessar</h3>
+            <div class="card-body" data-cid="pts-acessar-body" data-rich="1">
+              <p>Endereço: <b>fordtechservice.dealerconnection.com</b></p>
+              <p>O login é o mesmo SSO Ford do OWS: usuário <code>usuario@b2bford.com</code>, senha e aprovação no <b>Microsoft Authenticator</b>.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="pts-home">
+            <h3 data-cid="pts-home-h3">A tela inicial</h3>
+            <div class="card-body" data-cid="pts-home-body" data-rich="1">
+              <p>A home concentra o que a Ford quer que você leia antes de trabalhar:</p>
+              <ul>
+                <li><b>Alertas</b> — problemas conhecidos e o que fazer</li>
+                <li><b>O que há de novo</b> — atualizações recentes (ex.: versões do FDRS)</li>
+                <li><b>OASIS Mensagens de difusão</b> — boletins, campanhas e recalls novos, cada um com seu código (GSB, FSA)</li>
+                <li><b>Pesquisar</b> — busca direta por número de artigo</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" data-card="pts-vin">
+            <h3 data-cid="pts-vin-h3">Consulta por chassi (relatório OASIS)</h3>
+            <div class="card-body" data-cid="pts-vin-body" data-rich="1">
+              <p>Em <b>ID do veículo</b> você digita o VIN e recebe o relatório OASIS — é a consulta mais importante da garantia. Ele traz:</p>
+              <ul>
+                <li><b>Informação de garantia geral</b> — data inicial da garantia, data de produção e meses em manutenção</li>
+                <li><b>Cobertura de garantia</b> e <b>coberturas estendidas</b></li>
+                <li><b>Histórico de reparo na garantia</b> do veículo</li>
+                <li>Dados de fábrica: motor, transmissão, relação de eixo, cor e acabamento</li>
+              </ul>
+              <p>No rodapé do relatório ficam os atalhos para <b>Solicitação para Assistência Técnica</b>, <b>Aprovação prévia</b>, <b>Relatar uma avaria (GCR)</b> e <b>SSSC</b>.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="pts-boletins">
+            <h3 data-cid="pts-boletins-h3">Boletins e tempos de reparo</h3>
+            <div class="card-body" data-cid="pts-boletins-body" data-rich="1">
+              <p>Dois menus do topo resolvem o resto do diagnóstico:</p>
+              <ul>
+                <li><b>TSB/GSB/SSM</b> — os boletins técnicos que precisam ser conferidos antes de orçar (citados na etapa 04)</li>
+                <li><b>TPR</b> — os tempos padrão de reparo, com busca por <b>número da operação</b>, <b>número da peça</b>, <b>seção</b> ou <b>palavra</b></li>
+              </ul>
+              <p>Há ainda <b>diagnóstico</b> (histórico do veículo, dados de fábrica, software), <b>Fiação</b>, <b>Dicas de serviço</b> e a barra de <b>Assistência técnica</b>.</p>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="pts-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="pts-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE AGENDA -->
+        <section class="page" id="page-agenda">
+          <div class="section-head"><div class="section-tag">AGD</div><h1 class="page-title" data-cid="title-agenda">Agenda Ford</h1></div>
+          <p class="page-sub" data-cid="agenda-sub">A agenda oficial da Ford para a oficina. É por onde o cliente marca o serviço e onde a Concessionária organiza a programação — inclusive dos atendimentos que virarão garantia.</p>
+          <div class="badge-row"><span class="badge role">Usado por: Recepção e Consultor(a) Técnico(a)</span><span class="badge holmes">Login SSO Ford (2 etapas)</span></div>
+
+          <div class="card" data-card="agenda-acessar">
+            <h3 data-cid="agenda-acessar-h3">Como acessar</h3>
+            <div class="card-body" data-cid="agenda-acessar-body" data-rich="1">
+              <p>Endereço: <b>dealer.agenda.ford.com</b></p>
+              <p>O login é o SSO Ford, igual ao OWS e ao PTS: usuário <code>usuario@b2bford.com</code>, senha e aprovação no <b>Microsoft Authenticator</b> (aparece um número na tela pra confirmar no app).</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="agenda-menu">
+            <h3 data-cid="agenda-menu-h3">Os menus do topo</h3>
+            <div class="card-body" data-cid="agenda-menu-body" data-rich="1">
+              <p><b>Atendimento</b>, <b>Administração</b>, <b>Agendamentos</b>, <b>Concessionária</b> e <b>AlertaDN</b>. O trabalho do dia a dia mora em <b>Agendamentos</b>.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="agenda-agendamentos">
+            <h3 data-cid="agenda-agendamentos-h3">Menu Agendamentos</h3>
+            <div class="card-body" data-cid="agenda-agendamentos-body" data-rich="1">
+              <p>É onde se organiza a oficina:</p>
+            </div>
+            <table>
+              <tr><th data-cid="agenda-ag-th1">Item</th><th data-cid="agenda-ag-th2">Pra que serve</th></tr>
+              <tr><td data-cid="agenda-ag-td1">Gerenciar Agendamentos</td><td data-cid="agenda-ag-td2">Ver, alterar e confirmar os agendamentos</td></tr>
+              <tr><td data-cid="agenda-ag-td3">Agendamento Xpress</td><td data-cid="agenda-ag-td4">Marcação rápida de serviços expressos</td></tr>
+              <tr><td data-cid="agenda-ag-td5">Agendamento da Oficina (Beta)</td><td data-cid="agenda-ag-td6">Versão nova da tela de agendamento</td></tr>
+              <tr><td data-cid="agenda-ag-td7">Programação Oficina</td><td data-cid="agenda-ag-td8">Capacidade e distribuição dos horários</td></tr>
+              <tr><td data-cid="agenda-ag-td9">Histórico / Histórico de Revisão</td><td data-cid="agenda-ag-td10">O que já passou pela oficina, incluindo revisões</td></tr>
+              <tr><td data-cid="agenda-ag-td11">Gerenciar Clientes / Veículos</td><td data-cid="agenda-ag-td12">Cadastro usado no agendamento — o mesmo que se confere na etapa 01</td></tr>
+              <tr><td data-cid="agenda-ag-td13">Experiências Remotas</td><td data-cid="agenda-ag-td14">Atendimentos com leva e traz e afins</td></tr>
+            </table>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="agenda-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="agenda-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
       </div>
     </main>
   </div>
@@ -2372,8 +2586,9 @@
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Materiais de Apoio</b>';
     } else if(id === 'ows'){
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Ferramentas Ford</b>' + sep + '<b>OWS</b>';
-    } else if(id === 'holmes'){
-      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Ferramentas Ford</b>' + sep + '<b>Holmes</b>';
+    } else if(['holmes','dealer','pts','agenda'].includes(id)){
+      const nomesFerramenta = { holmes:'Holmes', dealer:'Dealer Net', pts:'PTS', agenda:'Agenda Ford' };
+      crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep + '<b>Ferramentas Ford</b>' + sep + '<b>' + nomesFerramenta[id] + '</b>';
     } else if(id === 'sub'){
       crumb.innerHTML = '<button class="crumb-link" onclick="showPage(0)">Manual</button>' + sep +
         '<button class="crumb-link" onclick="showPage(5)">Submissão da Solicitação</button>' + sep +
@@ -2440,7 +2655,7 @@
   let searchIndex = [];
   function buildSearchIndex(){
     searchIndex = [];
-    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','materiais','ows','holmes','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall','sub-cortesia',
+    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','materiais','ows','holmes','dealer','pts','agenda','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall','sub-cortesia',
       'crpg','crpg-status','crpg-holmes-abrir','crpg-nota','crpg-holmes-finalizar',
       'descarte','descarte-status','descarte-holmes-abrir','descarte-nota','descarte-holmes-finalizar'];
     pageIds.forEach(i => {
