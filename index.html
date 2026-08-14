@@ -357,6 +357,10 @@
   }
   body.edit-mode .gallery-item.has-media .thumb::after{content:'trocar';}
   .gallery-item .thumb img, .gallery-item .thumb video{width:100%; height:100%; object-fit:cover;}
+  /* vídeo hospedado fora: sem miniatura possível, então o thumb vira um atalho */
+  .gallery-item.externo .thumb{flex-direction:column; gap:7px; background:var(--tint-blue-bg);}
+  .gallery-item.externo .thumb .play-mini{width:34px; height:34px; border-radius:50%; background:var(--ford-blue); display:flex; align-items:center; justify-content:center;}
+  .thumb-ext{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--ford-blue);}
   body.edit-mode .cap-text{outline:1.5px dashed var(--tint-blue-border); outline-offset:2px; border-radius:4px; cursor:text;}
   body.edit-mode .cap-text:focus{outline:1.5px solid var(--ford-blue); background:#f5f9ff;}
   body.edit-mode .gallery-add{cursor:pointer; color:var(--ford-blue); border-color:var(--ford-blue);}
@@ -3287,10 +3291,28 @@
   // engoliria o clique e tocaria o vídeo dentro da miniatura).
   function applyVideoToItem(item, ytId){
     item.dataset.yt = ytId;
+    delete item.dataset.url;
     item.querySelector('.thumb').innerHTML =
-      '<img src="https://img.youtube.com/vi/'+ytId+'/hqdefault.jpg" alt="">' +
+      '<img src="https://img.youtube.com/vi/'+ytId+'/hqdefault.jpg" alt="" loading="lazy">' +
       '<div class="play-mini overlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>';
     item.classList.add('has-media');
+  }
+
+  // Vídeo hospedado fora do YouTube (SharePoint, Stream, Drive). Não dá pra
+  // gerar miniatura nem embutir — esses serviços exigem login e recusam iframe —
+  // então o item vira um atalho que abre numa aba nova.
+  function applyVideoLinkToItem(item, url){
+    item.dataset.url = url;
+    delete item.dataset.yt;
+    item.querySelector('.thumb').innerHTML =
+      '<div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>' +
+      '<span class="thumb-ext">abre em nova aba ↗</span>';
+    item.classList.add('has-media', 'externo');
+  }
+
+  function ehUrlSegura(u){
+    try{ const p = new URL(u); return p.protocol === 'https:' || p.protocol === 'http:'; }
+    catch(e){ return false; }
   }
 
   document.addEventListener('click', (e) => {
@@ -3298,20 +3320,29 @@
     if(!thumb) return;
     const item = thumb.closest('.gallery-item');
 
-    // Fora do modo de edição, clicar numa mídia já preenchida abre o lightbox.
+    // Fora do modo de edição, clicar numa mídia já preenchida abre o lightbox —
+    // menos vídeo de fora, que não embute e por isso vai pra uma aba nova.
     if(!editMode){
+      if(item.dataset.url){ window.open(item.dataset.url, '_blank', 'noopener,noreferrer'); return; }
       if(item.classList.contains('has-media')) openLightbox(item);
       return;
     }
 
     if(item.classList.contains('video')){
-      const ytInput = prompt('Cole o link (ou ID) do vídeo do YouTube — suba como "não listado" antes:');
-      if(!ytInput) return;
-      const ytId = extractYoutubeId(ytInput.trim());
-      if(!ytId){ alert('Não consegui identificar o ID do vídeo nesse link.'); return; }
-      applyVideoToItem(item, ytId);
+      const entrada = prompt('Cole o link do vídeo.\n\nPode ser do SharePoint/Stream da Caminho (recomendado pra vídeo com dado de cliente) ou do YouTube não listado.');
+      if(!entrada) return;
+      const texto = entrada.trim();
       if(!item.dataset.mid) item.dataset.mid = newMediaId();
-      if(window.__mediaSaveVideo) window.__mediaSaveVideo(item.dataset.mid, ytId, galleryOf(item)).catch(err => alert('Não consegui salvar o vídeo: ' + err.message));
+      const ytId = extractYoutubeId(texto);
+      if(ytId){
+        applyVideoToItem(item, ytId);
+        if(window.__mediaSaveVideo) window.__mediaSaveVideo(item.dataset.mid, ytId, galleryOf(item)).catch(err => alert('Não consegui salvar o vídeo: ' + err.message));
+      } else if(ehUrlSegura(texto)){
+        applyVideoLinkToItem(item, texto);
+        if(window.__mediaSaveVideoLink) window.__mediaSaveVideoLink(item.dataset.mid, texto, galleryOf(item)).catch(err => alert('Não consegui salvar o vídeo: ' + err.message));
+      } else {
+        alert('Não reconheci esse link. Cole o endereço completo, começando com https://');
+      }
     } else {
       currentThumb = thumb;
       fileInputImg.click();
@@ -3748,6 +3779,11 @@
       thumb.innerHTML = '<img src="https://img.youtube.com/vi/' + data.youtubeId + '/hqdefault.jpg" alt="" loading="lazy">' +
         '<div class="play-mini overlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>';
       item.classList.add('has-media');
+    } else if(data.type === 'videolink' && data.url){
+      item.dataset.url = data.url;
+      thumb.innerHTML = '<div class="play-mini"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>' +
+        '<span class="thumb-ext">abre em nova aba ↗</span>';
+      item.classList.add('has-media', 'externo');
     }
   }
 
@@ -3789,7 +3825,8 @@
         vistos.add(id);
         let item = document.querySelector('.gallery-item[data-mid="' + CSS.escape(id) + '"]');
         if(!item && data.gallery){
-          item = window.__galleryRestore(id, data.type, data.gallery);
+          // videolink também é vídeo na hora de montar a moldura
+          item = window.__galleryRestore(id, data.type === 'videolink' ? 'video' : data.type, data.gallery);
           if(item) aplicarLegendaSalva(id);
         }
         if(item) aplicarMidia(item, data);
@@ -3852,6 +3889,13 @@
     await deleteDoc(doc(db, 'media', mid));
     await deleteDoc(doc(db, 'content', mid + '-cap')).catch(() => {});
     await setDoc(doc(db, 'content', '__delmedia:' + mid), { mediaDeleted: true, updatedAt: serverTimestamp(), updatedBy: uid });
+  };
+
+  // Vídeo fora do YouTube: guarda a URL em vez do id. Fica no mesmo formato de
+  // doc, então o carregador e a exclusão continuam funcionando igual.
+  window.__mediaSaveVideoLink = async (mid, url, gallery) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await setDoc(doc(db, 'media', mid), { type: 'videolink', url, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid });
   };
 
   window.__mediaSaveVideo = async (mid, youtubeId, gallery) => {
