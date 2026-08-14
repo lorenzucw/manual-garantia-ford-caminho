@@ -242,6 +242,13 @@
   }
   body:not(.edit-mode) .card[data-check].tem-marca .check-clear{display:flex;}
   .check-clear:hover{color:var(--ford-blue); border-color:var(--ford-blue);}
+
+  /* rodapé discreto com a última alteração da página */
+  .page-updated{
+    margin:26px 0 0; padding-top:14px; border-top:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.04em;
+    text-transform:uppercase; color:var(--ink-faint, var(--ink-soft)); opacity:.75;
+  }
   .card[data-check] > h3{padding-right:104px;}
 
   /* ---------- LISTA DE ARQUIVOS PRA BAIXAR (Materiais de Apoio) ---------- */
@@ -2764,6 +2771,42 @@
     registrarNaUrl(id);
   }
 
+  /* ---------- "ATUALIZADO EM" POR PÁGINA ----------
+     O banco já guardava quando e por quem cada campo foi editado; isso só
+     mostra, por página, a edição mais recente entre os campos dela. */
+  function textoDeQuando(d){
+    const hoje = new Date();
+    const dia = 86400000;
+    const soData = x => new Date(x.getFullYear(), x.getMonth(), x.getDate());
+    const dif = Math.round((soData(hoje) - soData(d)) / dia);
+    if(dif === 0) return 'hoje';
+    if(dif === 1) return 'ontem';
+    if(dif < 7) return 'há ' + dif + ' dias';
+    return 'em ' + d.toLocaleDateString('pt-BR');
+  }
+
+  window.__pintarAtualizacao = () => {
+    const meta = window.__contentMeta;
+    if(!meta) return;
+    document.querySelectorAll('.page').forEach(page => {
+      let recente = null;
+      page.querySelectorAll('[data-cid]').forEach(el => {
+        const m = meta[el.dataset.cid];
+        if(m && m.em && (!recente || m.em > recente.em)) recente = m;
+      });
+      let rodape = page.querySelector(':scope > .page-updated');
+      if(!recente){ if(rodape) rodape.remove(); return; }
+      if(!rodape){
+        rodape = document.createElement('p');
+        rodape.className = 'page-updated';
+        page.appendChild(rodape);
+      }
+      // textContent: o nome vem do que alguém digitou no cadastro
+      rodape.textContent = 'Atualizado ' + textoDeQuando(recente.em) +
+        (recente.por ? ' por ' + recente.por : '');
+    });
+  };
+
   /* ---------- CHECKLISTS MARCÁVEIS ----------
      A marcação é do aparelho de quem usa (localStorage), não do conteúdo do
      site: cada um vai marcando o seu carro sem mexer no que os outros veem. */
@@ -3084,6 +3127,7 @@
     window.__ensureCardControls(); // lixeira em toda seção, inclusive as restauradas do banco
     window.__ensureGalleryControls(); // lixeira em todo print/vídeo, inclusive os restaurados do banco
     window.__prepararChecks(); // botão limpar + marcas guardadas no aparelho
+    window.__pintarAtualizacao(); // rodapé "atualizado em ... por ..."
     buildSearchIndex(); // precisa rodar depois dos overrides de conteúdo já aplicados no DOM
     wireSearch(document.getElementById('searchInput'), document.getElementById('searchResults'));
     wireSearch(document.getElementById('searchInputMobile'), document.getElementById('searchResultsMobile'));
@@ -3722,7 +3766,13 @@
     label.textContent = 'Salvando…';
     window.__contentSaveAll(pairs).then(() => {
       pairs.forEach(p => window.__contentBaseline && window.__contentBaseline.set(p.cid, p.html !== undefined ? p.html : p.text));
+      // marca a edição como agora, senão o rodapé só mudaria no próximo login
+      if(window.__contentMeta){
+        const agora = new Date();
+        pairs.forEach(p => { window.__contentMeta[p.cid] = { em: agora, por: window.__usuarioAtual || null }; });
+      }
       leaveEditMode();
+      if(window.__pintarAtualizacao) window.__pintarAtualizacao();
       showToast(pairs.length === 1 ? '1 alteração salva' : pairs.length + ' alterações salvas');
     }).catch(err => {
       toggle.disabled = false;
@@ -3920,7 +3970,9 @@
     document.body.classList.toggle('role-editor', canEdit);
     document.body.classList.toggle('role-viewer', role === 'viewer');
     const roleLabel = role === 'owner' ? 'dono' : (role === 'editor' ? 'editor' : 'visualizador');
-    const badgeHtml = '<b>' + (username || user.email.split('@')[0]) + '</b> · ' + roleLabel;
+    const nomeAtual = username || user.email.split('@')[0];
+    window.__usuarioAtual = nomeAtual;   // gravado junto com as edições, pra exibir depois
+    const badgeHtml = '<b>' + nomeAtual + '</b> · ' + roleLabel;
     userBadge.innerHTML = badgeHtml;
     userBadgeMobile.innerHTML = badgeHtml;
 
@@ -3980,8 +4032,13 @@
 
     // 2ª passada: o texto de cada campo, já com as seções novas no lugar.
     const overrides = {};
+    const meta = {};
     snap.forEach(docSnap => {
       const data = docSnap.data();
+      // quando e por quem — usado no rodapé "atualizado em"
+      if(data.updatedAt && typeof data.updatedAt.toDate === 'function'){
+        meta[docSnap.id] = { em: data.updatedAt.toDate(), por: data.updatedByNome || null };
+      }
       const el = document.querySelector('[data-cid="' + CSS.escape(docSnap.id) + '"]');
       // campo html = região rica (negrito/itálico/lista); campo text = linha
       // simples, que continua entrando por textContent como sempre.
@@ -3995,6 +4052,7 @@
       if(el) el.textContent = data.text;
     });
     window.__contentOverrides = overrides;
+    window.__contentMeta = meta;
     window.__contentBaseline = new Map();
     document.querySelectorAll('[data-cid]').forEach(el => {
       window.__contentBaseline.set(el.dataset.cid, el.dataset.rich ? window.__sanitizeRich(el.innerHTML) : el.textContent);
@@ -4080,7 +4138,7 @@
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
     await Promise.all(pairs.map(p => {
       const field = p.html !== undefined ? { html: p.html } : { text: p.text };
-      return setDoc(doc(db, 'content', p.cid), { ...field, updatedAt: serverTimestamp(), updatedBy: uid });
+      return setDoc(doc(db, 'content', p.cid), { ...field, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null });
     }));
     if(!window.__contentOverrides) window.__contentOverrides = {};
     pairs.forEach(p => { window.__contentOverrides[p.cid] = p.html !== undefined ? p.html : p.text; });
@@ -4091,7 +4149,7 @@
   window.__sectionSave = async (id, page, order) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
     await setDoc(doc(db, 'content', '__sec:' + id), {
-      sectionPage: page, sectionOrder: order, updatedAt: serverTimestamp(), updatedBy: uid
+      sectionPage: page, sectionOrder: order, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null
     });
   };
 
@@ -4101,7 +4159,7 @@
   window.__cardChecklistSave = async (cardId, ehChecklist) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
     await setDoc(doc(db, 'content', '__chk:' + cardId), {
-      cardChecklist: !!ehChecklist, updatedAt: serverTimestamp(), updatedBy: uid
+      cardChecklist: !!ehChecklist, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null
     });
   };
 
@@ -4118,7 +4176,7 @@
     }
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
     await setDoc(doc(db, 'content', '__del:' + id), {
-      sectionDeleted: true, updatedAt: serverTimestamp(), updatedBy: uid
+      sectionDeleted: true, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null
     });
   };
 
@@ -4126,7 +4184,7 @@
   // modo de edição não teria como ser recolocado na página depois do F5.
   window.__mediaSaveImage = async (mid, dataUrl, gallery) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
-    await setDoc(doc(db, 'media', mid), { type: 'image', dataUrl, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid });
+    await setDoc(doc(db, 'media', mid), { type: 'image', dataUrl, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null });
   };
 
   // Some da tela e do banco; se o item vier fixo no HTML (não criado no editor)
@@ -4136,19 +4194,19 @@
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
     await deleteDoc(doc(db, 'media', mid));
     await deleteDoc(doc(db, 'content', mid + '-cap')).catch(() => {});
-    await setDoc(doc(db, 'content', '__delmedia:' + mid), { mediaDeleted: true, updatedAt: serverTimestamp(), updatedBy: uid });
+    await setDoc(doc(db, 'content', '__delmedia:' + mid), { mediaDeleted: true, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null });
   };
 
   // Vídeo fora do YouTube: guarda a URL em vez do id. Fica no mesmo formato de
   // doc, então o carregador e a exclusão continuam funcionando igual.
   window.__mediaSaveVideoLink = async (mid, url, gallery) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
-    await setDoc(doc(db, 'media', mid), { type: 'videolink', url, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid });
+    await setDoc(doc(db, 'media', mid), { type: 'videolink', url, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null });
   };
 
   window.__mediaSaveVideo = async (mid, youtubeId, gallery) => {
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
-    await setDoc(doc(db, 'media', mid), { type: 'video', youtubeId, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid });
+    await setDoc(doc(db, 'media', mid), { type: 'video', youtubeId, gallery: gallery || null, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null });
   };
 </script>
 </body>
