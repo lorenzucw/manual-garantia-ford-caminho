@@ -679,6 +679,7 @@
             <div class="tool-item active-link" data-idx="sub-levaetraz" role="button" tabindex="0" onclick="showPage('sub-levaetraz')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-levaetraz');}"><span data-cid="nav-sub-levaetraz">Leva e Traz</span></div>
             <div class="tool-item active-link" data-idx="sub-revisao" role="button" tabindex="0" onclick="showPage('sub-revisao')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-revisao');}"><span data-cid="nav-sub-revisao">Revisão</span></div>
             <div class="tool-item active-link" data-idx="sub-recall" role="button" tabindex="0" onclick="showPage('sub-recall')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-recall');}"><span data-cid="nav-sub-recall">Recall/Campanha</span></div>
+            <div class="tool-item active-link" data-idx="sub-cortesia" role="button" tabindex="0" onclick="showPage('sub-cortesia')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-cortesia');}"><span data-cid="nav-sub-cortesia">Cortesia (EG)</span></div>
           </div>
         </div>
       </div>
@@ -1179,6 +1180,11 @@
               <span class="step-link-text"><span class="step-link-title" data-cid="sub-link-recall">Recall/Campanha</span><span class="step-link-sub" data-cid="sub-linksub-recall">Ações determinadas pela Ford pro chassi</span></span>
               <span class="step-link-arrow">→</span>
             </div>
+            <hr class="ov-divider">
+            <div class="step-link" role="button" tabindex="0" onclick="showPage('sub-cortesia')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('sub-cortesia');}">
+              <span class="step-link-text"><span class="step-link-title" data-cid="sub-link-cortesia">Cortesia (EG)</span><span class="step-link-sub" data-cid="sub-linksub-cortesia">Atendimento concedido fora da cobertura contratual</span></span>
+              <span class="step-link-arrow">→</span>
+            </div>
           </div>
         </section>
 
@@ -1355,6 +1361,52 @@
               Vídeos
             </div>
             <div class="gallery-grid" data-gallery="sub-recall-videos">
+              <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE SUB-CORTESIA -->
+        <section class="page" id="page-sub-cortesia">
+          <div class="section-head"><div class="section-tag">→</div><h1 class="page-title" data-cid="title-sub-cortesia">Cortesia (EG)</h1></div>
+          <p class="page-sub" data-cid="subcortesia-sub">Atendimento concedido fora da cobertura contratual, por decisão comercial — o reparo é feito como cortesia ao cliente e submetido no OWS como EG.</p>
+          <div class="badge-row"><span class="badge tool">OWS</span><span class="badge warn">Exige aprovação prévia</span></div>
+
+          <div class="card" data-card="subcortesia-oque">
+            <h3 data-cid="subcortesia-oque-h3">O que é</h3>
+            <div class="card-body" data-cid="subcortesia-oque-body" data-rich="1">
+              <p>Casos em que o veículo não tem direito contratual ao reparo — fora do prazo, fora da quilometragem ou item não coberto — mas a Ford ou a Concessionária decidem atender mesmo assim, por relacionamento com o cliente.</p>
+            </div>
+          </div>
+
+          <div class="card" data-card="subcortesia-lanc">
+            <h3 data-cid="subcortesia-lanc-h3">Como lançar no OWS</h3>
+            <div class="card-body" data-cid="subcortesia-lanc-body" data-rich="1">
+              <p>Diferente dos outros tipos, a cortesia depende de <b>autorização antes do reparo</b> — sem ela, a solicitação é recusada.</p>
+              <ul>
+                <li>Solicite a aprovação prévia no OWS, justificando o motivo da cortesia</li>
+                <li>Só inicie o reparo depois da autorização registrada</li>
+                <li>Anexe a autorização junto com as evidências e o laudo</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Prints de tela
+            </div>
+            <div class="gallery-grid" data-gallery="sub-cortesia-prints">
+              <div class="gallery-add" onclick="addGalleryItem(this,'image')">+ adicionar print</div>
+            </div>
+          </div>
+
+          <div class="gallery-section">
+            <div class="gallery-section-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Vídeos
+            </div>
+            <div class="gallery-grid" data-gallery="sub-cortesia-videos">
               <div class="gallery-add" onclick="addGalleryItem(this,'video')">+ adicionar vídeo</div>
             </div>
           </div>
@@ -2192,7 +2244,7 @@
 
   // nomes de exibição das mini-páginas dos sub-guias (usado no crumb)
   const subGuideNames = {
-    'sub-basica':'Garantia Básica', 'sub-levaetraz':'Leva e Traz', 'sub-revisao':'Revisão', 'sub-recall':'Recall/Campanha',
+    'sub-basica':'Garantia Básica', 'sub-levaetraz':'Leva e Traz', 'sub-revisao':'Revisão', 'sub-recall':'Recall/Campanha', 'sub-cortesia':'Cortesia (EG)',
     'crpg-status':'Status e Etiqueta', 'crpg-holmes-abrir':'Abrir no Holmes', 'crpg-nota':'Nota de Remessa', 'crpg-holmes-finalizar':'Finalizar no Holmes',
     'descarte-status':'Status e Lista', 'descarte-holmes-abrir':'Abrir no Holmes', 'descarte-nota':'Nota de Descarte', 'descarte-holmes-finalizar':'Finalizar no Holmes'
   };
@@ -2388,7 +2440,7 @@
   let searchIndex = [];
   function buildSearchIndex(){
     searchIndex = [];
-    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','materiais','ows','holmes','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall',
+    const pageIds = ['guide',1,2,3,4,5,6,7,'audit','materiais','ows','holmes','sub','sub-basica','sub-levaetraz','sub-revisao','sub-recall','sub-cortesia',
       'crpg','crpg-status','crpg-holmes-abrir','crpg-nota','crpg-holmes-finalizar',
       'descarte','descarte-status','descarte-holmes-abrir','descarte-nota','descarte-holmes-finalizar'];
     pageIds.forEach(i => {
