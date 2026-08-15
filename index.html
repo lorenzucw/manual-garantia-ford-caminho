@@ -600,6 +600,19 @@
     /* Alvos de toque: 29–33px de altura é pouco pro dedo. */
     .tool-item{padding:11px 10px;}
     .road-step [role="button"]{padding-top:11px; padding-bottom:11px;}
+    /* Controles de edição: no dedo os 24–30px do desktop erram muito. A alça
+       é a mais crítica — nela o dedo precisa segurar e arrastar. */
+    .fmt-btn{min-height:38px; padding-left:11px; padding-right:11px;}
+    .card-del, .card-check{width:38px; height:38px;}
+    .card-check{right:54px;}
+    body.edit-mode .card[data-card] > h3{padding-right:100px;}
+    .card-grip{width:76px; height:38px; top:4px; opacity:.75;}
+    body.edit-mode .card[data-card]{padding-top:46px;}
+    .gallery-del{width:32px; height:32px;}
+    .check-clear{padding:8px 12px; top:10px; right:10px;}
+    .card[data-check] > h3{padding-right:112px;}
+    /* itens de checklist: área de toque maior entre um e outro */
+    .card[data-check] [data-rich] li{padding-top:3px; padding-bottom:3px;}
     .sidebar{transform:translateX(-100%); transition:transform .25s ease; width:82%; max-width:340px; z-index:200; box-shadow:8px 0 24px rgba(0,0,0,.25);}
     .sidebar.open{transform:translateX(0);}
     .content{margin-left:0; padding:28px 18px 60px;}
@@ -3562,8 +3575,35 @@
     alca.setPointerCapture(e.pointerId);
   });
 
+  // Sem isso o arrasto só alcança o que já está na tela — no celular cabem uns
+  // dois cards por vez, então mover uma seção pro início seria impossível.
+  // Perto da borda a página rola sozinha, mais rápido quanto mais perto.
+  const MARGEM_ROLAGEM = 90;
+  let rolagemAuto = null;
+
+  function ajustarRolagemAuto(y){
+    const topo = document.querySelector('.topbar');
+    const limiteTopo = (topo ? topo.getBoundingClientRect().height : 0) + MARGEM_ROLAGEM;
+    let passo = 0;
+    if(y < limiteTopo) passo = -Math.ceil((limiteTopo - y) / 6);
+    else if(y > innerHeight - MARGEM_ROLAGEM) passo = Math.ceil((y - (innerHeight - MARGEM_ROLAGEM)) / 6);
+    if(!passo){ pararRolagemAuto(); return; }
+    if(rolagemAuto) { rolagemAuto.passo = passo; return; }
+    rolagemAuto = { passo, timer: setInterval(() => {
+      if(!arrastando){ pararRolagemAuto(); return; }
+      window.scrollBy(0, rolagemAuto.passo);
+    }, 16) };
+  }
+
+  function pararRolagemAuto(){
+    if(!rolagemAuto) return;
+    clearInterval(rolagemAuto.timer);
+    rolagemAuto = null;
+  }
+
   document.addEventListener('pointermove', (e) => {
     if(!arrastando) return;
+    ajustarRolagemAuto(e.clientY);
     const alvo = document.elementFromPoint(e.clientX, e.clientY);
     const vizinho = alvo && alvo.closest('.card[data-card]');
     if(!vizinho || vizinho === arrastando.card) return;
@@ -3574,6 +3614,7 @@
   });
 
   function encerrarArrasto(){
+    pararRolagemAuto();
     if(!arrastando) return;
     const { card, pageEl, ordemInicial } = arrastando;
     arrastando = null;
