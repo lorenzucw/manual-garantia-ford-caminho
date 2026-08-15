@@ -214,6 +214,22 @@
   body.edit-mode .card[data-card] > .card-check{display:flex;}
   .card-check:hover{border-color:var(--ford-blue); color:var(--ford-blue);}
   .card-check.on{background:var(--ford-blue); border-color:var(--ford-blue); color:#fff;}
+
+  /* alça pra arrastar a seção e mudar a ordem — centralizada no topo do card.
+     touch-action:none faz o dedo arrastar o card em vez de rolar a página. */
+  .card-grip{
+    display:none; position:absolute; top:6px; left:50%; transform:translateX(-50%);
+    width:52px; height:22px; align-items:center; justify-content:center; gap:3px;
+    border:none; border-radius:6px; background:none; color:var(--ink-faint, var(--ink-soft));
+    cursor:grab; touch-action:none; opacity:.55; transition:opacity .13s, color .13s;
+  }
+  body.edit-mode .card[data-card] > .card-grip{display:flex;}
+  .card-grip:hover{opacity:1; color:var(--ford-blue);}
+  .card-grip i{display:block; width:20px; height:2px; border-radius:1px; background:currentColor;}
+  .card.arrastando{opacity:.5; cursor:grabbing; box-shadow:0 12px 30px rgba(0,20,60,.22);}
+  .card.arrastando .card-grip{cursor:grabbing; opacity:1;}
+  body.reordenando{cursor:grabbing; user-select:none;}
+  body.edit-mode .card[data-card]{padding-top:34px;}
   .card-del:hover{background:#e8484822; border-color:#e04848; color:#e04848;}
 
   /* ---------- CHECKLISTS MARCÁVEIS ----------
@@ -3494,6 +3510,15 @@
         btn.innerHTML = CHECK_SVG;
         card.insertBefore(btn, card.firstChild);
       }
+      if(!card.querySelector(':scope > .card-grip')){
+        const alca = document.createElement('button');
+        alca.type = 'button';
+        alca.className = 'card-grip';
+        alca.title = 'Arraste pra mudar a ordem desta seção';
+        alca.setAttribute('aria-label', 'Mover esta seção');
+        alca.innerHTML = '<i></i><i></i><i></i>';
+        card.insertBefore(alca, card.firstChild);
+      }
       atualizarBotaoChecklist(card);
     });
   };
@@ -3505,6 +3530,82 @@
     const chk = e.target.closest('.card-check');
     if(chk){ alternarChecklist(chk.closest('.card')); }
   });
+
+  /* ---------- REORDENAR SEÇÕES ARRASTANDO ----------
+     Ponteiro em vez de drag-and-drop nativo: funciona igual no dedo e no mouse,
+     e a oficina usa o site no celular. */
+  let arrastando = null;
+
+  // as seções reordenáveis de uma página são as que têm data-card; galeria e
+  // cards de navegação (sem data-card) ficam onde estão
+  function secoesDaPagina(pageEl){
+    return Array.from(pageEl.querySelectorAll(':scope > .card[data-card]'));
+  }
+
+  function ordemAtual(pageEl){
+    return secoesDaPagina(pageEl).map(c => c.dataset.card);
+  }
+
+  document.addEventListener('pointerdown', (e) => {
+    if(!editMode) return;
+    const alca = e.target.closest('.card-grip');
+    if(!alca) return;
+    const card = alca.closest('.card[data-card]');
+    const pageEl = card && card.closest('.page');
+    if(!card || !pageEl) return;
+    e.preventDefault();
+    arrastando = { card, pageEl, ordemInicial: ordemAtual(pageEl) };
+    card.classList.add('arrastando');
+    document.body.classList.add('reordenando');
+    // sem isso o próprio card arrastado seria detectado embaixo do cursor
+    card.style.pointerEvents = 'none';
+    alca.setPointerCapture(e.pointerId);
+  });
+
+  document.addEventListener('pointermove', (e) => {
+    if(!arrastando) return;
+    const alvo = document.elementFromPoint(e.clientX, e.clientY);
+    const vizinho = alvo && alvo.closest('.card[data-card]');
+    if(!vizinho || vizinho === arrastando.card) return;
+    if(vizinho.closest('.page') !== arrastando.pageEl) return;  // não sai da página
+    const meio = vizinho.getBoundingClientRect().top + vizinho.offsetHeight / 2;
+    if(e.clientY < meio) vizinho.before(arrastando.card);
+    else vizinho.after(arrastando.card);
+  });
+
+  function encerrarArrasto(){
+    if(!arrastando) return;
+    const { card, pageEl, ordemInicial } = arrastando;
+    arrastando = null;
+    card.classList.remove('arrastando');
+    document.body.classList.remove('reordenando');
+    card.style.pointerEvents = '';
+    const nova = ordemAtual(pageEl);
+    if(nova.join('|') === ordemInicial.join('|')) return;   // não mudou nada
+    if(window.__ordemSave){
+      window.__ordemSave(pageEl.id.replace(/^page-/, ''), nova)
+        .catch(err => alert('Não consegui salvar a nova ordem: ' + err.message));
+    }
+  }
+
+  document.addEventListener('pointerup', encerrarArrasto);
+  document.addEventListener('pointercancel', encerrarArrasto);
+
+  // Reaplica a ordem salva. Seção que não está na lista (uma acrescentada
+  // depois no HTML, por exemplo) vai pro fim, sem sumir e sem bagunçar o que
+  // o editor já tinha organizado.
+  window.__aplicarOrdem = (pageKey, ids) => {
+    const pageEl = document.getElementById('page-' + pageKey);
+    if(!pageEl || !Array.isArray(ids)) return;
+    const presentes = secoesDaPagina(pageEl);
+    const porId = new Map(presentes.map(c => [c.dataset.card, c]));
+    const conhecidas = ids.map(id => porId.get(id)).filter(Boolean);
+    const novas = presentes.filter(c => !ids.includes(c.dataset.card));
+    const ancora = pageEl.querySelector(':scope > .gallery-section');
+    [...conhecidas, ...novas].forEach(card => {
+      if(ancora) pageEl.insertBefore(card, ancora); else pageEl.appendChild(card);
+    });
+  };
 
   // Colar traz HTML arbitrário (Word, sites) direto pro DOM antes de qualquer
   // higienização rodar. Forçamos texto puro pra que só o que a barra aplica
@@ -4000,13 +4101,14 @@
     // 1ª passada: estrutura. Seções criadas pelo editor não existem no HTML e
     // seções apagadas ainda existem — as duas coisas moram aqui mesmo, na
     // coleção content, pra não precisar de regra nova no Firestore.
-    const novas = [], apagadas = new Set(), midsApagados = new Set(), formatoChecklist = new Map();
+    const novas = [], apagadas = new Set(), midsApagados = new Set(), formatoChecklist = new Map(), ordemPorPagina = new Map();
     snap.forEach(docSnap => {
       const v = docSnap.data();
       if(docSnap.id.startsWith('__sec:')) novas.push({ id: docSnap.id.slice(6), page: v.sectionPage, order: v.sectionOrder || 0 });
       else if(docSnap.id.startsWith('__del:')) apagadas.add(docSnap.id.slice(6));
       else if(docSnap.id.startsWith('__delmedia:')) midsApagados.add(docSnap.id.slice(11));
       else if(docSnap.id.startsWith('__chk:')) formatoChecklist.set(docSnap.id.slice(6), !!v.cardChecklist);
+      else if(docSnap.id.startsWith('__ord:')) ordemPorPagina.set(docSnap.id.slice(6), v.cardOrder);
     });
     novas.sort((a, b) => a.order - b.order).forEach(s => window.__cardRestore(s.id, s.page));
     apagadas.forEach(id => {
@@ -4023,6 +4125,9 @@
       if(!card) return;
       if(ehChecklist) card.dataset.check = '1'; else card.removeAttribute('data-check');
     });
+
+    // ordem por último: depois das seções novas existirem e das apagadas saírem
+    ordemPorPagina.forEach((ids, pageKey) => window.__aplicarOrdem(pageKey, ids));
 
     window.__midsApagados = midsApagados;
     midsApagados.forEach(mid => {
@@ -4150,6 +4255,14 @@
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
     await setDoc(doc(db, 'content', '__sec:' + id), {
       sectionPage: page, sectionOrder: order, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null
+    });
+  };
+
+  // Ordem das seções de uma página, na sequência em que devem aparecer.
+  window.__ordemSave = async (pageKey, ids) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await setDoc(doc(db, 'content', '__ord:' + pageKey), {
+      cardOrder: ids, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null
     });
   };
 
