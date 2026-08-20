@@ -651,6 +651,18 @@
 <body>
 
   <div class="auth-gate" id="authGate">
+    <!-- O formulário só aparece com .gate-in, posto pelo módulo de login. Se o
+         Firebase não carregar (internet ruim, CDN bloqueado), esse módulo nunca
+         roda e a tela ficaria preta e vazia — este alarme mostra o formulário
+         mesmo assim, pra pessoa ao menos ver onde está. -->
+    <script>
+      setTimeout(function(){
+        var g = document.getElementById('authGate');
+        if(g && !g.classList.contains('gate-in') && !g.classList.contains('hidden')){
+          g.classList.add('gate-in');
+        }
+      }, 2500);
+    </script>
     <div class="auth-glow" aria-hidden="true"></div>
     <div class="auth-card">
       <div class="auth-eyebrow" style="--i:0">Rede Ford Caminho</div>
@@ -817,7 +829,7 @@
 
         <div class="edit-banner">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Modo de edição ativo: clique no texto pra editar, ou numa miniatura pra trocar o print/vídeo. Ao clicar em <b>“Salvar e sair”</b> lá em cima, tudo é salvo automaticamente.
+          <span>Modo de edição ativo: clique no texto pra editar, ou numa miniatura pra trocar o print/vídeo. Ao clicar em <b>“Salvar e sair”</b> lá em cima, tudo é salvo automaticamente.</span>
         </div>
 
         <div class="fmt-bar" id="fmtBar">
@@ -2176,11 +2188,13 @@
               <p>Planilha viva de acompanhamento — abre direto na versão online, sempre atualizada.</p>
             </div>
             <div class="file-list">
-              <a class="file-item" href="https://grupocaminho-my.sharepoint.com/:x:/r/personal/andre_cunha_caminhoveiculos_com_br/Documents/%C3%81rea%20de%20Trabalho/GARANTIA/MAPA%20DE%20ACOMPANHAMENTO%20-%20FORD.xlsx?d=wfbe2f516a4bc42718069a848f0d59446&amp;csf=1&amp;web=1&amp;e=ABVWWd" target="_blank" rel="noopener noreferrer">
-                <span class="file-icon xlsx">XLSX</span>
-                <span class="file-text"><span class="file-name" data-cid="mat-mapa-nome">Mapa de Acompanhamento</span><span class="file-desc" data-cid="mat-mapa-desc">Está no OneDrive do André — se pedir permissão, solicite o acesso por lá</span></span>
-                <span class="file-go">abrir ↗</span>
-              </a>
+              <div class="file-row" data-mat="mapa">
+                <a class="file-item" href="https://grupocaminho-my.sharepoint.com/:x:/r/personal/andre_cunha_caminhoveiculos_com_br/Documents/%C3%81rea%20de%20Trabalho/GARANTIA/MAPA%20DE%20ACOMPANHAMENTO%20-%20FORD.xlsx?d=wfbe2f516a4bc42718069a848f0d59446&amp;csf=1&amp;web=1&amp;e=ABVWWd" target="_blank" rel="noopener noreferrer">
+                  <span class="file-icon xlsx">XLSX</span>
+                  <span class="file-text"><span class="file-name" data-cid="mat-mapa-nome">Mapa de Acompanhamento</span><span class="file-desc" data-cid="mat-mapa-desc">Está no OneDrive do André — se pedir permissão, solicite o acesso por lá</span></span>
+                  <span class="file-go">abrir ↗</span>
+                </a>
+              </div>
             </div>
           </div>
         </section>
