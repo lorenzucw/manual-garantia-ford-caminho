@@ -285,6 +285,19 @@
   .file-row .file-item{flex:1; min-width:0;}
   .file-dl{flex-shrink:0; width:46px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:10px; background:var(--tint-media-bg); color:var(--ink-soft); text-decoration:none; transition:border-color .15s, color .15s, background .15s;}
   .file-dl:hover{border-color:var(--ford-blue); color:var(--ford-blue); background:var(--tint-blue-bg);}
+  /* controles do material — só no modo de edição */
+  .file-edit, .file-del{display:none; flex-shrink:0; width:38px; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:10px; background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:border-color .13s, color .13s, background .13s;}
+  body.edit-mode .file-row > .file-edit, body.edit-mode .file-row > .file-del{display:flex;}
+  .file-edit:hover{border-color:var(--ford-blue); color:var(--ford-blue); background:var(--tint-blue-bg);}
+  .file-del:hover{border-color:#e04848; color:#e04848; background:#e8484811;}
+  .file-add{
+    display:none; align-items:center; justify-content:center; gap:7px; padding:12px;
+    border:1.5px dashed var(--line); border-radius:10px; background:none;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-soft); cursor:pointer; transition:border-color .13s, color .13s;
+  }
+  body.edit-mode .file-add{display:flex;}
+  .file-add:hover{border-color:var(--ford-blue); color:var(--ford-blue);}
   body:not(.edit-mode) .card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,30,70,.09);}
 
   /* aparecer ao rolar — o JS marca .revealed; sem JS/observer, .no-reveal-js
@@ -2038,7 +2051,7 @@
               <p>Documentos produzidos pela própria Concessionária, usados no dia a dia da garantia.</p>
             </div>
             <div class="file-list">
-              <div class="file-row">
+              <div class="file-row" data-mat="laudo">
                 <a class="file-item" href="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Florenzucw.github.io%2Fmanual-garantia-ford-caminho%2Fmateriais%2Fcaminho%2Flaudo-universal.xlsx" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon xlsx">XLSX</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-laudo-nome">Laudo Universal</span><span class="file-desc" data-cid="mat-laudo-desc">Modelo de laudo técnico usado em qualquer tipo de reparo</span></span>
@@ -2046,7 +2059,7 @@
               </a>
                 <a class="file-dl" href="materiais/caminho/laudo-universal.xlsx" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
               </div>
-              <div class="file-row">
+              <div class="file-row" data-mat="tabmanut">
                 <a class="file-item" href="materiais/caminho/tabela-manutencao.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-tabmanut-nome">Tabela de Manutenção</span><span class="file-desc" data-cid="mat-tabmanut-desc">Planos de revisão por modelo, em alta resolução</span></span>
@@ -2054,7 +2067,7 @@
               </a>
                 <a class="file-dl" href="materiais/caminho/tabela-manutencao.pdf" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
               </div>
-              <div class="file-row">
+              <div class="file-row" data-mat="starsclaro">
                 <a class="file-item" href="materiais/caminho/codigos-stars-equipe-claro.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-starsclaro-nome">Códigos STARS da equipe — versão clara</span><span class="file-desc" data-cid="mat-starsclaro-desc">Para imprimir ou consultar em tela clara</span></span>
@@ -2062,7 +2075,7 @@
               </a>
                 <a class="file-dl" href="materiais/caminho/codigos-stars-equipe-claro.pdf" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
               </div>
-              <div class="file-row">
+              <div class="file-row" data-mat="starsescuro">
                 <a class="file-item" href="materiais/caminho/codigos-stars-equipe-escuro.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-starsescuro-nome">Códigos STARS da equipe — versão escura</span><span class="file-desc" data-cid="mat-starsescuro-desc">Mesma tabela, otimizada pra tela escura</span></span>
@@ -2079,7 +2092,7 @@
               <p>Manuais e tabelas oficiais da Ford. Confira sempre a data no nome do arquivo antes de usar como referência.</p>
             </div>
             <div class="file-list">
-              <div class="file-row">
+              <div class="file-row" data-mat="manualgar">
                 <a class="file-item" href="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Florenzucw.github.io%2Fmanual-garantia-ford-caminho%2Fmateriais%2Fford%2Fmanual-garantia-brasil.docx" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon docx">DOCX</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-manualgar-nome">Manual de Garantia Brasil</span><span class="file-desc" data-cid="mat-manualgar-desc">As regras oficiais que sustentam todo o Caminho da Garantia (Março/26)</span></span>
@@ -2087,7 +2100,7 @@
               </a>
                 <a class="file-dl" href="materiais/ford/manual-garantia-brasil.docx" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
               </div>
-              <div class="file-row">
+              <div class="file-row" data-mat="owsuser">
                 <a class="file-item" href="materiais/ford/ows-manual-usuario.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-owsuser-nome">OWS — Manual do Usuário</span><span class="file-desc" data-cid="mat-owsuser-desc">Guia completo do sistema, para automóveis (Outubro/25)</span></span>
@@ -2095,7 +2108,7 @@
               </a>
                 <a class="file-dl" href="materiais/ford/ows-manual-usuario.pdf" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
               </div>
-              <div class="file-row">
+              <div class="file-row" data-mat="owsacesso">
                 <a class="file-item" href="materiais/ford/ows-manual-acesso.pdf" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon pdf">PDF</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-owsacesso-nome">OWS — Manual de Acesso</span><span class="file-desc" data-cid="mat-owsacesso-desc">Como solicitar e configurar o acesso ao OWS (Maio/23)</span></span>
@@ -2103,7 +2116,7 @@
               </a>
                 <a class="file-dl" href="materiais/ford/ows-manual-acesso.pdf" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
               </div>
-              <div class="file-row">
+              <div class="file-row" data-mat="sgpadrao">
                 <a class="file-item" href="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Florenzucw.github.io%2Fmanual-garantia-ford-caminho%2Fmateriais%2Fford%2Freparacao-sg-padrao.xlsx" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon xlsx">XLSX</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-sgpadrao-nome">Reparação Pré-Definida (SG Padrão)</span><span class="file-desc" data-cid="mat-sgpadrao-desc">Códigos de solução já configurados pela Ford (Julho/26)</span></span>
@@ -2111,7 +2124,7 @@
               </a>
                 <a class="file-dl" href="materiais/ford/reparacao-sg-padrao.xlsx" download title="Baixar o arquivo" aria-label="Baixar o arquivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg></a>
               </div>
-              <div class="file-row">
+              <div class="file-row" data-mat="margem">
                 <a class="file-item" href="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Florenzucw.github.io%2Fmanual-garantia-ford-caminho%2Fmateriais%2Fford%2Fmargem-foc.xlsx" target="_blank" rel="noopener noreferrer">
                 <span class="file-icon xlsx">XLSX</span>
                 <span class="file-text"><span class="file-name" data-cid="mat-margem-nome">Margem FoC</span><span class="file-desc" data-cid="mat-margem-desc">Tabela de margem atualizada (05/08/26)</span></span>
@@ -3155,6 +3168,7 @@
     buildOverview();
     window.__ensureCardControls(); // lixeira em toda seção, inclusive as restauradas do banco
     window.__ensureGalleryControls(); // lixeira em todo print/vídeo, inclusive os restaurados do banco
+    window.__prepararMateriais(); // botões de trocar link, remover e + material
     window.__prepararChecks(); // botão limpar + marcas guardadas no aparelho
     window.__pintarAtualizacao(); // rodapé "atualizado em ... por ..."
     buildSearchIndex(); // precisa rodar depois dos overrides de conteúdo já aplicados no DOM
@@ -3543,6 +3557,193 @@
     const chk = e.target.closest('.card-check');
     if(chk){ alternarChecklist(chk.closest('.card')); }
   });
+
+  /* ---------- MATERIAIS DE APOIO (adicionar, trocar, remover) ----------
+     O arquivo em si não cabe no Firestore (limite de 1MB por registro, e a
+     maioria dos manuais passa de 3MB), então o site guarda o endereço. Arquivo
+     do próprio site continua com botão de baixar; link de fora só abre, porque
+     o navegador não deixa forçar download de outro domínio. */
+  const BAIXAR_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M4 20h16"/></svg>';
+  const LINK_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+
+  function novoMaterialId(){
+    return 'mat' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  }
+
+  function ehDoProprioSite(url){
+    return !/^https?:\/\//i.test(url) || url.indexOf(location.origin) === 0;
+  }
+
+  // decide ícone, endereço de abrir e se cabe botão de baixar
+  function lerMaterial(url){
+    const limpo = (url || '').split('?')[0].split('#')[0].toLowerCase();
+    const ext = (limpo.match(/\.([a-z0-9]+)$/) || [])[1] || '';
+    const proprio = ehDoProprioSite(url);
+    const tipo = ['pdf','xlsx','xls','docx','doc'].includes(ext)
+      ? (ext.startsWith('xls') ? 'xlsx' : ext.startsWith('doc') ? 'docx' : 'pdf')
+      : 'link';
+    let abrir = url;
+    // Excel e Word não renderizam no navegador; se o arquivo é nosso e público,
+    // o visualizador da Microsoft consegue exibir
+    if(proprio && (tipo === 'xlsx' || tipo === 'docx')){
+      const abs = new URL(url, location.href).href;
+      abrir = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(abs);
+    }
+    return { tipo, abrir, baixar: proprio ? url : null, rotulo: tipo === 'link' ? 'abrir ↗' : 'abrir ↗' };
+  }
+
+  function montarMaterial(id, url, nome, desc){
+    const info = lerMaterial(url);
+    const row = document.createElement('div');
+    row.className = 'file-row';
+    row.dataset.mat = id;
+    const a = document.createElement('a');
+    a.className = 'file-item';
+    a.href = info.abrir;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.innerHTML = '<span class="file-icon ' + info.tipo + '">' + info.tipo.toUpperCase() + '</span>' +
+      '<span class="file-text"><span class="file-name" data-cid="mat-' + id + '-nome"></span>' +
+      '<span class="file-desc" data-cid="mat-' + id + '-desc"></span></span>' +
+      '<span class="file-go">' + info.rotulo + '</span>';
+    a.querySelector('.file-name').textContent = nome || 'Novo material';
+    a.querySelector('.file-desc').textContent = desc || '';
+    row.appendChild(a);
+    if(info.baixar){
+      const dl = document.createElement('a');
+      dl.className = 'file-dl';
+      dl.href = info.baixar;
+      dl.setAttribute('download', '');
+      dl.title = 'Baixar o arquivo';
+      dl.innerHTML = BAIXAR_SVG;
+      row.appendChild(dl);
+    }
+    return row;
+  }
+
+  // Põe/atualiza os botões de trocar link e remover em cada material.
+  window.__prepararMateriais = () => {
+    document.querySelectorAll('.file-row[data-mat]').forEach(row => {
+      if(!row.querySelector(':scope > .file-edit')){
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'file-edit';
+        b.title = 'Trocar o endereço deste material';
+        b.innerHTML = LINK_SVG;
+        row.appendChild(b);
+      }
+      if(!row.querySelector(':scope > .file-del')){
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'file-del';
+        b.title = 'Remover este material da lista';
+        b.innerHTML = TRASH_SVG;
+        row.appendChild(b);
+      }
+    });
+    document.querySelectorAll('.card .file-list').forEach(lista => {
+      if(lista.querySelector(':scope > .file-add')) return;
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'file-add';
+      b.textContent = '+ material';
+      lista.appendChild(b);
+    });
+  };
+
+  function pedirEndereco(atual){
+    const v = prompt('Endereço do material.\n\nPode ser um link do SharePoint da Caminho (recomendado — trocando o arquivo lá, o link continua o mesmo) ou o caminho de um arquivo do próprio site.', atual || 'https://');
+    if(v === null) return null;
+    const t = v.trim();
+    if(!t) return null;
+    if(!ehUrlSegura(t) && !/^materiais\//.test(t)){
+      alert('Não reconheci esse endereço. Cole o link completo, começando com https://');
+      return null;
+    }
+    return t;
+  }
+
+  function adicionarMaterial(lista){
+    const url = pedirEndereco();
+    if(!url) return;
+    const nome = (prompt('Nome do material (aparece na lista):', 'Novo material') || '').trim();
+    if(!nome) return;
+    const id = novoMaterialId();
+    const row = montarMaterial(id, url, nome, '');
+    lista.insertBefore(row, lista.querySelector(':scope > .file-add'));
+    const card = lista.closest('.card[data-card]');
+    if(window.__contentBaseline){
+      window.__contentBaseline.set('mat-' + id + '-nome', nome);
+      window.__contentBaseline.set('mat-' + id + '-desc', '');
+    }
+    row.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', 'true'));
+    if(window.__materialSave){
+      window.__materialSave(id, card ? card.dataset.card : null, url, Date.now())
+        .catch(err => alert('Não consegui salvar o material: ' + err.message));
+    }
+    if(window.__contentSaveAll){
+      window.__contentSaveAll([{ cid: 'mat-' + id + '-nome', text: nome }]).catch(() => {});
+    }
+    window.__prepararMateriais();
+  }
+
+  function trocarEnderecoMaterial(row){
+    const atualLink = row.querySelector('.file-dl') || row.querySelector('.file-item');
+    const url = pedirEndereco(atualLink ? atualLink.getAttribute('href') : '');
+    if(!url) return;
+    const id = row.dataset.mat;
+    const nome = row.querySelector('.file-name').textContent;
+    const desc = row.querySelector('.file-desc').textContent;
+    const novo = montarMaterial(id, url, nome, desc);
+    row.replaceWith(novo);
+    if(editMode) novo.querySelectorAll('[data-cid]').forEach(el => el.setAttribute('contenteditable', 'true'));
+    const card = novo.closest('.card[data-card]');
+    if(window.__materialSave){
+      window.__materialSave(id, card ? card.dataset.card : null, url, Date.now())
+        .catch(err => alert('Não consegui salvar o novo endereço: ' + err.message));
+    }
+    window.__prepararMateriais();
+  }
+
+  function removerMaterial(row){
+    const nome = row.querySelector('.file-name').textContent.trim();
+    if(!confirm('Remover “' + nome + '” da lista?\n\nO arquivo em si não é apagado — some só o atalho aqui do site.')) return;
+    const id = row.dataset.mat;
+    row.remove();
+    if(window.__materialDelete){
+      window.__materialDelete(id).catch(err => alert('Não consegui registrar a remoção: ' + err.message));
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    if(!editMode) return;
+    const add = e.target.closest('.file-add');
+    if(add){ adicionarMaterial(add.closest('.file-list')); return; }
+    const troca = e.target.closest('.file-edit');
+    if(troca){ trocarEnderecoMaterial(troca.closest('.file-row')); return; }
+    const rem = e.target.closest('.file-del');
+    if(rem){ removerMaterial(rem.closest('.file-row')); }
+  });
+
+  // No modo de edição o clique no material abriria a aba em vez de deixar
+  // editar o nome — o link só funciona fora da edição.
+  document.addEventListener('click', (e) => {
+    if(!editMode) return;
+    const link = e.target.closest('.file-item, .file-dl');
+    if(link) e.preventDefault();
+  }, true);
+
+  window.__materialRestore = (id, cardId, url) => {
+    const card = document.querySelector('.card[data-card="' + CSS.escape(cardId || '') + '"]');
+    const lista = card && card.querySelector(':scope > .file-list');
+    if(!lista) return null;
+    const jaExiste = document.querySelector('.file-row[data-mat="' + CSS.escape(id) + '"]');
+    if(jaExiste){                       // material que veio no HTML e teve o link trocado
+      const novo = montarMaterial(id, url, jaExiste.querySelector('.file-name').textContent, jaExiste.querySelector('.file-desc').textContent);
+      jaExiste.replaceWith(novo);
+      return novo;
+    }
+    const row = montarMaterial(id, url, 'Novo material', '');
+    lista.insertBefore(row, lista.querySelector(':scope > .file-add'));
+    return row;
+  };
 
   /* ---------- REORDENAR SEÇÕES ARRASTANDO ----------
      Ponteiro em vez de drag-and-drop nativo: funciona igual no dedo e no mouse,
@@ -4143,6 +4344,7 @@
     // seções apagadas ainda existem — as duas coisas moram aqui mesmo, na
     // coleção content, pra não precisar de regra nova no Firestore.
     const novas = [], apagadas = new Set(), midsApagados = new Set(), formatoChecklist = new Map(), ordemPorPagina = new Map();
+    const materiais = [], materiaisRemovidos = new Set();
     snap.forEach(docSnap => {
       const v = docSnap.data();
       if(docSnap.id.startsWith('__sec:')) novas.push({ id: docSnap.id.slice(6), page: v.sectionPage, order: v.sectionOrder || 0 });
@@ -4150,6 +4352,8 @@
       else if(docSnap.id.startsWith('__delmedia:')) midsApagados.add(docSnap.id.slice(11));
       else if(docSnap.id.startsWith('__chk:')) formatoChecklist.set(docSnap.id.slice(6), !!v.cardChecklist);
       else if(docSnap.id.startsWith('__ord:')) ordemPorPagina.set(docSnap.id.slice(6), v.cardOrder);
+      else if(docSnap.id.startsWith('__matdel:')) materiaisRemovidos.add(docSnap.id.slice(9));
+      else if(docSnap.id.startsWith('__mat:')) materiais.push({ id: docSnap.id.slice(6), card: v.matCard, url: v.matUrl, ordem: v.matOrdem || 0 });
     });
     novas.sort((a, b) => a.order - b.order).forEach(s => window.__cardRestore(s.id, s.page));
     apagadas.forEach(id => {
@@ -4166,6 +4370,17 @@
       if(!card) return;
       if(ehChecklist) card.dataset.check = '1'; else card.removeAttribute('data-check');
     });
+
+    // materiais: primeiro os removidos saem, depois entram os novos e as trocas
+    // de endereço — nessa ordem, um material removido não volta pela troca.
+    materiaisRemovidos.forEach(id => {
+      const row = document.querySelector('.file-row[data-mat="' + CSS.escape(id) + '"]');
+      if(row) row.remove();
+    });
+    materiais
+      .filter(m => !materiaisRemovidos.has(m.id))
+      .sort((a, b) => a.ordem - b.ordem)
+      .forEach(m => window.__materialRestore(m.id, m.card, m.url));
 
     // ordem por último: depois das seções novas existirem e das apagadas saírem
     ordemPorPagina.forEach((ids, pageKey) => window.__aplicarOrdem(pageKey, ids));
@@ -4296,6 +4511,25 @@
     const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
     await setDoc(doc(db, 'content', '__sec:' + id), {
       sectionPage: page, sectionOrder: order, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null
+    });
+  };
+
+  // Material de apoio: guarda o endereço, não o arquivo. Serve tanto pra um
+  // material novo quanto pra trocar o link de um que veio no HTML.
+  window.__materialSave = async (id, cardId, url, ordem) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await setDoc(doc(db, 'content', '__mat:' + id), {
+      matCard: cardId || null, matUrl: url, matOrdem: ordem || 0,
+      updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null
+    });
+  };
+
+  // Material do HTML não some do arquivo, então fica marcado como removido.
+  window.__materialDelete = async (id) => {
+    const uid = auth.currentUser ? auth.currentUser.uid : 'desconhecido';
+    await deleteDoc(doc(db, 'content', '__mat:' + id)).catch(() => {});
+    await setDoc(doc(db, 'content', '__matdel:' + id), {
+      materialRemovido: true, updatedAt: serverTimestamp(), updatedBy: uid, updatedByNome: window.__usuarioAtual || null
     });
   };
 
